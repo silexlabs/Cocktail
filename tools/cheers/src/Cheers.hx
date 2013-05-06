@@ -61,7 +61,7 @@ class Cheers
 		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'html'})");
 		cssCodeMirror = untyped __js__("CodeMirror(document.getElementById('css-editor'), {mode:'css'})");
 		
-		htmlCodeMirror.setValue("<html><head></head><body>ssssssssssssss</body></html>");
+		htmlCodeMirror.setValue("<!doctype html><html><head></head><body>ssssssssssssss</body></html>");
 		cssCodeMirror.setValue("body {margin:0;}");
 		
 		update();
@@ -94,15 +94,12 @@ class Cheers
 	 */
 	function update() 
 	{
-		var style:Dynamic = Lib.document.createElement("style");
-		style.type = "text/css";
-		style.innerHTML = cssCodeMirror.getValue();
-		
-		var iframe:Dynamic = Lib.document.getElementById("browser");
-		iframe.src = "data:text/html;charset=utf-8," + htmlCodeMirror.getValue();
-		iframe.contentDocument.head.appendChild(style);
-	
 		var object:Dynamic = Lib.document.getElementById("cocktail");	
 		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue());
+		
+		//strangely, the easiest way I found to mix html and css content for iframe is
+		//using cocktail content
+		var iframe:Dynamic = Lib.document.getElementById("browser");
+		iframe.src = "data:text/html;charset=utf-8," + object.getContent();
 	}
 }

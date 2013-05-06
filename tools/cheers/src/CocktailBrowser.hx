@@ -27,6 +27,7 @@ class CocktailBrowser
 		if (ExternalInterface.available)
 		{
 			ExternalInterface.addCallback("updateDocument", updateDocument);
+			ExternalInterface.addCallback("getContent", getContent);
 		}
 	}
 	
@@ -45,5 +46,16 @@ class CocktailBrowser
 			
 		}
 		
+	}
+	
+	function getContent()
+	{
+		try {
+			return cv.document.documentElement.innerHTML;
+		}
+		catch (e:Dynamic)
+		{
+			return "";
+		}
 	}
 }
