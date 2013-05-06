@@ -1,5 +1,6 @@
 package src;
 import flash.external.ExternalInterface;
+import cocktail.api.CocktailView;
 import js.Lib;
 
 /**
@@ -10,9 +11,14 @@ import js.Lib;
  */
 class CocktailBrowser 
 {
-
+	static var cv:CocktailView;
+	
 	static function main()
 	{
+		cv = new CocktailView();
+		cv.loadHTML("<!doctype html><html><head></head><body></body></html>");
+
+		flash.Lib.current.addChild(cv.root);
 		new CocktailBrowser();
 	}
 	
@@ -26,6 +32,18 @@ class CocktailBrowser
 	
 	function updateDocument(html, css)
 	{
-		Lib.document.documentElement.innerHTML = html;
+		try {
+			cv.document.documentElement.innerHTML = html;
+			var style = cv.document.createElement("style");
+			style.appendChild(cv.document.createTextNode(css));
+			cv.document.body.appendChild(style);
+			
+		}
+		//html could not be parsed
+		catch(e:Dynamic)
+		{
+			
+		}
+		
 	}
 }

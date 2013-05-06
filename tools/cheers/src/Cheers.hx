@@ -62,7 +62,7 @@ class Cheers
 		cssCodeMirror = untyped __js__("CodeMirror(document.getElementById('css-editor'), {mode:'css'})");
 		
 		htmlCodeMirror.setValue("<html><head></head><body>ssssssssssssss</body></html>");
-		cssCodeMirror.setValue("bim");
+		cssCodeMirror.setValue("body {margin:0;}");
 		
 		update();
 		
