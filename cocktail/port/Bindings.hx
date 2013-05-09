@@ -1,9 +1,31 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.port;
 
+/**
+ * This file defines bindings to platform specific implementation 
+ * for suppported platform
+ */
+
+//types common to all platform
+typedef NativeCheckbox = cocktail.port.base.NativeInputBase;
+typedef NativeInput = cocktail.port.base.NativeInputBase;
+typedef NativeRadio = cocktail.port.base.NativeInputBase;
+
+//bindings for air
 #if (air && !macro)
 typedef Platform =  cocktail.port.platform.air.Platform;
+typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
+#end
 
-#elseif (flash && !macro)
+//bindings for flash and nme
+#if ((flash || nme) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
@@ -23,28 +45,21 @@ typedef Platform =  cocktail.port.platform.flash_player.Platform;
 typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
+#end
 
-#elseif (nme && !macro)
-typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
+//bindings for nme
+#if (nme && !macro)
 typedef ImageResource = cocktail.port.platform.nme.ImageResource;
-typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
-typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
 typedef NativeAudio =  cocktail.port.platform.nme.NativeAudio;
-typedef NativeBitmapData =  flash.display.BitmapData;
-typedef NativeButton =  cocktail.port.platform.flash_player.NativeButton;
-typedef NativeLayer =  flash.display.DisplayObjectContainer;
-typedef NativeTextElement =  flash.display.DisplayObject;
 typedef NativeHttp =  cocktail.port.platform.nme.NativeHttp;
-typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswordInput;
 typedef NativeText =  cocktail.port.platform.nme.NativeText;
-typedef NativeTextArea =  cocktail.port.platform.flash_player.NativeTextArea;
-typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 typedef NativeVideo =  cocktail.port.base.NativeMedia;
-typedef Platform =  cocktail.port.platform.flash_player.Platform;
 typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
-typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
+#end
 
-#else
+//default bindings for all the other platform to set a default 
+//allowig build
+#if (!flash && !nme && !air)
 typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.port.base.ResourceBase;
@@ -65,7 +80,3 @@ typedef Platform =  cocktail.port.base.PlatformBase;
 typedef FontBuilder = cocktail.port.base.FontBuilderBase;
 typedef TouchListener = cocktail.port.base.TouchListenerBase;
 #end	
-
-typedef NativeCheckbox = cocktail.port.base.NativeInputBase;
-typedef NativeInput = cocktail.port.base.NativeInputBase;
-typedef NativeRadio = cocktail.port.base.NativeInputBase;
