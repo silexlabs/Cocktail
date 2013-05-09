@@ -41,15 +41,14 @@ This is not an exhaustive list, only used as a remainder
 
 === buggy/incomplete implementations
 
-- margin collapsing has some bugs
 - "clear" style implementation should be improved
 - background-attachment implemented as CSS style but not implemented at rendering
 - vertical-align, other than baseline, not tested enough
 - white-space, not tested enough
-- float, regression, don't work properly when applied to inline level element
 - in text, \n and \t are ignored
-- text parser in TextRenderer needs to be rewritten
+- text parser in PlainTextParser needs to be rewritten
 - graphics context owns native layers, it should be the opposite
+- anonymous text element should be wrapped in anonymous inline box
 
 == CSS 3 ==
 
@@ -72,7 +71,6 @@ This is not an exhaustive list, only used as a remainder
 
 - CSS transition, only style with 1 float value works now (like width, height...), no color or matrix transitions for instance.
 - CSS transform (2d), mostly implemented but currently broken.
-- anonymous text element should be wrapped in anonymous inline box
 
 == HTML 4 == 
 
