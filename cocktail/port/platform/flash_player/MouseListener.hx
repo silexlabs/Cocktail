@@ -32,7 +32,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Mouse extends MouseListenerBase
+class MouseListener extends MouseListenerBase
 {
 	/**
 	 * class constructor.

@@ -28,8 +28,8 @@ typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
 #if ((flash || nme) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
-typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
-typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
+typedef KeyboardListener =  cocktail.port.platform.flash_player.KeyboardListener;
+typedef MouseListener =  cocktail.port.platform.flash_player.MouseListener;
 typedef NativeBitmapData =  flash.display.BitmapData;
 typedef NativeButton =  cocktail.port.platform.flash_player.NativeButton;
 typedef NativeTextElement =  flash.display.DisplayObject;

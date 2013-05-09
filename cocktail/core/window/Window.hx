@@ -176,7 +176,7 @@ class Window extends EventCallback
 		if (_currentMouseCursor == null)
 		{
 			_currentMouseCursor = cursor;
-			platform.mouse.setMouseCursor(cursor);
+			platform.mouseListener.setMouseCursor(cursor);
 		}
 		else
 		{
@@ -185,7 +185,7 @@ class Window extends EventCallback
 			if (cursor != _currentMouseCursor)
 			{
 				_currentMouseCursor = cursor;
-				platform.mouse.setMouseCursor(cursor);
+				platform.mouseListener.setMouseCursor(cursor);
 			}
 		}
 		

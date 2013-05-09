@@ -22,7 +22,7 @@ import cocktail.port.Bindings;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Keyboard extends KeyboardListenerBase
+class KeyboardListener extends KeyboardListenerBase
 {
 	/**
 	 * class constructor

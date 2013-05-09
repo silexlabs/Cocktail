@@ -36,13 +36,13 @@ class PlatformBase
 	 * An instance of the cross-platform keyboard class, used to listen
 	 * to key down and up event
 	 */
-	public var keyboard(default, null):Keyboard;
+	public var keyboardListener(default, null):KeyboardListener;
 	
 	/**
 	 * An instance of the cross-platform mouse class, used to listen
 	 * to mouse input
 	 */
-	public var mouse(default, null):Mouse;
+	public var mouseListener(default, null):MouseListener;
 	
 	/**
 	 * An access of the cross platform class used to listen to touch 
@@ -117,8 +117,8 @@ class PlatformBase
 		//starts to listen to native platform input
 		setNativeListeners();
 		
-		mouse = new Mouse(cast(this));
-		keyboard = new Keyboard(cast(this));
+		mouseListener = new MouseListener(cast(this));
+		keyboardListener = new KeyboardListener(cast(this));
 		touchListener = new TouchListener(cast(this));
 	}
 	
@@ -129,10 +129,10 @@ class PlatformBase
 	{
 		removeNativeListeners();
 		
-		mouse.dispose();
-		mouse = null;
-		keyboard.dispose();
-		keyboard = null;
+		mouseListener.dispose();
+		mouseListener = null;
+		keyboardListener.dispose();
+		keyboardListener = null;
 		touchListener.dispose();
 		touchListener = null;
 	}

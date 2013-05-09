@@ -246,14 +246,14 @@ class CocktailView
 	 */
 	private function setPlatformBindings(platform:Platform, htmlDocument:HTMLDocument):Void
 	{
-		platform.mouse.onMouseDown = document.onPlatformMouseEvent;
-		platform.mouse.onMouseUp = document.onPlatformMouseEvent;
-		platform.mouse.onMouseMove = document.onPlatformMouseMoveEvent;
-		platform.mouse.onMouseWheel = document.onPlatformMouseWheelEvent;
-		platform.mouse.onMouseLeave = document.onPlatformMouseLeaveEvent;
+		platform.mouseListener.onMouseDown = document.onPlatformMouseEvent;
+		platform.mouseListener.onMouseUp = document.onPlatformMouseEvent;
+		platform.mouseListener.onMouseMove = document.onPlatformMouseMoveEvent;
+		platform.mouseListener.onMouseWheel = document.onPlatformMouseWheelEvent;
+		platform.mouseListener.onMouseLeave = document.onPlatformMouseLeaveEvent;
 		
-		platform.keyboard.onKeyDown = document.onPlatformKeyDownEvent;
-		platform.keyboard.onKeyUp = document.onPlatformKeyUpEvent;
+		platform.keyboardListener.onKeyDown = document.onPlatformKeyDownEvent;
+		platform.keyboardListener.onKeyUp = document.onPlatformKeyUpEvent;
 		
 		platform.onResize = document.onPlatformResizeEvent;
 		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
