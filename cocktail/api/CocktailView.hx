@@ -267,6 +267,8 @@ class CocktailView
 		document.onExitFullscreen = platform.exitFullscreen;
 		
 		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
+		
+		document.onNavigateToURL = platform.open;
 	}
 	
 	/**

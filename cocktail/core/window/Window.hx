@@ -106,7 +106,7 @@ class Window extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
-		platform.open(url, name);
+		document.navigateToURL(url, name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

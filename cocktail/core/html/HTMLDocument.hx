@@ -144,22 +144,22 @@ class HTMLDocument extends Document
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
-	 * Callback listened to by the Window object
+	 * Callback called
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
 	 */
 	public var onEnterFullscreen:Void->Void;
 	
 	/**
-	 * Callback listened to by the Window object
+	 * Callback called
 	 * to exit fullscreen mode when needed using
 	 * platform specific API
 	 */
 	public var onExitFullscreen:Void->Void;
 	
 	/**
-	 * Callback listened to by the Window object
-	 * to chnge the mouse cursor when needed using
+	 * Callback called
+	 * to change the mouse cursor when needed using
 	 * platform specific APIs
 	 */
 	public var onSetMouseCursor:CSSPropertyValue-> Void;
@@ -170,6 +170,11 @@ class HTMLDocument extends Document
 	 */
 	private var _currentMouseCursor:CSSPropertyValue;
 	
+	/**
+	 * Callback called when the document must
+	 * navigate to a new url
+	 */
+	public var onNavigateToURL:String->String->Void;
 	
 	/**
 	 * a flag determining if a click event must be dispatched
@@ -1101,6 +1106,19 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// LOCATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * navigate to a new url. By default will tear down
+	 * current document and create a new one for the new
+	 * 
+	 */
+	public function navigateToURL(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
+	{
+		if (onNavigateToURL != null)
+		{
+			onNavigateToURL(url, name);
+		}
+	}
 	
 	/**
 	 * called when the location's href is set
