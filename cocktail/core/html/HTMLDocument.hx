@@ -37,7 +37,7 @@ import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.invalidation.InvalidationManager;
-import cocktail.core.layout.floats.FloatsManager;
+import cocktail.core.floats.FloatsManager;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.location.Location;
 import cocktail.core.multitouch.MultiTouchManager;

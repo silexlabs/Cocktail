@@ -19,7 +19,7 @@ import cocktail.core.layout.computer.boxComputers.FloatBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
-import cocktail.core.layout.floats.FloatsManager;
+import cocktail.core.floats.FloatsManager;
 import cocktail.core.renderer.ElementRenderer;
 
 /**

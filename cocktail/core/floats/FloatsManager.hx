@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.layout.floats;
+package cocktail.core.floats;
 
 using cocktail.core.utils.Utils;
 import cocktail.core.css.CoreStyle;

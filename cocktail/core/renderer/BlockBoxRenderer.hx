@@ -21,7 +21,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.floats.FloatsManager;
+import cocktail.core.floats.FloatsManager;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
