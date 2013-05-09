@@ -109,9 +109,11 @@ class AbstractFontManagerImpl
 	/**
 	 * Actually compute a font metrics using runtime
 	 * specific API
+	 * 
+	 * Returns a default font metrics for port with no font support
 	 */
 	private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-		return null;
+		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
 	}
 }
