@@ -372,170 +372,237 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the result of collapsing the top margin od this box
+	 * Return the result of collapsing the top margin of this box
 	 * will all adjoining margins. Returns the used top margin
 	 * if it doesn't collapse with any margin
-	 * 
-	 * If the top margin do collapse, a non 0 value is only returned
-	 * for the first adjoining margin so that when laying out, only
-	 * the first box with collapsed margin is offset on the y axis.
-	 * 
-	 * For instance if a block box top margin collapse with the 
-	 * top margin of its first child, when this method is called
-	 * on the parent, it will return the width of the collapsed margin
-	 * and it will return 0 when called on the first child
 	 */
-	override public function getCollapsedTopMargin():Float
+	override public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
-		//makes sure that used values for margin are up to date
-		layoutSelfIfNeeded(false);
-						
-		//if the top margin is collapsed with the parent's top
-		//margin, return 0 as the collapsed margin will be applied
-		//to the parent instead
-		if (collapseTopMarginWithParentTopMargin() == true)
-		{
-			return 0;
-		}
-		//same if collapsing with the previous sibling bottom margin
-		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
-		{
-			return 0;
-		}
-		
-		//if top margin collapse with top margin of first child, retrieve
-		//the width of all the adjoining margin which collapse, and retrieve
-		//the collapsed value from them
-		if (collapseTopMarginWithFirstChildTopMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-			firstNormalFlowChild.getAdjoiningTopMargins(adjoiningMargins);
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		//same if the top margin collapse with own bottom margin
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			
-			if (nextNormalFlowSibling != null)
-			{
-				nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
-			}
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		
-		//if the top margin doesn't collapse, return its used value
-		return coreStyle.usedValues.marginTop;
-	}
-	
-	/**
-	 * When called on an element, store all its adjoining top margin
-	 * which collapse with its top margin so that it can determine
-	 * its collapsed margin width
-	 */
-	override public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
-	{
-		//makes sure that used values for margin are up to date
-		layoutSelfIfNeeded(false);
-		
-		//if the current element top margin collapses, store its used width
-		if (collapseTopMarginWithParentTopMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-		}
-		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-		}
-		
-		//if the current element also collapse with its first child top margin,
-		//the first child top margin must also be used when computing collapsed margin
-		//width
-		if (collapseTopMarginWithFirstChildTopMargin() == true)
-		{
-			firstNormalFlowChild.getAdjoiningTopMargins(adjoiningMargins);
-		}
-		//same if current element collapse with own bottom margin
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			
-			//next sibling might collapse with bottom margin
-			if (nextNormalFlowSibling != null)
-			{
-				nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
-			}
-		}
+		return doGetCollapsedMargin(true, onlyIfFirstAdjoiningMargin);
 	}
 	
 	/**
 	 * same as getCollapsedTopMargin for bottom margins
 	 */
-	override public function getCollapsedBottomMargin():Float
+	override public function getCollapsedBottomMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
-		//makes sure that used values for margin are up to date
-		layoutSelfIfNeeded(false);
-		
-		if (collapseBottomMarginWithParentBottomMargin() == true)
-		{
-			return 0;
-		}
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			return 0;
-		}
-		
-		if (collapseBottomMarginWithLastChildBottomMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		
-		return coreStyle.usedValues.marginBottom;
+		return doGetCollapsedMargin(false, onlyIfFirstAdjoiningMargin);
 	}
 	
 	/**
-	 * same as getAdjoiningTopMargins for bottom margins
+	 * Start from either tht top or bottom margin of this element and get all adjoining
+	 * margins in tree order. Return the resulting collapsed margin from the adjoining 
+	 * margins
+	 * @param	isTopMargin wether the start margin is a top or bottom margin
+	 * @param	onlyIfFirstAdjoiningMargin if true, return 0 if the start margin collapses with
+	 * other margin but is not the first adjoining margin in tree order
+	 * @return	the resulting collapsed margin or the start margin width if it doesn't collapse 
+	 * with other mmargins
 	 */
-	override public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
+	private function doGetCollapsedMargin(isTopMargin:Bool, onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
-		if (collapseBottomMarginWithParentBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-		}
-		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-		}
+		//get all previous adjoining margins (in reverse tree order)
+		var previousAdjoiningMargins:Array<Float> = new Array<Float>();
+		getPreviousAdjoiningMargins(previousAdjoiningMargins, isTopMargin, true);
 		
-		if (collapseBottomMarginWithLastChildBottomMargin() == true)
+		//get all following adjoining margins (in tree order)
+		var nextAdjoiningMargins:Array<Float> = new Array<Float>();
+		getNextAdjoiningMargins(nextAdjoiningMargins, isTopMargin, true);
+		
+		//here the start margin doesn't collapse with any margin, return its width
+		if (nextAdjoiningMargins.length == 0 && previousAdjoiningMargins.length == 0)
 		{
-			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
-		}
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-			if (previousSibling != null)
+			if (isTopMargin == true)
 			{
-				previousSibling.getAdjoiningBottomMargins(adjoiningMargins);
+				return coreStyle.usedValues.marginTop;
+			}
+			else
+			{
+				return coreStyle.usedValues.marginBottom;
+			}
+		}
+		//here the margin collapse. Retur the collapsed margin if either it shoulf be returned
+		//in any case or if the start margin is the first adjoining margin (it has no previous
+		//adjoining margins)
+		else if (onlyIfFirstAdjoiningMargin == false || previousAdjoiningMargins.length == 0)
+		{
+			//concat previous and following adjoining margins
+			var adjoiningMargins:Array<Float> = nextAdjoiningMargins.concat(previousAdjoiningMargins);
+			if (isTopMargin == true)
+			{
+				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			}
+			else
+			{
+				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			}
+			
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		//here the margin collapse but is not the first adjoining margin and
+		//should not returned the resulting collapsed margin
+		else
+		{
+			return 0;
+		}
+	}
+	
+	/**
+	 * Traverse the rendering tree to get all the following adjoining margins
+	 * of this element, starting with this element's top or bottom margin
+	 */
+	override public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
+	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
+		//current margin is top margin
+		if (startWithTopMargin == true)
+		{
+			if (collapseTopMarginWithFirstChildTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				
+				firstNormalFlowChild.getNextAdjoiningMargins(adjoiningMargins, true, false);
+			}
+			else if (collapseTopMarginWithBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				
+				getNextAdjoiningMargins(adjoiningMargins, false, false);
+			}
+			else if (collapseTopMarginWithParentTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+			}
+			else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+			}
+		}
+		//current margin is bottom
+		else
+		{
+			if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins, true, false);
+			}
+			else if (collapseBottomMarginWithParentBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				parentNode.getNextAdjoiningMargins(adjoiningMargins, false, false);
+			}
+			else if (collapseBottomMarginWithLastChildBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
+			else if (collapseTopMarginWithBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * same as getNextAdjoiningMargins but climbing up the rendering tree
+	 */
+	override public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
+	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
+		if (startWithTopMargin == true)
+		{
+			if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins, false, false);
+			}
+			else if (collapseTopMarginWithParentTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				parentNode.getPreviousAdjoiningMargins(adjoiningMargins, true, false);
+			}
+			else if (collapseTopMarginWithBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+			}
+			else if (collapseTopMarginWithFirstChildTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+			}
+		}
+		else
+		{
+			if (collapseBottomMarginWithLastChildBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				lastNormalFlowChild.getPreviousAdjoiningMargins(adjoiningMargins, false, false);
+			}
+			else if (collapseTopMarginWithBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				getPreviousAdjoiningMargins(adjoiningMargins, true, false);
+			}
+			else if (collapseBottomMarginWithParentBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
+			else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
 			}
 		}
 	}
@@ -648,6 +715,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			return false;
 		}
+		
+		if (parentNode.coreStyle.usedValues.borderBottomWidth != 0)
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -689,15 +761,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * box
 	 */
 	private function collapseTopMarginWithFirstChildTopMargin():Bool
-	{ 
-		return false;
-	}
-	
-	/**
-	 * same as collapseTopMarginWithFirstChildTopMargin
-	 * for bottom margin
-	 */
-	private function collapseBottomMarginWithLastChildBottomMargin():Bool
 	{ 
 		return false;
 	}
