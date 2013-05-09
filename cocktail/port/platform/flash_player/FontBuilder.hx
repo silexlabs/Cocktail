@@ -11,6 +11,7 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSValueConverter;
+import cocktail.port.base.FontBuilderBase;
 import cocktail.port.NativeTextElement;
 
 import flash.text.engine.ElementFormat;
@@ -22,29 +23,17 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 import flash.text.Font;
-import haxe.Log;
-import cocktail.core.font.AbstractFontManagerImpl;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 
 
 /**
- * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
- * This is the implementation for the Flash AVM2 runtime. A font in Flash is embeded in a .swf
- * file. It is loaded like a library. The font can be used for a text, just set the HTML style attribute to "font-family=MyFontName"
- *
- * download flex sdk
- * > http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK
- *
- * create an embedded font with flex sdk
- * > http://rodneypillay.wordpress.com/2010/05/18/fontswf-utility-in-flex-sdk-4/
- * 
- * It also create flash TextLine object using the flash text engine introduced in Flash Player 10
+ * This class can measure font metrics using flash API and create native flash text elements
  * 
  * @author lexa
  */
-class FontManagerImpl extends AbstractFontManagerImpl
+class FontBuilder extends FontBuilderBase
 {
 	/**
 	 * used to hold a runtime specific default
@@ -94,7 +83,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden virtual methods, font rendering and measure
+	// OVERRIDEN PUBLIC METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -102,7 +91,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * provided by the flash text engine. The
 	 * font metrics are provided for a given font at a given size
 	 */
-	override private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
+	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 		//the flash object used to access flash font metrics
 		var elementFormat:ElementFormat = new ElementFormat();
