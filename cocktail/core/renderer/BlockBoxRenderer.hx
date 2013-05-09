@@ -757,6 +757,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (childrenInline() == false)
 			{
 				childrenHeight = _childPosition.y;
+				//if bottom margin of this container collapse with last child bottom
+				//remove the last child collapsed bottom margin height
+				if (collapseBottomMarginWithLastChildBottomMargin() == true)
+				{
+					childrenHeight -= getCollapsedBottomMargin(false);
+				}
 			}
 			else
 			{
@@ -860,7 +866,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.canHaveClearance() == true)
 				{
 					//the position were the child will be placed if it doesn't have clearance
-					var hypotheticalChildYPosition:Float = _childPosition.y + child.getCollapsedTopMargin();
+					var hypotheticalChildYPosition:Float = _childPosition.y + child.getCollapsedTopMargin(true);
 
 					//check wether child actually has clearance, meaning that it should be placed
 					//below a float declared earlier in the document
@@ -891,7 +897,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 							//if needed
 							//floats are not taken into account when positioning it but if it creates
 							//line boxes they might be shortened by those floats
-							_childPosition.y += child.getCollapsedTopMargin();
+							_childPosition.y += child.getCollapsedTopMargin(true);
 						}
 						
 						//update postion of child
@@ -913,7 +919,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//this child x and y position is influenced by floated elements, so the first y position
 						//where this child can fit given the floated elements must be found
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
-						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin() + child.getCollapsedBottomMargin();
+						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin(true) + child.getCollapsedBottomMargin(true);
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight - coreStyle.usedValues.borderLeftWidth - coreStyle.usedValues.borderRightWidth;
 						
 						var firstYPosition:Float = _childPosition.y;
@@ -932,7 +938,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						{
 							//add child margins. Top margin is collapsed with
 							//adjoining margins if needed
-							_childPosition.y += child.getCollapsedTopMargin();
+							_childPosition.y += child.getCollapsedTopMargin(true);
 						}
 						
 						//update position of child
@@ -964,7 +970,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					_childPosition.y += child.bounds.height;
 					//add child bottom margin, collapsed with adjoining margins
 					//if needed
-					_childPosition.y += child.getCollapsedBottomMargin();
+					_childPosition.y += child.getCollapsedBottomMargin(true);
+					
+					//corner case, if child bottom margin collapse with its own last child bottom
+					//margin, need to add its last child collapsed margin to y child position, else
+					//next sibling won't be placed correctly
+					if (child.collapseBottomMarginWithLastChildBottomMargin() == true)
+					{
+						_childPosition.y += child.lastNormalFlowChild.getCollapsedBottomMargin(true);
+					}
+					
 				}
 				//here the child is a floated element
 				else
@@ -1456,6 +1471,43 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * same as collapseTopMarginWithFirstChildTopMargin
+	 * for bottom margin
+	 */
+	override public function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
+		if (lastNormalFlowChild == null)
+		{
+			return false;
+		}
+		
+		if (lastNormalFlowChild.isBlockContainer == false)
+		{
+			return false;
+		}
+		
+		if (establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.paddingBottom != 0 || lastNormalFlowChild.coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.borderBottomWidth != 0 || lastNormalFlowChild.coreStyle.usedValues.borderBottomWidth != 0)
+		{
+			return false;
+		}
+		
+		return true;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
@@ -1495,17 +1547,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * same as collapseTopMarginWithFirstChildTopMargin
-	 * for bottom margin
-	 * 
-	 * TODO : implement
-	 */
-	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
-	{ 
-		return false;
 	}
 	
 	/**
