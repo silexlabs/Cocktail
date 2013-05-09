@@ -265,6 +265,8 @@ class CocktailView
 		platform.onFullScreenChange = document.onPlatformFullScreenChange;
 		document.onEnterFullscreen = function() platform.enterFullscreen();
 		document.onExitFullscreen = function() platform.exitFullscreen();
+		
+		document.onSetMouseCursor = function(cursor) platform.mouseListener.setMouseCursor(cursor);
 	}
 	
 	/**

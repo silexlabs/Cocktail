@@ -162,7 +162,14 @@ class HTMLDocument extends Document
 	 * to chnge the mouse cursor when needed using
 	 * platform specific APIs
 	 */
-	public var onSetMouseCursor:CSSPropertyValue->Void;
+	public var onSetMouseCursor:CSSPropertyValue-> Void;
+	
+	/**
+	 * Store the current mouse cursor value
+	 * to prevent uneccessary mouse cursor change
+	 */
+	private var _currentMouseCursor:CSSPropertyValue;
+	
 	
 	/**
 	 * a flag determining if a click event must be dispatched
@@ -372,6 +379,8 @@ class HTMLDocument extends Document
 		
 		_delayLoadEventCounter = 0;
 		_documentLoaded = false;
+		
+		_currentMouseCursor = CSSPropertyValue.KEYWORD(CSSKeywordValue.AUTO);
 	}
 	
 	/**
@@ -1016,14 +1025,19 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Change the current mouse cursor, using platform
-	 * specific APIs
+	 * Change the current mouse cursor if needed
 	 */
 	private function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
-		if (onSetMouseCursor != null)
+		//only update mouse if the value is different
+		//from the current one
+		if (cursor != _currentMouseCursor)
 		{
-			onSetMouseCursor(cursor);
+			_currentMouseCursor = cursor;
+			if (onSetMouseCursor != null)
+			{
+				onSetMouseCursor(cursor);
+			}
 		}
 	}
 	
