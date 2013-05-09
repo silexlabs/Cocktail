@@ -15,7 +15,6 @@ import cocktail.core.graphics.AbstractGraphicsContextImpl;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 import cocktail.port.NativeLayer;
 import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;

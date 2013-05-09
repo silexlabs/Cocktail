@@ -23,7 +23,6 @@ import cocktail.core.stacking.StackingContext;
 import cocktail.core.geom.GeomData;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 import cocktail.port.NativeLayer;
 import flash.display.Bitmap;
 import flash.display.Sprite;

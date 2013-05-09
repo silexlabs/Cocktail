@@ -14,7 +14,6 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 import cocktail.port.NativeLayer;
 
 import cocktail.core.geom.GeomData;

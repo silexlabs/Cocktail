@@ -15,7 +15,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.ds.FastNode;
 import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;

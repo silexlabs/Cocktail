@@ -10,7 +10,6 @@ package cocktail.port.platform.air;
 
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.base.NativeTextInputBase;
-import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Rectangle;
 import flash.Lib;

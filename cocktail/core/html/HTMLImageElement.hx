@@ -17,7 +17,6 @@ import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.url.URL;
 import cocktail.port.ImageResource;
-import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import haxe.Log;

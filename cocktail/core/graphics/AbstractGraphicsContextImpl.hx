@@ -13,7 +13,6 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;

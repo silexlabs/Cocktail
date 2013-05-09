@@ -10,7 +10,6 @@ package cocktail.port.platform.flash_player;
 
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.url.URL;
-import cocktail.port.NativeElement;
 import flash.display.Bitmap;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
