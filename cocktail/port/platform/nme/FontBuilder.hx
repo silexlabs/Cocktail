@@ -11,7 +11,7 @@ package cocktail.port.platform.nme;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.port.base.FontBuilderBase;
-import cocktail.port.NativeTextElement;
+import cocktail.port.Bindings;
 
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -26,7 +26,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class FontManagerImpl extends FontBuilderBase
+class FontBuilder extends FontBuilderBase
 {
 	/**
 	 * used to hold a runtime specific default

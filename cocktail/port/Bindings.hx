@@ -30,31 +30,36 @@ typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
 typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
-typedef NativeAudio =  cocktail.port.platform.flash_player.NativeAudio;
 typedef NativeBitmapData =  flash.display.BitmapData;
 typedef NativeButton =  cocktail.port.platform.flash_player.NativeButton;
 typedef NativeTextElement =  flash.display.DisplayObject;
 typedef NativeLayer =  flash.display.DisplayObjectContainer;
-typedef NativeHttp =  cocktail.port.platform.flash_player.NativeHttp;
 typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswordInput;
-typedef NativeText =  cocktail.port.platform.flash_player.NativeText;
 typedef NativeTextArea =  cocktail.port.platform.flash_player.NativeTextArea;
-typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
-typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
-typedef Platform =  cocktail.port.platform.flash_player.Platform;
 typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
+#end
+
+//bindings for flash
+#if (flash && !macro)
+typedef NativeAudio =  cocktail.port.platform.flash_player.NativeAudio;
+typedef NativeHttp =  cocktail.port.platform.flash_player.NativeHttp;
+typedef NativeText =  cocktail.port.platform.flash_player.NativeText;
+typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
+typedef Platform =  cocktail.port.platform.flash_player.Platform;
+typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 #end
 
 //bindings for nme
 #if (nme && !macro)
-typedef ImageResource = cocktail.port.platform.nme.ImageResource;
 typedef NativeAudio =  cocktail.port.platform.nme.NativeAudio;
 typedef NativeHttp =  cocktail.port.platform.nme.NativeHttp;
 typedef NativeText =  cocktail.port.platform.nme.NativeText;
 typedef NativeVideo =  cocktail.port.base.NativeMedia;
 typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
+typedef Platform =  cocktail.port.platform.flash_player.Platform;
+typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 #end
 
 //default bindings for all the other platform to set a default 
