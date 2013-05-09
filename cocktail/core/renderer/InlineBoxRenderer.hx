@@ -15,7 +15,6 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.port.NativeElement;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;

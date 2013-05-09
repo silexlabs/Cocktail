@@ -9,7 +9,7 @@
 package cocktail.core.timer;
 
 import cocktail.core.timer.TimerData;
-import cocktail.port.TimerImpl;
+import cocktail.port.Bindings;
 import haxe.Log;
 import haxe.Stack;
 
@@ -40,7 +40,7 @@ class Timer
 	 * Uses platform specific API to
 	 * call the update method at regular interval
 	 */
-	private var _timerImpl:TimerImpl;
+	private var _platformTimer:PlatformTimer;
 	
 	public function new() 
 	{
@@ -49,7 +49,7 @@ class Timer
 		
 		//give the update callback to the timer implementation, it
 		//will determine when to call it
-		_timerImpl = new TimerImpl(onUpdate);
+		_platformTimer = new PlatformTimer(onUpdate);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class Timer
 	{
 		_pendingCallbacks = null;
 		
-		_timerImpl.dispose();
+		_platformTimer.dispose();
 	}
 	
 	/////////////////////////////////
@@ -111,7 +111,7 @@ class Timer
 	 */
 	public function getTimer():Float
 	{
-		return _timerImpl.getTimer();
+		return _platformTimer.getTimer();
 	}
 	
 	/////////////////////////////////

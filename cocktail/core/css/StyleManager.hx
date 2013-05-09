@@ -8,7 +8,6 @@
 */
 package cocktail.core.css;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.css.CoreStyle;
@@ -160,7 +159,7 @@ class StyleManager
 
 		//clear the array keeping track of which property
 		//was already matched
-		_matchedProperties = _matchedProperties.clear();
+		_matchedProperties = [];
 		
 		//loop in all the style declarations applying to the node
 		var length:Int = matchingStyleDeclarations.length;
@@ -206,13 +205,7 @@ class StyleManager
 	 */
 	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClassesVO):Array<StyleDeclarationVO>
 	{
-		//clean-up for re-use
-		var length:Int = _matchingStyleDeclaration.length;
-		for (i in 0...length)
-		{
-			StyleDeclarationVO.getPool().release(_matchingStyleDeclaration[i]);
-		}
-		_matchingStyleDeclaration = _matchingStyleDeclaration.clear();
+		_matchingStyleDeclaration = [];
 		
 		//loop in all style sheets
 		var styleSheetsLength:Int = styleSheets.length;
@@ -322,7 +315,7 @@ class StyleManager
 							{
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
-								var matchingStyleDeclaration:StyleDeclarationVO = StyleDeclarationVO.getPool().get();
+								var matchingStyleDeclaration:StyleDeclarationVO = new StyleDeclarationVO();
 								matchingStyleDeclaration.style = styleRule.style;
 								matchingStyleDeclaration.selector = selectors[k];
 								_matchingStyleDeclaration.push(matchingStyleDeclaration);
@@ -352,7 +345,7 @@ class StyleManager
 	{
 		//will hold the properties with the same specified property name
 		//which are defined in the matching style declarations
-		_matchingProperties = _matchingProperties.clear();
+		_matchingProperties = [];
 		
 		//loop in all the style declarations applying to the node
 		var matchingStyleDeclarationsLength:Int = matchingStyleDeclarations.length;
@@ -366,7 +359,7 @@ class StyleManager
 			var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(propertyIndex);
 			if (typedProperty != null)
 			{
-				var matchingProperty:PropertyVO = PropertyVO.getPool().get();
+				var matchingProperty:PropertyVO = new PropertyVO();
 				matchingProperty.selector = selector;
 				matchingProperty.typedValue = typedProperty.typedValue;
 				matchingProperty.origin = styleDeclaration.parentRule.parentStyleSheet.origin;
@@ -380,7 +373,6 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = _matchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
-			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -394,7 +386,6 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
-			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -405,7 +396,6 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
-			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -413,13 +403,6 @@ class StyleManager
 		//the later in the CSS style sheet is considered the one with the higher priority
 		var matchingProperty:PropertyVO = tempMatchingProperties[tempMatchingProperties.length - 1];
 		nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
-		
-		//release properties for reuse
-		var length:Int = tempMatchingProperties.length;
-		for (i in 0...length)
-		{
-			PropertyVO.getPool().release(tempMatchingProperties[i]);
-		}
 	}
 	
 	/**
@@ -436,9 +419,9 @@ class StyleManager
 	 */
 	private function getSortedMatchingPropertiesByPriority(matchingProperties:Array<PropertyVO>):Array<PropertyVO>
 	{
-		_userAgentDeclarations = _userAgentDeclarations.clear();
-		_authorNormalDeclarations = _authorNormalDeclarations.clear();
-		_authorImportantDeclarations = _authorImportantDeclarations.clear();
+		_userAgentDeclarations = [];
+		_authorNormalDeclarations = [];
+		_authorImportantDeclarations = [];
 		
 		//push all the mathing ptiorities into the array corresponding to their priority
 		var length:Int = matchingProperties.length;
@@ -466,18 +449,6 @@ class StyleManager
 		//then the important properties are returned
 		if (_authorImportantDeclarations.length > 0)
 		{
-			//release properties that won't be used
-			var length:Int = _authorNormalDeclarations.length;
-			for (i in 0...length)
-			{
-				PropertyVO.getPool().release(_authorNormalDeclarations[i]);
-			}
-			length = _userAgentDeclarations.length;
-			for (i in 0...length)
-			{
-				PropertyVO.getPool().release(_userAgentDeclarations[i]);
-			}
-			
 			return _authorImportantDeclarations;
 		}
 		
@@ -485,12 +456,6 @@ class StyleManager
 		//here normal author defined properties are returned
 		if (_authorNormalDeclarations.length > 0)
 		{
-			length = _userAgentDeclarations.length;
-			for (i in 0...length)
-			{
-				PropertyVO.getPool().release(_userAgentDeclarations[i]);
-			}
-			
 			return _authorNormalDeclarations;
 		}
 		
@@ -506,7 +471,7 @@ class StyleManager
 	 */
 	private function getSortedMatchingPropertiesBySpecificity(matchingProperties:Array<PropertyVO>):Array<PropertyVO>
 	{
-		_mostSpecificMatchingProperties = _mostSpecificMatchingProperties.clear();
+		_mostSpecificMatchingProperties = [];
 		
 		//will store the higher specificity found, so that only properties with the 
 		//higher specificity found are returned
@@ -527,16 +492,9 @@ class StyleManager
 			{
 				currentHigherSpecificity = propertySpecificity;
 				
-				//release properties that won't be used
-				var length:Int = _mostSpecificMatchingProperties.length;
-				for (j in 0...length)
-				{
-					PropertyVO.getPool().release(_mostSpecificMatchingProperties[j]);
-				}
-				
 				//reset the array to prevent returning properties with lower
 				//specificity
-				_mostSpecificMatchingProperties = _mostSpecificMatchingProperties.clear();
+				_mostSpecificMatchingProperties = [];
 			}
 			
 			//add the property if it has the same specificity as the current one

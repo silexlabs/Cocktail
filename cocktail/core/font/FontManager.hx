@@ -10,15 +10,14 @@ package cocktail.core.font;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
-import cocktail.port.FontManagerImpl;
-import cocktail.port.NativeElement;
-
+import cocktail.port.Bindings;
 import cocktail.core.layout.LayoutData;
 
 /**
  * The FontManager is used to get metrics for fonts and
  * create native text rendering element using platform
- * specific API
+ * specific API. It caches font metrics for a given font face and
+ * size as getting those is a costly operation
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -26,16 +25,23 @@ class FontManager
 {	
 	/**
 	 * The instance of the platform specific
-	 * FontManager implementation
+	 * FontBuilder implementation
 	 */
-	private var _fontManagerImpl:FontManagerImpl;
+	private var _fontBuilder:FontBuilder;
+	
+	/**
+	 * A cache of the computed font metrics where the
+	 * keys are the font name and the font sizes
+	 */
+	private var _computedFontMetrics:Hash<IntHash<FontMetricsVO>>;
 	
 	/**
 	 * Class constructor
 	 */
 	public function new()
 	{
-		_fontManagerImpl = new FontManagerImpl();
+		_fontBuilder = new FontBuilder();
+		_computedFontMetrics = new Hash<IntHash<FontMetricsVO>>();
 	}
 	
 	/**
@@ -43,11 +49,11 @@ class FontManager
 	 */
 	public function dispose():Void
 	{
-		_fontManagerImpl.dispose();
+		_fontBuilder.dispose();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Public methods, forward calls to font manager implementation
+	// PUBLIC METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -56,7 +62,31 @@ class FontManager
 	 */
 	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-		return _fontManagerImpl.getFontMetrics(fontFamily, fontSize);
+		var fontMetrics:FontMetricsVO;
+		
+		//this method caches all the generated font metrics and
+		//tries first to retrieve them on subsequent calls
+		var fontSizeHash:IntHash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
+		if (fontSizeHash != null)
+		{
+			fontMetrics = fontSizeHash.get(Math.round(fontSize));
+			if (fontMetrics == null)
+			{
+				fontMetrics = doGetFontMetrics(fontFamily, fontSize);
+				fontSizeHash.set(Math.round(fontSize), fontMetrics);
+				_computedFontMetrics.set(fontFamily, fontSizeHash); 
+			}
+		}
+		else
+		{
+			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
+			fontSizeHash = new IntHash<FontMetricsVO>();
+			fontSizeHash.set(Math.round(fontSize), fontMetrics);
+			
+			_computedFontMetrics.set(fontFamily, fontSizeHash); 
+		}
+		
+		return fontMetrics;
 	}
 	
 	/**
@@ -65,9 +95,9 @@ class FontManager
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
-		return _fontManagerImpl.createNativeTextElement(text, style, fontFamily);
+		return _fontBuilder.createNativeTextElement(text, style, fontFamily);
 	}
 	
 	/**
@@ -77,6 +107,18 @@ class FontManager
 	 */
 	public function getNativeFontFamily(fontFamily:Array<String>):String
 	{
-		return _fontManagerImpl.getNativeFontFamily(fontFamily);
+		return _fontBuilder.getNativeFontFamily(fontFamily);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * actually compute the font metrics when it is not already cached
+	 */
+	private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
+	{
+		return _fontBuilder.getFontMetrics(fontFamily, fontSize);
 	}
 }

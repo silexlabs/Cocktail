@@ -9,9 +9,9 @@
 package cocktail.port.platform.nme;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.font.AbstractFontManagerImpl;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.port.NativeElement;
+import cocktail.port.base.FontBuilderBase;
+import cocktail.port.Bindings;
 
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -22,11 +22,11 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
 /**
- * This is the nme port for the FontManager
+ * This is the nme port for the FontBuilder
  * 
  * @author Yannick DOMINGUEZ
  */
-class FontManagerImpl extends AbstractFontManagerImpl
+class FontBuilder extends FontBuilderBase
 {
 	/**
 	 * used to hold a runtime specific default
@@ -68,7 +68,6 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-
 		var textField:TextField = new TextField();
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		
@@ -99,7 +98,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;

@@ -7,8 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.geom;
-import cocktail.core.utils.IPoolable;
-import cocktail.core.utils.ObjectPool;
 /**
  * This file contains geometry themed struct and enums
  */
@@ -24,30 +22,14 @@ import cocktail.core.utils.ObjectPool;
 	/**
 	 * represent a rectangle
 	 */
-	class RectangleVO implements IPoolable
+	class RectangleVO
 	{
 		public var x:Float;
 		public var y:Float;
 		public var width:Float;
 		public var height:Float;
 		
-		private static var _pool:ObjectPool<RectangleVO>;
-		
-		public static function getPool():ObjectPool<RectangleVO>
-		{
-			if (_pool == null)
-			{
-				_pool = new ObjectPool<RectangleVO>(RectangleVO);
-			}
-			return _pool;
-		}
-		
 		public function new()
-		{
-			reset();
-		}
-		
-		public function reset():Void
 		{
 			x = 0;
 			y = 0;

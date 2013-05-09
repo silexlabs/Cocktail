@@ -11,16 +11,13 @@ package cocktail.core.linebox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
-
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.Bindings;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
-import cocktail.port.NativeText;
 
 /**
  * A special kind of line box used to render text. 
@@ -89,9 +86,9 @@ class TextInlineBox extends InlineBox
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
-		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, style, fontFamily);
+		var nativeTextElement:NativeTextElement = fontManager.createNativeTextElement(text, style, fontFamily);
 		//wrap the native text element
-		_nativeText = new NativeText(nativeElement);
+		_nativeText = new NativeText(nativeTextElement);
 	}
 	
 	/**

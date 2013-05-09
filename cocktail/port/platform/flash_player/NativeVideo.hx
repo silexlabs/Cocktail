@@ -13,7 +13,6 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.base.NativeMedia;
-import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;

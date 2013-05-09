@@ -11,11 +11,10 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.base.KeyboardListenerBase;
-import cocktail.port.NativeElement;
 import cocktail.core.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 
 /**
  * This is the flash AVM2 implementation of the keyboard event manager.
@@ -23,7 +22,7 @@ import cocktail.port.Platform;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Keyboard extends KeyboardListenerBase
+class KeyboardListener extends KeyboardListenerBase
 {
 	/**
 	 * class constructor

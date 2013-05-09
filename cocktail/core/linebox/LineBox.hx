@@ -15,7 +15,6 @@ import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
-using cocktail.core.utils.Utils;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 
@@ -198,7 +197,7 @@ class LineBox
 		}
 		
 		//reset unbreakable inline box now that they were added to the line
-		_unbreakableInlineBoxes = _unbreakableInlineBoxes.clear();
+		_unbreakableInlineBoxes = [];
 		unbreakableWidth = 0;
 	}
 	

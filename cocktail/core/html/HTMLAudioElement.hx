@@ -7,7 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.port.NativeAudio;
+import cocktail.port.Bindings;
 
 /**
  * An audio element represents a sound or audio stream.

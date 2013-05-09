@@ -11,12 +11,10 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.config.Config;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
-import cocktail.core.graphics.AbstractGraphicsContextImpl;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
-import cocktail.port.NativeLayer;
+import cocktail.port.base.GraphicsSurfaceBase;
+import cocktail.port.Bindings;
 import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -32,12 +30,12 @@ import haxe.Stack;
 
 
 /**
- * The flash implementation of the graphics context. Use native
+ * The flash implementation of the graphics object. Use native
  * flash Sprite and Bitmap
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicsContextImpl extends AbstractGraphicsContextImpl
+class GraphicsSurface extends GraphicsSurfaceBase
 {
 	/**
 	 * The native flash BitmapData

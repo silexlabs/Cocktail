@@ -14,7 +14,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 
 /**
  * This class listens to native mouse event

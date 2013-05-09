@@ -17,7 +17,7 @@ import cocktail.core.event.EventData;
 import flash.Lib;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 
 /**
  * This is the flash AVM2 implementation of the touch event listener.

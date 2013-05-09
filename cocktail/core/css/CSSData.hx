@@ -11,8 +11,6 @@ package cocktail.core.css;
 import cocktail.core.geom.Matrix;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.utils.IPoolable;
-import cocktail.core.utils.ObjectPool;
 
 /**
  * ...
@@ -33,63 +31,27 @@ class TypedPropertyVO {
 	}
 }
 
-class PropertyVO implements IPoolable {
+class PropertyVO {
 	
 	public var important:Bool;
 	public var origin:PropertyOriginValue;
 	public var typedValue:CSSPropertyValue;
 	public var selector:SelectorVO;
 	
-	private static var _pool:ObjectPool<PropertyVO>;
-	
-	public static function getPool():ObjectPool<PropertyVO>
-	{
-		if (_pool == null)
-		{
-			_pool = new ObjectPool<PropertyVO>(PropertyVO);
-		}
-		return _pool;
-	}
-	
 	public function new()
 	{
-		reset();
-	}
-	
-	public function reset():Void
-	{
 		this.important = false;
-		this.origin = null;
-		this.typedValue = null;
-		this.selector = null;
 	}
 }
 
-class StyleDeclarationVO implements IPoolable {
+class StyleDeclarationVO {
 	
 	public var style:CSSStyleDeclaration;
 	public var selector:SelectorVO;
 	
-	private static var _pool:ObjectPool<StyleDeclarationVO>;
-	
-	public static function getPool():ObjectPool<StyleDeclarationVO>
-	{
-		if (_pool == null)
-		{
-			_pool = new ObjectPool<StyleDeclarationVO>(StyleDeclarationVO);
-		}
-		return _pool;
-	}
-	
 	public function new()
 	{
 		
-	}
-	
-	public function reset():Void
-	{
-		this.style = null;
-		this.selector = null;
 	}
 }
 

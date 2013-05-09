@@ -15,7 +15,6 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
 import flash.display.Bitmap;
 import flash.display.StageDisplayState;
 import flash.display.StageQuality;

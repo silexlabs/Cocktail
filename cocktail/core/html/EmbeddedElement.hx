@@ -12,7 +12,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.css.CoreStyle;
-import cocktail.port.NativeElement;
 
 /**
  * This is a ase class for element which are repaced by an external

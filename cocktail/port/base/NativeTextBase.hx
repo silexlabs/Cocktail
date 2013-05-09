@@ -8,8 +8,7 @@
 */
 package cocktail.port.base;
 
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -28,14 +27,14 @@ class NativeTextBase
 	/**
 	 * The platform specific text element
 	 */
-	private var _nativeElement:NativeElement;
+	private var _nativeTextElement:NativeTextElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeTextElement:NativeTextElement) 
 	{
-		_nativeElement = nativeElement;
+		_nativeTextElement = nativeTextElement;
 	}
 	
 	/**
@@ -43,7 +42,7 @@ class NativeTextBase
 	 */
 	public function dispose():Void
 	{
-		_nativeElement = null;
+		_nativeTextElement = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

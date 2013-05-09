@@ -6,19 +6,18 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.graphics;
+package cocktail.port.base;
 
 import cocktail.core.geom.Matrix;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.Bindings;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
-import cocktail.port.NativeLayer;
 
 /**
  * This is the base class for classes which 
@@ -30,7 +29,7 @@ import cocktail.port.NativeLayer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractGraphicsContextImpl
+class GraphicsSurfaceBase
 {
 	/**
 	 * A reference to a native layer
