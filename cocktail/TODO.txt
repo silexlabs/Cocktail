@@ -48,7 +48,12 @@ This is not an exhaustive list, only used as a remainder
 - in text, \n and \t are ignored
 - text parser in PlainTextParser needs to be rewritten
 - graphics context owns native layers, it should be the opposite
+- anonymous block box property inheritance is buggy
+
+=== refactoring
+
 - anonymous text element should be wrapped in anonymous inline box
+- graphics context tree should be more isolated when compositing disabled, add a ComposableLayerRenderer for when compositing enabled ?
 
 == CSS 3 ==
 
