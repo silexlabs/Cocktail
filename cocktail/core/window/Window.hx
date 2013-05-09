@@ -97,11 +97,6 @@ class Window extends EventCallback
 	 */
 	private function init(htmlDocument:HTMLDocument, platform:Platform):Void
 	{
-		//fullscreen callbacks
-		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
-		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
-		platform.onFullScreenChange = onPlatformFullScreenChange;
-		
 		//mouse cursor callback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
 		
@@ -121,46 +116,6 @@ class Window extends EventCallback
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
 		platform.open(url, name);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// FULLSCREEN CALLBACKS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when the user exits or enter fullscreen mode without using
-	 * the DOM api. For instance, in most browser, pressing the escape key
-	 * will exit fullscreen mode.
-	 * 
-	 * Listening to those platform event allows to keep the DOM model
-	 * in sync
-	 */
-	private function onPlatformFullScreenChange(event:Event):Void
-	{
-		//if the platform just exited the fullscreen mode,
-		//then the document must also exit it
-		if (platform.fullscreen() == false)
-		{
-			document.exitFullscreen();
-		}
-	}
-	
-	/**
-	 * Called when the document request to enter fullscreen mode.
-	 * Start fullscreen mode using platform specific API
-	 */
-	private function onDocumentEnterFullscreen():Void
-	{
-		platform.enterFullscreen();
-	}
-		
-	/**
-	 * Called when the document request to exit fullscreen mode.
-	 * Exit fullscreen mode using platform specific API
-	 */
-	private function onDocumentExitFullscreen():Void
-	{
-		platform.exitFullscreen();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
