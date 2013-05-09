@@ -766,15 +766,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * same as collapseTopMarginWithFirstChildTopMargin
-	 * for bottom margin
-	 */
-	private function collapseBottomMarginWithLastChildBottomMargin():Bool
-	{ 
-		return false;
-	}
-	
-	/**
 	 * Return wether the top and bottom margin of this 
 	 * box should collapse
 	 */

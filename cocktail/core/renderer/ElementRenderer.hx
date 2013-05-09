@@ -776,6 +776,18 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 	}
 	
+	/**
+	 * wether the bottom margin of this element collapse with it last in flow
+	 * child's bottom margin
+	 * 
+	 * note : other method like this one are implemented as private 
+	 * on BoxRenderer, this one is set as public as needed by parent during layout
+	 */
+	public function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

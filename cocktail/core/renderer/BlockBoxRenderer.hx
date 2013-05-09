@@ -972,6 +972,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//if needed
 					_childPosition.y += child.getCollapsedBottomMargin(true);
 					
+					//corner case, if child bottom margin collapse with its own last child bottom
+					//margin, need to add its last child collapsed margin to y child position, else
+					//next sibling won't be placed correctly
+					if (child.collapseBottomMarginWithLastChildBottomMargin() == true)
+					{
+						_childPosition.y += child.lastNormalFlowChild.getCollapsedBottomMargin(true);
+					}
+					
 				}
 				//here the child is a floated element
 				else
@@ -1463,6 +1471,43 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * same as collapseTopMarginWithFirstChildTopMargin
+	 * for bottom margin
+	 */
+	override public function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
+		if (lastNormalFlowChild == null)
+		{
+			return false;
+		}
+		
+		if (lastNormalFlowChild.isBlockContainer == false)
+		{
+			return false;
+		}
+		
+		if (establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.paddingBottom != 0 || lastNormalFlowChild.coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.borderBottomWidth != 0 || lastNormalFlowChild.coreStyle.usedValues.borderBottomWidth != 0)
+		{
+			return false;
+		}
+		
+		return true;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
@@ -1497,40 +1542,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//if border prevent margins from adjoining, they can't collapse
 		if (coreStyle.usedValues.borderTopWidth != 0 || firstNormalFlowChild.coreStyle.usedValues.borderTopWidth != 0)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * same as collapseTopMarginWithFirstChildTopMargin
-	 * for bottom margin
-	 */
-	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
-	{ 
-		if (lastNormalFlowChild == null)
-		{
-			return false;
-		}
-		
-		if (lastNormalFlowChild.isBlockContainer == false)
-		{
-			return false;
-		}
-		
-		if (establishesNewBlockFormattingContext() == true)
-		{
-			return false;
-		}
-		
-		if (coreStyle.usedValues.paddingBottom != 0 || lastNormalFlowChild.coreStyle.usedValues.paddingBottom != 0)
-		{
-			return false;
-		}
-		
-		if (coreStyle.usedValues.borderBottomWidth != 0 || lastNormalFlowChild.coreStyle.usedValues.borderBottomWidth != 0)
 		{
 			return false;
 		}
