@@ -13,7 +13,6 @@ import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
 import cocktail.core.url.URL;
 using StringTools;
-using cocktail.core.utils.Utils;
 
 /**
  * This class is a prser whose role is to parse
@@ -77,7 +76,7 @@ class CSSStyleParser
 		{
 			_typedProperties = new Array<TypedPropertyVO>();
 		}
-		_typedProperties = _typedProperties.clear();
+		_typedProperties = [];
 		
 		//will return all the parsed properties
 		var typedProperties:Array<TypedPropertyVO> = _typedProperties;

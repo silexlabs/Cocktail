@@ -13,13 +13,10 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.ds.FastNode;
-import cocktail.port.GraphicsContextImpl;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
-import cocktail.port.NativeLayer;
 
 
 /**
@@ -65,7 +62,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 * platform specific API calls to draw and build the native
 	 * display list. 
 	 */
-	public var graphics(default, null):GraphicsContextImpl;
+	public var graphics(default, null):GraphicsSurface;
 	
 	/**
 	 * A flag set when the native layers needs to be re-attached to the native
@@ -84,7 +81,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 		super();
 		this.layerRenderer = layerRenderer;
 		_needsNativeLayerUpdate = true;
-		graphics = new GraphicsContextImpl();
+		graphics = new GraphicsSurface();
 	}
 	
 	/**

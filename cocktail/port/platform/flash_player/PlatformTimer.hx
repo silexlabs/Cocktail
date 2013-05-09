@@ -7,7 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.port.platform.flash_player;
-import cocktail.core.timer.AbstractTimerImpl;
+import cocktail.port.base.PlatformTimerBase;
 import flash.events.Event;
 
 /**
@@ -17,7 +17,7 @@ import flash.events.Event;
  * @author Yannick DOMINGUEZ
  */
 
-class TimerImpl extends AbstractTimerImpl
+class PlatformTimer extends PlatformTimerBase
 {
 	/**
 	 * store a ref to the enter frame callback

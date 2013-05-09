@@ -8,7 +8,6 @@
 */
 package cocktail.core.layer;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.config.Config;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
@@ -27,7 +26,6 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.ds.FastNode;
 import cocktail.Lib;
-import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import haxe.Log;

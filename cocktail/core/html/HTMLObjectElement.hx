@@ -12,13 +12,12 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.parser.ParserData;
-import cocktail.port.NativeHttp;
+import cocktail.port.Bindings;
 
 /**
  * The object element can represent an external resource,

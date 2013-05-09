@@ -8,7 +8,6 @@
 */
 package cocktail.core.html;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
@@ -1161,7 +1160,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		_shouldCascadeAllProperties = false;
-		_pendingChangedProperties = _pendingChangedProperties.clear();
+		_pendingChangedProperties = [];
 	}
 	
 	/**

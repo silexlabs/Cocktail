@@ -16,11 +16,10 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.port.ImageResource;
-import cocktail.port.NativeElement;
+import cocktail.port.base.ResourceBase;
+import cocktail.port.Bindings;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CoreStyle;
@@ -255,7 +254,7 @@ class BackgroundDrawer
 		var foundResource:Bool = false;
 		
 		var htmlDocument:HTMLDocument = cast(elementRenderer.domNode.ownerDocument);
-		var resource:AbstractResource = htmlDocument.resourceManager.getImageResource(url);
+		var resource:ResourceBase = htmlDocument.resourceManager.getImageResource(url);
 		
 		if (resource.loaded == true)
 		{
@@ -328,7 +327,7 @@ class BackgroundDrawer
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:AbstractResource,
+	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:ResourceBase,
 	backgroundPositioningBox:RectangleVO, backgroundPaintingBox:RectangleVO, intrinsicWidth:Float,
 	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionVO,
 	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue, clipRect:RectangleVO):Void

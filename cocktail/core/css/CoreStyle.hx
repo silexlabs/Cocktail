@@ -8,7 +8,6 @@
 */
 package cocktail.core.css;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.config.Config;
 import cocktail.core.css.CSSData;
 import cocktail.core.event.EventConstants;
@@ -680,7 +679,7 @@ class CoreStyle
 		
 		//will store all the properties which value
 		//change during cascading
-		_changedProperties = _changedProperties.clear();
+		_changedProperties = [];
 				
 		//flag to prevent checking stylesheet with no styles
 		var hasInlineStyle:Bool = inlineStyleDeclaration.length > 0;
@@ -2230,7 +2229,7 @@ class CoreStyle
 			
 		}
 		//reset the array, each event must be dispatched only once
-		_pendingTransitionEndEvents = _pendingTransitionEndEvents.clear();
+		_pendingTransitionEndEvents = [];
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

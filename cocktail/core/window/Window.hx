@@ -15,8 +15,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.history.History;
@@ -177,7 +176,7 @@ class Window extends EventCallback
 		if (_currentMouseCursor == null)
 		{
 			_currentMouseCursor = cursor;
-			platform.mouse.setMouseCursor(cursor);
+			platform.mouseListener.setMouseCursor(cursor);
 		}
 		else
 		{
@@ -186,7 +185,7 @@ class Window extends EventCallback
 			if (cursor != _currentMouseCursor)
 			{
 				_currentMouseCursor = cursor;
-				platform.mouse.setMouseCursor(cursor);
+				platform.mouseListener.setMouseCursor(cursor);
 			}
 		}
 		

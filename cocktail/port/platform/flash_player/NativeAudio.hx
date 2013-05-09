@@ -8,7 +8,7 @@
 */
 package cocktail.port.platform.flash_player;
 import cocktail.core.html.HTMLMediaElement;
-import cocktail.core.layout.floats.FloatsManager;
+import cocktail.core.floats.FloatsManager;
 import cocktail.port.base.NativeMedia;
 import flash.events.Event;
 import flash.events.IOErrorEvent;

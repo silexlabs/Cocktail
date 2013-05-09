@@ -12,7 +12,6 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.TransitionEvent;
-using cocktail.core.utils.Utils;
 
 import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
@@ -90,7 +89,7 @@ class Animator
 		
 		//clear the pending animation to prevent from being started
 		//for each layout
-		_pendingAnimations = _pendingAnimations.clear();
+		_pendingAnimations = [];
 		
 		return atLeastOneAnimationStarted;
 	}

@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.timer;
+package cocktail.port.base;
 
 /**
  * An abstract timer implementation. Overriden
@@ -19,7 +19,7 @@ package cocktail.core.timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractTimerImpl 
+class PlatformTimerBase 
 {
 	/**
 	 * class constructor

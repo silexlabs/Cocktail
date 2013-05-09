@@ -6,9 +6,8 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.layout.floats;
+package cocktail.core.floats;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
@@ -75,8 +74,8 @@ class FloatsManager
 	{
 		if (floats.left.length > 0 || floats.right.length > 0)
 		{
-			floats.left = floats.left.clear();
-			floats.right = floats.right.clear();
+			floats.left = [];
+			floats.right = [];
 		}
 		childrenWithClearance = new Array<ElementRenderer>();
 	}

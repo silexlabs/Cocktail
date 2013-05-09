@@ -10,7 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 import haxe.Log;
 
 /**

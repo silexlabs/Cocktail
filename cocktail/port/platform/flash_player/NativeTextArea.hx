@@ -11,7 +11,6 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.base.NativeTextInputBase;
-import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.geom.Rectangle;

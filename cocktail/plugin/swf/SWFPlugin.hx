@@ -15,13 +15,12 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.Lib;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
-import cocktail.port.NativeHttp;
+import cocktail.port.Bindings;
 import haxe.Timer;
 
 #if macro

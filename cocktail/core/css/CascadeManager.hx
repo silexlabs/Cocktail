@@ -8,7 +8,6 @@
 */
 package cocktail.core.css;
 
-using cocktail.core.utils.Utils;
 
 /**
  * During cascading, an instance of this

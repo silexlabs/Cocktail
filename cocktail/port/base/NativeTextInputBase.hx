@@ -11,7 +11,6 @@ package cocktail.port.base;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.NativeElement;
 
 /**
  * A base class, exposing method to manipulate

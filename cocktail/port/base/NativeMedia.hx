@@ -12,7 +12,6 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
 /**
