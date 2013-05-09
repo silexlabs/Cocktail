@@ -737,8 +737,11 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * return the top margin of an element which 
 	 * might be the result of collapsing multiple
 	 * adjoining margins
+	 * 
+	 * @param onlyIfFirstAdjoiningMargin when true, if the start margin is collapsing
+	 * with other margin but is not the first adjoining margin, return 0
 	 */
-	public function getCollapsedTopMargin():Float
+	public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		return 0.0;
 	}
@@ -747,26 +750,42 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * same as getCollapsedTopMargin for bottom
 	 * margin
 	 */
-	public function getCollapsedBottomMargin():Float
+	public function getCollapsedBottomMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		return 0.0;
 	}
 	
 	/**
-	 * push the width of each adjoining margin 
-	 * of this element's top margin
+	 * get the width of each adjoining margin of the target margin,
+	 * by climbing up the rendering tree
+	 * 
+	 * @param	adjoiningMargins holds the width of all the adjoining margins of the first margin
+	 * @param	startWithTopMargin wether the current margin is a top or bottom margin
+	 * @param	isFirst wether the current margin is the first margin searching for adjoining margins
 	 */
-	public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
+	public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		
 	}
 	
 	/**
-	 * same as getAdjoiningTopMargins for bottom margins
+	 * same as getAdjoiningTopMargins but climbing down the rendering tree
 	 */
-	public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
+	public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		
+	}
+	
+	/**
+	 * wether the bottom margin of this element collapse with it last in flow
+	 * child's bottom margin
+	 * 
+	 * note : other method like this one are implemented as private 
+	 * on BoxRenderer, this one is set as public as needed by parent during layout
+	 */
+	public function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
