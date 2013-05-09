@@ -737,6 +737,9 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * return the top margin of an element which 
 	 * might be the result of collapsing multiple
 	 * adjoining margins
+	 * 
+	 * @param onlyIfFirstAdjoiningMargin when true, if the start margin is collapsing
+	 * with other margin but is not the first adjoining margin, return 0
 	 */
 	public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{

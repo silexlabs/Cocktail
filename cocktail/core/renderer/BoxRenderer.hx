@@ -372,18 +372,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the result of collapsing the top margin od this box
+	 * Return the result of collapsing the top margin of this box
 	 * will all adjoining margins. Returns the used top margin
 	 * if it doesn't collapse with any margin
-	 * 
-	 * If the top margin do collapse, a non 0 value is only returned
-	 * for the first adjoining margin so that when laying out, only
-	 * the first box with collapsed margin is offset on the y axis.
-	 * 
-	 * For instance if a block box top margin collapse with the 
-	 * top margin of its first child, when this method is called
-	 * on the parent, it will return the width of the collapsed margin
-	 * and it will return 0 when called on the first child
 	 */
 	override public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
@@ -398,20 +389,30 @@ class BoxRenderer extends InvalidatingElementRenderer
 		return doGetCollapsedMargin(false, onlyIfFirstAdjoiningMargin);
 	}
 	
+	/**
+	 * Start from either tht top or bottom margin of this element and get all adjoining
+	 * margins in tree order. Return the resulting collapsed margin from the adjoining 
+	 * margins
+	 * @param	isTopMargin wether the start margin is a top or bottom margin
+	 * @param	onlyIfFirstAdjoiningMargin if true, return 0 if the start margin collapses with
+	 * other margin but is not the first adjoining margin in tree order
+	 * @return	the resulting collapsed margin or the start margin width if it doesn't collapse 
+	 * with other mmargins
+	 */
 	private function doGetCollapsedMargin(isTopMargin:Bool, onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
+		//get all previous adjoining margins (in reverse tree order)
 		var previousAdjoiningMargins:Array<Float> = new Array<Float>();
 		getPreviousAdjoiningMargins(previousAdjoiningMargins, isTopMargin, true);
 		
-		var isFirstAdjoiningMargin:Bool = previousAdjoiningMargins.length == 0;
-		
+		//get all following adjoining margins (in tree order)
 		var nextAdjoiningMargins:Array<Float> = new Array<Float>();
 		getNextAdjoiningMargins(nextAdjoiningMargins, isTopMargin, true);
 		
-	
+		//here the start margin doesn't collapse with any margin, return its width
 		if (nextAdjoiningMargins.length == 0 && previousAdjoiningMargins.length == 0)
 		{
 			if (isTopMargin == true)
@@ -423,9 +424,13 @@ class BoxRenderer extends InvalidatingElementRenderer
 				return coreStyle.usedValues.marginBottom;
 			}
 		}
-		else if (onlyIfFirstAdjoiningMargin == false)
+		//here the margin collapse. Retur the collapsed margin if either it shoulf be returned
+		//in any case or if the start margin is the first adjoining margin (it has no previous
+		//adjoining margins)
+		else if (onlyIfFirstAdjoiningMargin == false || previousAdjoiningMargins.length == 0)
 		{
-			var adjoiningMargins = nextAdjoiningMargins.concat(previousAdjoiningMargins);
+			//concat previous and following adjoining margins
+			var adjoiningMargins:Array<Float> = nextAdjoiningMargins.concat(previousAdjoiningMargins);
 			if (isTopMargin == true)
 			{
 				adjoiningMargins.push(coreStyle.usedValues.marginTop);
@@ -437,19 +442,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 			
 			return getCollapsedMargin(adjoiningMargins);
 		}
-		else if (isFirstAdjoiningMargin == true)
-		{
-			if (isTopMargin == true)
-			{
-				nextAdjoiningMargins.push(coreStyle.usedValues.marginTop);
-				return getCollapsedMargin(nextAdjoiningMargins);
-			}
-			else
-			{
-				nextAdjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				return getCollapsedMargin(nextAdjoiningMargins);
-			}
-		}
+		//here the margin collapse but is not the first adjoining margin and
+		//should not returned the resulting collapsed margin
 		else
 		{
 			return 0;
