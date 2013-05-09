@@ -12,7 +12,6 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;

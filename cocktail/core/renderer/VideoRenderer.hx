@@ -17,9 +17,9 @@ import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layer.VideoLayerRenderer;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import cocktail.port.base.NativeMedia;
@@ -139,7 +139,7 @@ class VideoRenderer extends ImageRenderer
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		var resource:AbstractResource = htmlDocument.resourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:ResourceBase = htmlDocument.resourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		//the poster frame is not loaded or there was an error while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)

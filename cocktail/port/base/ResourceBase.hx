@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.resource;
+package cocktail.port.base;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
@@ -18,7 +18,7 @@ import cocktail.core.event.UIEvent;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractResource extends EventTarget
+class ResourceBase extends EventTarget
 {
 	/**
 	 * Wether the resource was successfully loaded

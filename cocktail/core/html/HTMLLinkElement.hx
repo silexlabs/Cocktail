@@ -15,7 +15,6 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.http.HTTPConstants;
 import cocktail.core.http.XMLHTTPRequest;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.css.CSSData;
 import cocktail.port.Bindings;

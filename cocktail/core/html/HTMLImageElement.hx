@@ -13,9 +13,9 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
-import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.url.URL;
+import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
@@ -144,7 +144,7 @@ class HTMLImageElement extends EmbeddedElement
 		
 		_ownerHTMLDocument.getAbsoluteURL(value);
 		
-		var resource:AbstractResource = _ownerHTMLDocument.resourceManager.getImageResource(value);
+		var resource:ResourceBase = _ownerHTMLDocument.resourceManager.getImageResource(value);
 
 		//delay load until picture loaded or there is an error while loading,
 		//only useful before the document is loaded
@@ -190,7 +190,7 @@ class HTMLImageElement extends EmbeddedElement
 		resource.removeEventListener(EventConstants.ERROR, _resourceLoadError);
 	}
 	
-	private function onLoadComplete(resource:AbstractResource):Void
+	private function onLoadComplete(resource:ResourceBase):Void
 	{	
 		intrinsicHeight = resource.intrinsicHeight;
 		intrinsicWidth = resource.intrinsicWidth;

@@ -11,6 +11,7 @@ package cocktail.core.resource;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
 import cocktail.Lib;
+import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.core.http.HTTPData;
 
@@ -29,7 +30,7 @@ class ResourceManager
 	 * Stores each requested asset in a hash where the
 	 * key is the url of the asset
 	 */
-	private var _resources:Hash<AbstractResource>;
+	private var _resources:Hash<ResourceBase>;
 	
 	/**
 	 * Store requested binary resources, where the 
@@ -49,7 +50,7 @@ class ResourceManager
 	public function new(document:HTMLDocument) 
 	{
 		_document = document;
-		_resources = new Hash<AbstractResource>();
+		_resources = new Hash<ResourceBase>();
 		_binaryResources = new Hash<NativeHttp>();
 	}
 	
@@ -68,10 +69,10 @@ class ResourceManager
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself
 	 */
-	public function getImageResource(url:String):AbstractResource
+	public function getImageResource(url:String):ResourceBase
 	{
 		//get the resource or null if not existant yet
-		var resource:AbstractResource = _resources.get(url);
+		var resource:ResourceBase = _resources.get(url);
 		
 		//if the resource with the given url is not
 		//yet stored, create it

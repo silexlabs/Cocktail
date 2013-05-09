@@ -8,7 +8,7 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.core.resource.AbstractResource;
+import cocktail.port.base.ResourceBase;
 import flash.display.Loader;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
@@ -22,7 +22,7 @@ import flash.system.LoaderContext;
  * 
  * @author Yannick DOMINGUEZ
  */
-class SWFResource extends AbstractResource
+class SWFResource extends ResourceBase
 {
 	/**
 	 * The native flash loader used to
