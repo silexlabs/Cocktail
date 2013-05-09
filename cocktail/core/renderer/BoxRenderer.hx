@@ -715,6 +715,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			return false;
 		}
+		
+		if (parentNode.coreStyle.usedValues.borderBottomWidth != 0)
+		{
+			return false;
+		}
 
 		return true;
 	}
