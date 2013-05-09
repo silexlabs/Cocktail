@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.event;
-using cocktail.core.utils.Utils;
 
 /**
  * Allows registration and removal 
@@ -318,16 +317,7 @@ class EventTarget
 	 */
 	private function getTargetAncestors():Array<EventTarget>
 	{
-		//create or reset the array
-		if (_targetAncestors == null)
-		{
-			_targetAncestors = new Array<EventTarget>();
-		}
-		else
-		{
-			_targetAncestors = _targetAncestors.clear();
-		}
-		
+		_targetAncestors = new Array<EventTarget>();
 		return _targetAncestors;
 	}
 	

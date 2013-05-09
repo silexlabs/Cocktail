@@ -56,8 +56,6 @@ This is not an exhaustive list, only used as a remainder
 - graphics context owns native layers, it should be the opposite
 - removing utils package ?
 - move all files at the root of port to a bindings folder ? or have only one file bindings ?
-- move layout/floats to float
-- remove macro package from port 
 
 == CSS 3 ==
 

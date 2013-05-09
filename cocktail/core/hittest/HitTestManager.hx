@@ -15,7 +15,6 @@ import cocktail.core.css.CSSData;
 import cocktail.core.stacking.StackingContext;
 import haxe.Log;
 import haxe.Log;
-using cocktail.core.utils.Utils;
 
 /**
  * Manages hit testing of the document.
@@ -82,7 +81,7 @@ class HitTestManager
 		_targetPoint.x = x;
 		_targetPoint.y = y;
 		
-		_elementRenderersAtPoint = _elementRenderersAtPoint.clear();
+		_elementRenderersAtPoint = [];
 		
 		//get all the elementRenderers under the point, update the element renderers array
 		getElementRenderersAtPointInStackingContext(_elementRenderersAtPoint, stackingContext, _targetPoint);

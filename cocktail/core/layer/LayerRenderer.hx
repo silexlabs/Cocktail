@@ -8,7 +8,6 @@
 */
 package cocktail.core.layer;
 
-using cocktail.core.utils.Utils;
 import cocktail.core.config.Config;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
