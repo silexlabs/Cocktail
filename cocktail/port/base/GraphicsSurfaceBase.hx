@@ -6,9 +6,10 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.graphics;
+package cocktail.port.base;
 
 import cocktail.core.geom.Matrix;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
@@ -28,7 +29,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractGraphicsContextImpl
+class GraphicsSurfaceBase
 {
 	/**
 	 * A reference to a native layer

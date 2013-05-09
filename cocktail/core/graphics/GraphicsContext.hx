@@ -62,7 +62,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 * platform specific API calls to draw and build the native
 	 * display list. 
 	 */
-	public var graphics(default, null):GraphicsContextImpl;
+	public var graphics(default, null):GraphicsSurface;
 	
 	/**
 	 * A flag set when the native layers needs to be re-attached to the native
@@ -81,7 +81,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 		super();
 		this.layerRenderer = layerRenderer;
 		_needsNativeLayerUpdate = true;
-		graphics = new GraphicsContextImpl();
+		graphics = new GraphicsSurface();
 	}
 	
 	/**

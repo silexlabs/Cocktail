@@ -4,7 +4,7 @@ package cocktail.port;
 typedef Platform =  cocktail.port.platform.air.Platform;
 
 #elseif (flash && !macro)
-typedef GraphicsContextImpl =  cocktail.port.platform.flash_player.GraphicsContextImpl;
+typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
 typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
@@ -25,7 +25,7 @@ typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
 #elseif (nme && !macro)
-typedef GraphicsContextImpl =  cocktail.port.platform.flash_player.GraphicsContextImpl;
+typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.nme.ImageResource;
 typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
 typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
@@ -44,7 +44,7 @@ typedef Platform =  cocktail.port.platform.flash_player.Platform;
 typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
 
 #else
-typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;
+typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.core.resource.AbstractResource;
 typedef Keyboard = cocktail.port.base.KeyboardListenerBase;
 typedef Mouse = cocktail.port.base.MouseListenerBase;
