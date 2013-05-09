@@ -12,9 +12,7 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.InputLayerRenderer;
-import cocktail.port.NativeButton;
-import cocktail.port.NativeCheckbox;
-import cocktail.port.NativeInput;
+import cocktail.port.Bindings;
 
 /**
  * This is an input element renderrer in charge of

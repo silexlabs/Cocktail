@@ -14,7 +14,7 @@ import cocktail.port.base.KeyboardListenerBase;
 import cocktail.core.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 
 /**
  * This is the flash AVM2 implementation of the keyboard event manager.

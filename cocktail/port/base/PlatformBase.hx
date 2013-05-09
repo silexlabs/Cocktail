@@ -16,11 +16,8 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.stacking.StackingContext;
-import cocktail.port.Keyboard;
-import cocktail.port.Mouse;
-import cocktail.port.NativeLayer;
+import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
-import cocktail.port.TouchListener;
 
 /**
  * This class exposes an API to access platform

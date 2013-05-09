@@ -8,8 +8,7 @@
 */
 package cocktail.port.base;
 
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeTextElement;
+import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 
 /**

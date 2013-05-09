@@ -10,7 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.EventData;
-import cocktail.port.Platform;
+import cocktail.port.Bindings;
 
 /**
  * This class listens to native touch event

@@ -10,9 +10,7 @@ package cocktail.core.font;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
-import cocktail.port.FontBuilder;
-import cocktail.port.NativeTextElement;
-
+import cocktail.port.Bindings;
 import cocktail.core.layout.LayoutData;
 
 /**

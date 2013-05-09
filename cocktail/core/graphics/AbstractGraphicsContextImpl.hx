@@ -12,12 +12,11 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.port.NativeBitmapData;
+import cocktail.port.Bindings;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
-import cocktail.port.NativeLayer;
 
 /**
  * This is the base class for classes which 

@@ -12,7 +12,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.port.base.FontBuilderBase;
-import cocktail.port.NativeTextElement;
+import cocktail.port.Bindings;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;

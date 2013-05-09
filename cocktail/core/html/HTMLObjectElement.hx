@@ -18,7 +18,7 @@ import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.parser.ParserData;
-import cocktail.port.NativeHttp;
+import cocktail.port.Bindings;
 
 /**
  * The object element can represent an external resource,

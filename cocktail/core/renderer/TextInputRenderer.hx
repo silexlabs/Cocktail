@@ -22,7 +22,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.port.NativeTextInput;
+import cocktail.port.Bindings;
 import cocktail.core.css.CSSData;
 
 /**

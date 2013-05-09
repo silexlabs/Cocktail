@@ -11,7 +11,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.VideoRenderer;
-import cocktail.port.NativeVideo;
+import cocktail.port.Bindings;
 import cocktail.core.parser.ParserData;
 
 /**

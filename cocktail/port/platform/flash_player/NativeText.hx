@@ -9,8 +9,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.port.base.NativeTextBase;
-import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeTextElement;
+import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import flash.display.BitmapData;
 import flash.geom.Matrix;

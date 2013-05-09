@@ -8,7 +8,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.NativePasswordInput;
+import cocktail.port.Bindings;
 
 /**
  * This is an input renderer in charge of

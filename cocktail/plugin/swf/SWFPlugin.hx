@@ -21,7 +21,7 @@ import cocktail.Lib;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
-import cocktail.port.NativeHttp;
+import cocktail.port.Bindings;
 import haxe.Timer;
 
 #if macro

@@ -13,7 +13,7 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.base.MouseListenerBase;
-import cocktail.port.NativeBitmapData;
+import cocktail.port.Bindings;
 import cocktail.port.platform.flash_player.Tools;
 import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
@@ -25,7 +25,6 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import flash.Vector;
 import haxe.Log;
-import cocktail.port.Platform;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.

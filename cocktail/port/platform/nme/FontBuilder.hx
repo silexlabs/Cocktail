@@ -68,7 +68,6 @@ class FontManagerImpl extends FontBuilderBase
 	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-
 		var textField:TextField = new TextField();
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		
