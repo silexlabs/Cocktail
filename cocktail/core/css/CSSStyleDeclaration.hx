@@ -14,7 +14,6 @@ import cocktail.core.css.parsers.CSSStyleSerializer;
 import cocktail.core.css.CSSConstants;
 import cocktail.Lib;
 using StringTools;
-import cocktail.core.utils.ObjectPool;
 
 /**
  * This objects holds declarations of style properties in key/value
