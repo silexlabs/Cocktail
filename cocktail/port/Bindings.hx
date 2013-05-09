@@ -20,7 +20,7 @@ typedef NativeTextArea =  cocktail.port.platform.flash_player.NativeTextArea;
 typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
 typedef Platform =  cocktail.port.platform.flash_player.Platform;
-typedef TimerImpl =  cocktail.port.platform.flash_player.TimerImpl;
+typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
@@ -42,10 +42,12 @@ typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 typedef NativeVideo =  cocktail.port.base.NativeMedia;
 typedef Platform =  cocktail.port.platform.flash_player.Platform;
 typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
+typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 
 #else
+typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
-typedef ImageResource = cocktail.core.resource.AbstractResource;
+typedef ImageResource = cocktail.port.base.ResourceBase;
 typedef Keyboard = cocktail.port.base.KeyboardListenerBase;
 typedef Mouse = cocktail.port.base.MouseListenerBase;
 typedef NativeAudio =  cocktail.port.base.NativeMedia;
@@ -60,7 +62,6 @@ typedef NativeTextArea = cocktail.port.base.NativeTextInputBase;
 typedef NativeTextInput = cocktail.port.base.NativeTextInputBase;
 typedef NativeVideo =  cocktail.port.base.NativeMedia;
 typedef Platform =  cocktail.port.base.PlatformBase;
-typedef TimerImpl = cocktail.core.timer.AbstractTimerImpl;
 typedef FontBuilder = cocktail.port.base.FontBuilderBase;
 typedef TouchListener = cocktail.port.base.TouchListenerBase;
 #end	
