@@ -16,7 +16,7 @@ import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
@@ -89,9 +89,9 @@ class TextInlineBox extends InlineBox
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
-		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, style, fontFamily);
+		var nativeTextElement:NativeTextElement = fontManager.createNativeTextElement(text, style, fontFamily);
 		//wrap the native text element
-		_nativeText = new NativeText(nativeElement);
+		_nativeText = new NativeText(nativeTextElement);
 	}
 	
 	/**

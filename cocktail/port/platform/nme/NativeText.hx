@@ -10,7 +10,7 @@ package cocktail.port.platform.nme;
 
 import cocktail.port.base.NativeTextBase;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 import cocktail.core.geom.GeomData;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
@@ -32,10 +32,10 @@ class NativeText extends NativeTextBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeTextElement:NativeTextElement) 
 	{
-		super(nativeElement);
-		_textField = cast(nativeElement);
+		super(nativeTextElement);
+		_textField = cast(nativeTextElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ class NativeText extends NativeTextBase
 	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
 		var bitmap:BitmapData = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-		bitmap.draw(_nativeElement);
+		bitmap.draw(_nativeTextElement);
 		return bitmap;
 	}
 	

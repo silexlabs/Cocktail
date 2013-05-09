@@ -10,7 +10,7 @@ package cocktail.core.font;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 
 import cocktail.core.layout.LayoutData;
 
@@ -87,7 +87,7 @@ class AbstractFontManagerImpl
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
 		return null;
 	}

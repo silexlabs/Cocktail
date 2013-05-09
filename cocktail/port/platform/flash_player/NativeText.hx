@@ -10,7 +10,7 @@ package cocktail.port.platform.flash_player;
 
 import cocktail.port.base.NativeTextBase;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 import cocktail.core.geom.GeomData;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
@@ -45,10 +45,10 @@ class NativeText extends NativeTextBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeTextElement:NativeTextElement) 
 	{
-		super(nativeElement);
-		_textLine = cast(nativeElement);
+		super(nativeTextElement);
+		_textLine = cast(nativeTextElement);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ class NativeText extends NativeTextBase
 		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
 		_matrix.identity();
 		_matrix.translate(bounds.x, bounds.y);
-		_nativeBitmap.draw(_nativeElement, _matrix);
+		_nativeBitmap.draw(_nativeTextElement, _matrix);
 		
 		return _nativeBitmap;
 	}

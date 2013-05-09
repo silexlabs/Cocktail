@@ -9,15 +9,14 @@
 package cocktail.port;
 
 #if macro
-typedef NativeElement =  Dynamic;
+typedef NativeTextElement =  Dynamic;
 
 #elseif flash9
-typedef NativeElement =  flash.display.DisplayObject;
+typedef NativeTextElement =  flash.display.DisplayObject;
 
-//TODO 1 : shouldn't be dynamic for nme
 #elseif nme
-typedef NativeElement =  Dynamic;
+typedef NativeTextElement =  Dynamic;
 
 #else
-typedef NativeElement =  Dynamic;
+typedef NativeTextElement =  Dynamic;
 #end

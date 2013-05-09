@@ -11,7 +11,7 @@ package cocktail.port.platform.nme;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.AbstractFontManagerImpl;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -99,7 +99,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;

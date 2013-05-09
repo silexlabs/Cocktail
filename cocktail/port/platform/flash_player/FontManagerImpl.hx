@@ -11,7 +11,7 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeTextElement;
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
@@ -140,7 +140,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
 		//get a flash TextElement, used as the model for a flash textBlock
 		_textBlock.content = getNativeTextElement(text, style, fontFamily);
