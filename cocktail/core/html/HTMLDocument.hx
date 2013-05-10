@@ -8,7 +8,7 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.animation.TransitionManager;
+import cocktail.core.transition.TransitionManager;
 import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;

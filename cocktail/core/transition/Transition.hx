@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.animation;
+package cocktail.core.transition;
 
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.geom.CubicBezier;

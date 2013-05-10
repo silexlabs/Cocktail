@@ -16,12 +16,12 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.linebox.InlineBox;
 
-import cocktail.core.layout.computer.boxComputers.BlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.FloatBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
+import cocktail.core.boxmodel.BlockBoxStylesComputer;
+import cocktail.core.boxmodel.BoxStylesComputer;
+import cocktail.core.boxmodel.FloatBoxStylesComputer;
+import cocktail.core.boxmodel.InlineBlockBoxStylesComputer;
+import cocktail.core.boxmodel.InLineBoxStylesComputer;
+import cocktail.core.boxmodel.PositionedBoxStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;

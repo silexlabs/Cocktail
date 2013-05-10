@@ -6,37 +6,36 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.animation;
+package cocktail.core.transition;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.TransitionEvent;
 
-import cocktail.core.animation.AnimationData;
+import cocktail.core.transition.TransitionData;
 import cocktail.core.css.CSSData;
 import cocktail.core.parser.ParserData;
 
 /**
  * 
  * This class is responsible for starting 
- * the transition of an ElementRenderer when
+ * transitions of styles of an ElementRenderer when
  * needed. When the value of a style
  * which can be transitioned is changed, 
  * it is stored in an array for pending
- * animation and will actually start on next layout
- * 
- * TODO 3 : name of class is confusing
+ * transitions and will actually start on next 
+ * document update
  * 
  * @author Yannick DOMINGUEZ
  */
-class Animator 
+class Transitioner 
 {
 	/**
 	 * An array holding the data necessary to start all pending
-	 * animations on next layout
+	 * transitions on next update
 	 */
-	private var _pendingAnimations:Array<PendingAnimationVO>;
+	private var _pendingTransitions:Array<PendingTransitionVO>;
 	
 	/**
 	 * Called when a transition has just been completed
@@ -53,6 +52,9 @@ class Animator
 	 */
 	private var _transitionManager:TransitionManager;
 	
+	/**
+	 * class constructor
+	 */
 	public function new(transitionManager:TransitionManager) 
 	{
 		_transitionManager = transitionManager;
@@ -63,56 +65,56 @@ class Animator
 	////////////////////////////////
 	
 	/**
-	 * Tries to start each of the stored pending animations
+	 * Tries to start each of the stored pending transitions
 	 * 
-	 * @return wether at least one animation did start
+	 * @return wether at least one transition did start
 	 */
-	public function startPendingAnimations(style:CoreStyle):Bool
+	public function startPendingTransitions(style:CoreStyle):Bool
 	{
-		//do nothing if there are no pending animations
-		if (_pendingAnimations == null)
+		//do nothing if there are no pending transitions
+		if (_pendingTransitions == null)
 		{
 			return false;
 		}
 		
-		var atLeastOneAnimationStarted:Bool = false;
+		var atLeastOneTransitionStarted:Bool = false;
 		
-		var length:Int = _pendingAnimations.length;
+		var length:Int = _pendingTransitions.length;
 		for (i in 0...length)
 		{
-			var animationStarted:Bool = startTransitionIfNeeded(_pendingAnimations[i], style);
-			if (animationStarted == true)
+			var transitionStarted:Bool = startTransitionIfNeeded(_pendingTransitions[i], style);
+			if (transitionStarted == true)
 			{
-				atLeastOneAnimationStarted = true;
+				atLeastOneTransitionStarted = true;
 			}
 		}
 		
-		//clear the pending animation to prevent from being started
+		//clear the pending transitions to prevent from being started
 		//for each layout
-		_pendingAnimations = [];
+		_pendingTransitions = [];
 		
-		return atLeastOneAnimationStarted;
+		return atLeastOneTransitionStarted;
 	}
 	
 	/**
-	 * Register a pending animation that will tries to start on next layout.
-	 * A pending animation is registered when the specified value of an
-	 * animatable property is changed
+	 * Register a pending transition that will try to be started on next document update.
+	 * A pending transition is registered when the specified value of a
+	 * transitionable property is changed
 	 * 
-	 * @param	propertyIndex the index of the property to animate
-	 * @param	startValue the current computed value of the animatable property, used as
-	 * starting value if the animation actually starts
+	 * @param	propertyIndex the index of the property to transition
+	 * @param	startValue the current computed value of the transitionable property, used as
+	 * starting value if the transition actually starts
 	 */
-	public function registerPendingAnimation(propertyIndex:Int, startValue:Float):Void
+	public function registerPendingTransition(propertyIndex:Int, startValue:Float):Void
 	{
-		var pendingAnimation:PendingAnimationVO = new PendingAnimationVO();
-		pendingAnimation.propertyIndex = propertyIndex;
-		pendingAnimation.startValue = startValue;
-		if (_pendingAnimations == null)
+		var pendingTransition:PendingTransitionVO = new PendingTransitionVO();
+		pendingTransition.propertyIndex = propertyIndex;
+		pendingTransition.startValue = startValue;
+		if (_pendingTransitions == null)
 		{
-			_pendingAnimations = new Array<PendingAnimationVO>();
+			_pendingTransitions = new Array<PendingTransitionVO>();
 		}
-		_pendingAnimations.push(pendingAnimation);
+		_pendingTransitions.push(pendingTransition);
 	}
 	
 	/**
@@ -175,18 +177,18 @@ class Animator
 	 * a transition for the proeprty if needed using the
 	 * TransitionManager
 	 * 
-	 * @param pendingAnimation the data of the animation which might
+	 * @param pendingTransition the data of the transition which might
 	 * start
-	 * @return wheter the animation did start
+	 * @return wheter the transition did start
 	 */
-	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationVO, style:CoreStyle):Bool
+	private function startTransitionIfNeeded(pendingTransition:PendingTransitionVO, style:CoreStyle):Bool
 	{	
 		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//will store the index of the property in the TransitionProperty
 		//array, so that its duration, delay, and timing function can be found
 		//at the same index
-		var indexInTransitionProperty:Int = getIndexOfPropertyInTransitionProperty(pendingAnimation.propertyIndex, style.transitionProperty);
+		var indexInTransitionProperty:Int = getIndexOfPropertyInTransitionProperty(pendingTransition.propertyIndex, style.transitionProperty);
 		
 		//if -1 means that this property
 		//can't be transitioned
@@ -224,7 +226,7 @@ class Animator
 		var transitionTimingFunction:CSSPropertyValue = transitionTimingFunctionAsArray[getRepeatedIndex(indexInTransitionProperty,transitionTimingFunctionAsArray.length)];
 		
 		//check if a transition is already in progress for the same property
-		var transition:Transition = _transitionManager.getTransition(pendingAnimation.propertyIndex, style);
+		var transition:Transition = _transitionManager.getTransition(pendingTransition.propertyIndex, style);
 		
 		//if the transition is not null, then a transition for the property is already
 		//in progress and no new transition must start
@@ -237,15 +239,15 @@ class Animator
 			return false;
 		}
 		
-		//get the current value of the property to animate. Since the ElementRenderer was laid out
-		//after the pending animation was registered, the current computed value of the property
+		//get the current value of the property to transition. Since the ElementRenderer was laid out
+		//after the pending transition was registered, the current computed value of the property
 		//is now the end value of the transition
 		
 		//TODO 1 : really messy to use reflection + for now transition only work for number properties
-		var endValue:Float = getEndValue(style, pendingAnimation.propertyIndex);
+		var endValue:Float = getEndValue(style, pendingTransition.propertyIndex);
 		
 		//start a transition using the TransitionManager
-		_transitionManager.startTransition(style, pendingAnimation.propertyIndex, pendingAnimation.startValue, endValue, 
+		_transitionManager.startTransition(style, pendingTransition.propertyIndex, pendingTransition.startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	
 		//the transition did in fact start
