@@ -6,23 +6,21 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.animation;
-
-import cocktail.core.parser.ParserData;
+package cocktail.core.transition;
 
 /**
- * Animation and transition struct
+ * transition struct
  * 
  * @author Yannick DOMINGUEZ
  */
 	
 /**
  * Holds all the data necessary to start a transition.
- * It it said to be a pending animation, as it is stored
- * when the value of a CSS property changes, but the animation
- * is actually started on next layout
+ * It it said to be a pending transition, as it is stored
+ * when the value of a CSS property changes, but the transition
+ * is actually started on next document update
  */
-class PendingAnimationVO {
+class PendingTransitionVO {
 	public var propertyIndex:Int;
 	public var startValue:Float;
 	public function new():Void

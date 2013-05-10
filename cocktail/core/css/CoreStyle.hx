@@ -20,9 +20,9 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
 import cocktail.core.renderer.InvalidatingElementRenderer;
 import cocktail.core.css.CSSConstants;
-import cocktail.core.animation.Animator;
-import cocktail.core.animation.Transition;
-import cocktail.core.animation.TransitionManager;
+import cocktail.core.transition.Transitioner;
+import cocktail.core.transition.Transition;
+import cocktail.core.transition.TransitionManager;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.parser.ParserData;
 import cocktail.core.geom.GeomData;
@@ -44,8 +44,8 @@ import cocktail.Lib;
  * value from it which is the value used for inheritance
  * 
  * This class is also in charge of starting
- * transition/animation when the computed value
- * of an animatable property changes
+ * transitions when the computed value
+ * of an transtionnable property changes
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -203,7 +203,7 @@ class CoreStyle
 	 * An instance of the class
 	 * managing this HTMLElement transitions
 	 */
-	private var _animator:Animator;
+	private var _transitioner:Transitioner;
 	
 	/**
 	 * A reference to the TransitionManager singleton
@@ -631,15 +631,15 @@ class CoreStyle
 	}
 	
 	/**
-	 * Init animator. Called first time
+	 * Init transitioner. Called first time
 	 * used instead of in constructor, as
-	 * most node are not animated at all
+	 * most nodes are not transitioned at all
 	 */
-	private function initAnimator():Void
+	private function initTransitioner():Void
 	{
-		_animator = new Animator(_transitionManager);
-		_animator.onTransitionCompleteCallback = onTransitionComplete;
-		_animator.onTransitionUpdateCallback = onTransitionUpdate;
+		_transitioner = new Transitioner(_transitionManager);
+		_transitioner.onTransitionCompleteCallback = onTransitionComplete;
+		_transitioner.onTransitionUpdateCallback = onTransitionUpdate;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1382,7 +1382,7 @@ class CoreStyle
 		//be set to null
 		if (specifiedValues.getTypedProperty(propertyIndex) != null)
 		{
-			//TODO 2 : should check if start animation
+			//TODO 2 : should check if start transition
 			
 			specifiedValues.removeProperty(propertyIndex);
 			computedValues.removeProperty(propertyIndex);
@@ -1459,7 +1459,7 @@ class CoreStyle
 				//computed value is always the one of the parent
 				case INHERIT:
 					computedProperty = parentStyleDeclaration.getTypedProperty(propertyIndex).typedValue;
-					//set the inherited flag to make sure that no animation is started as the 
+					//set the inherited flag to make sure that no transition is started as the 
 					//result of this property change
 					isInherited = true;
 				
@@ -1494,12 +1494,12 @@ class CoreStyle
 			//if property is inherited or style was not programmatic, don't start transition
 			if (programmaticChange == true && isInherited == false)
 			{
-				if (isAnimatable(propertyIndex))
+				if (isTransitionnable(propertyIndex))
 				{
 					
-					if (_animator == null)
+					if (_transitioner == null)
 					{
-						initAnimator();
+						initTransitioner();
 					}
 					
 					var transition:Transition = _transitionManager.getTransition(propertyIndex, this);
@@ -1513,13 +1513,13 @@ class CoreStyle
 						//wihout layout are supported.
 						//
 						//Should instead register a transition revert for next frame.
-						//Should have a used value for animation and one used value for
+						//Should have a used value for transition and one used value for
 						//actual value ?
 						switch (computedProperty)
 						{
 							case ABSOLUTE_LENGTH(value):
-								//check if new computed property revert the animation
-								var didRevert:Bool = _animator.revertTransitionIfNeeded(transition,  value, this);
+								//check if new computed property revert the transition
+								var didRevert:Bool = _transitioner.revertTransitionIfNeeded(transition,  value, this);
 								
 								//if did revert, then don't store computed property
 								//as the transiton now has a different end value
@@ -1534,9 +1534,9 @@ class CoreStyle
 					//only try to start if not currently transitionning
 					else
 					{
-						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
+						_transitioner.registerPendingTransition(propertyIndex, getTransitionablePropertyCurrentValue(propertyIndex));
 						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-						htmlDocument.invalidationManager.invalidatePendingAnimations();
+						htmlDocument.invalidationManager.invalidatePendingTransitions();
 					}
 				}
 			}
@@ -2179,27 +2179,27 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Start pending animations on the animator
+	 * Start pending transitions on the transitioner
 	 */
-	public function startPendingAnimations():Bool
+	public function startPendingTransitions():Bool
 	{
-		//if the animator was not instantiated yet
-		//then no animation were registered for this
+		//if the transitioner was not instantiated yet
+		//then no transition were registered for this
 		//node yet
-		if (_animator == null)
+		if (_transitioner == null)
 		{
 			return false;
 		}
 		
-		return _animator.startPendingAnimations(this);
+		return _transitioner.startPendingTransitions(this);
 	}
 	
 	/**
-	 * When called, the layout is up-to-date, the
+	 * When called, the documetn is up-to-date, the
 	 * pending transition end event can now
 	 * be dispatched
 	 */
-	public function endPendingAnimation():Void
+	public function endPendingTransitions():Void
 	{
 		//if null, no transition were started on this core style
 		if (_pendingTransitionEndEvents == null)
@@ -2247,7 +2247,7 @@ class CoreStyle
 		
 		//schedule an update of the pending animations
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-		htmlDocument.invalidationManager.invalidatePendingAnimations();
+		htmlDocument.invalidationManager.invalidatePendingTransitions();
 		
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, CSSConstants.getPropertyNameFromIndex(transition.propertyIndex), transition.transitionDuration, "");
@@ -2268,9 +2268,9 @@ class CoreStyle
 			if (_pendingComputedValues[transition.propertyIndex] != null)
 			{
 				//start a transition with the new current computed value
-				_animator.registerPendingAnimation(transition.propertyIndex, getAnimatablePropertyValue(transition.propertyIndex));
+				_transitioner.registerPendingTransition(transition.propertyIndex, getTransitionablePropertyCurrentValue(transition.propertyIndex));
 				
-				htmlDocument.invalidationManager.invalidatePendingAnimations();
+				htmlDocument.invalidationManager.invalidatePendingTransitions();
 				
 				//update the computed value to get the right value for the end of the transition
 				var pendingComputedProperty:TypedPropertyVO = _pendingComputedValues[transition.propertyIndex];
@@ -2381,11 +2381,11 @@ class CoreStyle
 	
 	/**
 	 * Return wether a given CSS property can
-	 * be animated/transitioned
+	 * be transitioned
 	 * 
 	 * TODO 1 : complete
 	 */
-	private function isAnimatable(propertyIndex:Int):Bool
+	private function isTransitionnable(propertyIndex:Int):Bool
 	{
 		switch(propertyIndex)
 		{
@@ -2399,10 +2399,10 @@ class CoreStyle
 	}
 	
 	/**
-	 * For a given animatable property, return its current value as a float,
-	 * so that it can be used to animate
+	 * For a given transitionnable property, return its current value as a float,
+	 * so that it can be used to transition
 	 */
-	private function getAnimatablePropertyValue(propertyIndex:Int):Float
+	private function getTransitionablePropertyCurrentValue(propertyIndex:Int):Float
 	{
 		switch(propertyIndex)
 		{

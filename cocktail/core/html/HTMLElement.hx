@@ -1307,46 +1307,47 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * start pending animations of self and of all children.
+	 * start pending transitions of self and of all children.
 	 * 
-	 * @return Wether at least one animation started
+	 * @return Wether at least one transition started
 	 */
-	public function startPendingAnimation():Bool
+	public function startPendingTransitions():Bool
 	{
-		var atLeastOneAnimationStarted:Bool = false;
+		var atLeastOneTransitionStarted:Bool = false;
 		
-		var animationStarted:Bool = coreStyle.startPendingAnimations();
+		var transitionStarted:Bool = coreStyle.startPendingTransitions();
 		
-		if (animationStarted == true)
+		if (transitionStarted == true)
 		{
-			atLeastOneAnimationStarted = true;
+			atLeastOneTransitionStarted = true;
 		}
+		
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var animationStarted:Bool = childNodes[i].startPendingAnimation();
+			var transitionStarted:Bool = childNodes[i].startPendingTransitions();
 			
-			if (animationStarted == true)
+			if (transitionStarted == true)
 			{
-				atLeastOneAnimationStarted = true;
+				atLeastOneTransitionStarted = true;
 			}
 		}
 		
-		return atLeastOneAnimationStarted;
+		return atLeastOneTransitionStarted;
 	}
 	
 	/**
-	 * end pending animation of self and
+	 * end pending transition of self and
 	 * children
 	 */
-	public function endPendingAnimation():Void
+	public function endPendingTransitions():Void
 	{
-		coreStyle.endPendingAnimation();
+		coreStyle.endPendingTransitions();
 	
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			childNodes[i].endPendingAnimation();
+			childNodes[i].endPendingTransitions();
 		}
 	}
 	

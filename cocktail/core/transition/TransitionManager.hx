@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.animation;
+package cocktail.core.transition;
 
 
 import cocktail.core.css.CoreStyle;
@@ -15,7 +15,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.parser.ParserData;
-import cocktail.core.animation.AnimationData;
+import cocktail.core.transition.TransitionData;
 import cocktail.core.css.CSSData;
 import cocktail.Lib;
 
@@ -24,26 +24,27 @@ import cocktail.Lib;
  * and stopping the transition of properties.
  * 
  * When at least one transition is in progress, the
- * TransitionManager setup delayed called to an
+ * TransitionManager set up delayed called to an
  * update method
  * 
- * The TransitionManager is a singleton and is in charge of
- * all the transitions in the Document
+ * The TransitionManager is in charge of
+ * all the transitions in the Document, there is one instance
+ * per document
  * 
  * The data flow of a transition is as follow : 
 	 * - the value of a transitionable property is updated
-	 * - a pending animation is registered storing all the data needed to start
+	 * - a pending transition is registered storing all the data needed to start
 	 * a transition
-	 * - when the next scheduled layout starts, the animator tries to start all registered
-	 * pending animations
-	 * - the animator checks if the property should be transitioned
+	 * - when the next scheduled document update starts, the transitioner tries to start all registered
+	 * pending transitions
+	 * - the transitioner checks if the property should be transitioned
 	 * - if it does, starts a new transition using the TransitionManager
 	 * - the TransitionManager schedule calls to its update callbacks while transitions
 	 * are in progress, which triggers an invalidation mechanisms causing the document
-	 * to be re-painted
+	 * to be updated
 	 * - While a transition is in progress, getting the computed value of the property return
 	 * its current transitioning value
-	 * - When the transition is complete, calls its complete callback, triggering invalidation
+	 * - When the transition is complete, it calls its complete callback, triggering invalidation
 	 * and the dispatch of a transition end event on the transitioned element
  * 
  * @author Yannick DOMINGUEZ

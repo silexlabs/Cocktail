@@ -118,18 +118,18 @@ class CharacterData extends HTMLElement
 	
 	/**
 	 * Overriden as Text is not responsible for
-	 * starting animations, only actual HTMLElement
+	 * starting transitions, only actual HTMLElement
 	 */
-	override public function startPendingAnimation():Bool
+	override public function startPendingTransitions():Bool
 	{
 		return false;
 	}
 	
 	/**
 	 * Overriden as Text is not responsible for
-	 * ending animations, only actual HTMLElement
+	 * ending transitions, only actual HTMLElement
 	 */
-	override public function endPendingAnimation():Void
+	override public function endPendingTransitions():Void
 	{
 		
 	}

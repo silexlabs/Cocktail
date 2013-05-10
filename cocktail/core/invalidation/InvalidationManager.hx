@@ -100,10 +100,10 @@ class InvalidationManager
 	private var _nativeLayerTreeNeedsUpdate:Bool;
 	
 	/**
-	 * Wether some pending animations need to 
+	 * Wether some pending transitions need to 
 	 * be started or ended
 	 */
-	private var _pendingAnimationsNeedUpdate:Bool;
+	private var _pendingTransitionsNeedUpdate:Bool;
 	
 	/**
 	 * Wheter the graphics context tree, used
@@ -193,7 +193,7 @@ class InvalidationManager
 		_layerTreeNeedsUpdate = true;
 		_nativeLayerTreeNeedsUpdate = true;
 		_stackingContextsNeedUpdate = true;
-		_pendingAnimationsNeedUpdate = true;
+		_pendingTransitionsNeedUpdate = true;
 		_forceLayout = false;
 		_viewportResized = false;
 		_bitmapSizeNeedsUpdate = true;
@@ -389,11 +389,11 @@ class InvalidationManager
 	}
 	
 	/**
-	 * schedule starting/ending the pending animations
+	 * schedule starting/ending the pending transitions
 	 */
-	public function invalidatePendingAnimations():Void
+	public function invalidatePendingTransitions():Void
 	{
-		_pendingAnimationsNeedUpdate = true;
+		_pendingTransitionsNeedUpdate = true;
 		invalidate();
 	}
 	
@@ -505,17 +505,17 @@ class InvalidationManager
 			_documentNeedsLayout = false;
 		}
 		
-		//start all the pending animations if any
-		if (_pendingAnimationsNeedUpdate == true)
+		//start all the pending transitions if any
+		if (_pendingTransitionsNeedUpdate == true)
 		{
-			//start all pending animations
-			var atLeastOneAnimationStarted:Bool = _htmlDocument.documentElement.startPendingAnimation();
+			//start all pending transitions
+			var atLeastOneTransitionStarted:Bool = _htmlDocument.documentElement.startPendingTransitions();
 			
-			//if at least one pending animation started, an immediate layout
+			//if at least one pending transition started, an immediate layout
 			//must be performed before rendering, else the rendering will be
 			//done with the end value of the animations instead of the beggining
 			//value, resulting in a visual glitch
-			if (atLeastOneAnimationStarted == true)
+			if (atLeastOneTransitionStarted == true)
 			{
 				updateLayout(false);
 			}
@@ -655,17 +655,17 @@ class InvalidationManager
 		}
 		
 		//when the document has been entirely updated
-		//end the pending animation
-		if (_pendingAnimationsNeedUpdate == true)
+		//end the pending transitions
+		if (_pendingTransitionsNeedUpdate == true)
 		{
-			//Make all animations which just ended dispose
+			//Make all transitions which just ended dispose
 			//of themselves and dispatch a complete event.
 			//The event must be dispatched once the layout 
 			//and rendering are done to prevent the user
 			//from modififying the DOM with not up to date
 			//info
-			_htmlDocument.documentElement.endPendingAnimation();
-			_pendingAnimationsNeedUpdate = false;
+			_htmlDocument.documentElement.endPendingTransitions();
+			_pendingTransitionsNeedUpdate = false;
 		}
 		
 		//if the viewport was resized since last update,
