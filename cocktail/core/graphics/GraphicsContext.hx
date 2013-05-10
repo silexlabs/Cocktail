@@ -23,25 +23,24 @@ import cocktail.core.css.CSSData;
  * Each LayerRenderer has a reference to a graphics context.
  * Graphics context are stored as a tree of GraphicContext object.
  * 
- * Each GraphicContext has a bitmap surface which can be painted
- * onto. They also have a reference to a native object representing
+ * Each GraphicContext has a reference to a native object representing
  * the concept of a layer in the target platform. For instance, for
  * the Flash platform, a layer can be assimilated to a Sprite.
  * 
  * They are the closest abstraction in Cocktail from the native
- * display list of the underlying platform. The tree of GraphicContext
+ * display list tree of the underlying platform. The tree of GraphicContext
  * builds a tree of native layer from the target platform.
- * 
+ *
  * We could have had just one GraphicContext for the whole document and
  * paint onto it, but it seems like a better approach for platform integration
  * to instead leverage the native display list of the platform.
  * 
- * For instance, for a video it allows the underlying platform to take care of the rendering,
- * the video being given its own layer. With just one GraphicContext, the video would have needed
- * to be painted onto the unique GraphicContext each frame.
+ * For instance, for a video it allows the underlying platform to take care of the compositing,
+ * the video being given its own GraphicContext. Elements below and on top of the video are also
+ * given their GraphicContext so that they can respect the z-ordering of the document. 
  * 
- * It also facilitates integration with native platform UI widget which can live on its own native
- * layer, being composited by the platform, instead of being painted onto a single bitmap.
+ * This compositing can be deactivated (see Config.hx) in which case only one GraphicContext is created
+ * for the document which prevent overlapping but reduce memory usage.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -78,8 +77,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	}
 	
 	/**
-	 * clean-up method, free memory used
-	 * by graphics context
+	 * clean-up method
 	 */
 	public function dispose():Void
 	{
@@ -279,7 +277,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 			previousGraphicsContextSibling = previousGraphicsContextSibling.previousSibling;
 		}
 		
-		nativeLayer.attach(parentNode.nativeLayer.layer, index);
+		nativeLayer.attach(parentNode.nativeLayer.platformLayer, index);
 	}
 	
 	/**
@@ -287,6 +285,6 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 */
 	private function doDetach():Void
 	{
-		nativeLayer.detach(parentNode.nativeLayer.layer);
+		nativeLayer.detach(parentNode.nativeLayer.platformLayer);
 	}
 }

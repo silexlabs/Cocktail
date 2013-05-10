@@ -1,4 +1,13 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.port.platform.flash_player;
+
 import cocktail.port.base.NativeLayerBase;
 import flash.display.Bitmap;
 import flash.display.Sprite;
@@ -6,15 +15,16 @@ import flash.display.PixelSnapping;
 import cocktail.port.Bindings;
 
 /**
- * ...
+ * This is the flash implementation of the native layer.
+ * Builds the flash display list for this layer
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class NativeLayer extends NativeLayerBase
 {
-
 	/**
-	 * The native flash BitmapData
+	 * The native flash bitmap which will be filled
+	 * with the graphics BitmapData
 	 */
 	private var _nativeBitmap:Bitmap;
 	
@@ -47,6 +57,10 @@ class NativeLayer extends NativeLayerBase
 	 */
 	private var _height:Int;
 	
+	/**
+	 * class constructor. Build the display list
+	 * for this native layer
+	 */
 	public function new() 
 	{
 		super();
@@ -68,11 +82,22 @@ class NativeLayer extends NativeLayerBase
 		_childrenNativeLayer.addChild(_nativeLayer);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * attach the provided Sprite to this instance Sprite for children
+	 */
 	override public function attach(platformLayer:PlatformLayer, index:Int):Void
 	{
 		platformLayer.addChildAt(_childrenNativeLayer, index);
 	}
 	
+	/**
+	 * remove the provided Sprite from the children of this instance's
+	 * Sprite for children
+	 */
 	override public function detach(platformLayer:PlatformLayer):Void
 	{
 		if (_childrenNativeLayer.parent != null)
