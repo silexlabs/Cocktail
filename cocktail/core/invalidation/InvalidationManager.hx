@@ -446,6 +446,16 @@ class InvalidationManager
 	}
 	
 	/**
+	 * Callback called after an invalidation is
+	 * scheduled, starts updating the document
+	 */
+	private function onUpdateSchedule(timeStamp:Float):Void
+	{
+		_invalidationScheduled = false;
+		updateDocument();
+	}
+	
+	/**
 	 * main update method for the docuement,
 	 * after this method is called, the
 	 * document is up to date
@@ -455,16 +465,15 @@ class InvalidationManager
 		//only cascade if needed
 		if (_documentNeedsCascading == true)
 		{
-			startCascade(true);
+			updateCascade(true);
+			_documentNeedsCascading = false;
 		}
 		
 		//update the rendering tree before layout and
 		//rendering if needed
 		if (_renderingTreeNeedsUpdate == true)
 		{
-			_htmlDocument.documentElement.updateElementRenderer();
-			_htmlDocument.documentElement.elementRenderer.updateAnonymousBlock();
-			_htmlDocument.documentElement.elementRenderer.updateInlineBoxes();
+			updateRenderingTree();
 			_renderingTreeNeedsUpdate = false;
 		}
 		
@@ -490,7 +499,7 @@ class InvalidationManager
 			//update text element used for rendering
 			_htmlDocument.documentElement.elementRenderer.updateText();
 			
-			startLayout(_forceLayout);
+			updateLayout(_forceLayout);
 			
 			_forceLayout = false;
 			_documentNeedsLayout = false;
@@ -508,7 +517,7 @@ class InvalidationManager
 			//value, resulting in a visual glitch
 			if (atLeastOneAnimationStarted == true)
 			{
-				startLayout(false);
+				updateLayout(false);
 			}
 		} 
 		
@@ -538,114 +547,104 @@ class InvalidationManager
 			_bitmapSizeNeedsUpdate = false;
 		}
 		
-		//same as for layout
-		if (_documentNeedsRendering == true)
+		//update rendering of the document
+		if (_documentNeedsRendering == true || _scrollOffsetNeedsUpdate == true)
 		{
 			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
 			
-			//for each concatenate its transformations with those of its parents
-			initialLayerRenderer.updateLayerMatrix(_initialMatrix);
-			
-			//update all of the layers element renderers bounds
-			initialLayerRenderer.updateBounds();
-			
-			//update clipped bounds of layers which don't overflow 
-			initialLayerRenderer.updateClippedBounds();
-			
-			//update the scrollable bounds of the layer which define the area it can scroll
-			initialLayerRenderer.updateScrollableBounds();
-			
-			//update the added scroll offset of all the layers
-			initialLayerRenderer.resetScrollOffset();
-			initialLayerRenderer.updateScrollOffset();
-			
-			//update the clip rects of layers used for rendering, default clip rect starts with the viewport
-			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
-			initialLayerRenderer.updateClipRect();
-			
-			//update the hit testing bound to respond accurately to user interaction
-			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
-			
-			//update the native hit testing bounds of the platform if needeed
-			_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
-			
-			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
-			//TODO 2 : need not to be updated each rendering
-			initialLayerRenderer.updateLayerAlpha(1.0);
-			
-			//for each element renderer, update the list of text
-			//decorations, such as underlining to apply to
-			//text elements
-			_htmlDocument.documentElement.elementRenderer.updateTextDecorations(false, false, false, false);
-			
-			//if the whole viewport is set to be repainted,
-			//the dirty rect becomes the whole viewport
-			if (_repaintWholeViewport == true)
+			//standard rendering
+			if (_documentNeedsRendering == true)
 			{
+				//for each layer concatenate its transformations with those of its parents
+				initialLayerRenderer.updateLayerMatrix(_initialMatrix);
+				
+				//update all of the layers element renderers bounds
+				initialLayerRenderer.updateBounds();
+				
+				//update clipped bounds of layers which don't overflow 
+				initialLayerRenderer.updateClippedBounds();
+				
+				//update the scrollable bounds of the layer which define the area it can scroll
+				initialLayerRenderer.updateScrollableBounds();
+				
+				//update the added scroll offset of all the layers
+				initialLayerRenderer.resetScrollOffset();
+				initialLayerRenderer.updateScrollOffset();
+				
+				//update the clip rects of layers used for rendering, default clip rect starts with the viewport
+				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+				initialLayerRenderer.updateClipRect();
+				
+				//update the hit testing bound to respond accurately to user interaction
+				_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+				
+				//update the native hit testing bounds of the platform if needeed
+				_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
+				
+				//for each layer, compute its alpha by concatenating alpha of all ancestor layers
+				//TODO 2 : need not to be updated each rendering
+				initialLayerRenderer.updateLayerAlpha(1.0);
+				
+				//for each element renderer, update the list of text
+				//decorations, such as underlining to apply to
+				//text elements
+				_htmlDocument.documentElement.elementRenderer.updateTextDecorations(false, false, false, false);
+				
+				//if the whole viewport is set to be repainted,
+				//the dirty rect becomes the whole viewport
+				if (_repaintWholeViewport == true)
+				{
+					_dirtyRect.x = 0;
+					_dirtyRect.y = 0;
+					_dirtyRect.width = _htmlDocument.window.innerWidth;
+					_dirtyRect.height = _htmlDocument.window.innerHeight;
+				}
+				
+				//on every layer with its bitmap, clear the area of the dirty rect which is about to
+				//be repainted
+				initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
+				
+				//start rendering of the document at the initial stacking context, providing the direct
+				//rect to prevent repainting the whole viewport if not necessary
+				initialLayerRenderer.stackingContext.render(_dirtyRect);
+			}
+			//special case of rendering, here rendering is needed only because 
+			//one or multiple layer have been scrolled. Can be optimised
+			//to reuse most of the drawn bitmap region
+			else
+			{
+				//no need to update most of the layer bounds, as any 
+				//change which would have changed them would have caused regular
+				//rendering to be done instead
+				
+				initialLayerRenderer.resetScrollOffset();
+				initialLayerRenderer.updateScrollOffset();
+				
+				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+				initialLayerRenderer.updateClipRect();
+				
+				//update the hit testing bound to respond accurately to user interaction
+				_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+				
+				//update the native hit testing bounds of the platform if needeed
+				_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
+				
 				_dirtyRect.x = 0;
-				_dirtyRect.y = 0;
-				_dirtyRect.width = _htmlDocument.window.innerWidth;
-				_dirtyRect.height = _htmlDocument.window.innerHeight;
+				_dirtyRect.y = 0; 
+				_dirtyRect.width = 0;
+				_dirtyRect.height = 0;
+				
+				//layer which have been scrolled reuse here their previous rendered bitmap
+				//and update a dirty rect of all the region which actually needs to be rendered
+				initialLayerRenderer.updateScrollRegion(_dirtyRect);
+				
+				//clear and repaint the scroll region needing it
+				initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
+				initialLayerRenderer.stackingContext.render(_dirtyRect);
 			}
 			
-			//on every layer with its bitmap, clear the area of the dirty rect which is about to
-			//be repainted
-			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
-			
-			//start rendering of the document at the initial stacking context, providing the direct
-			//rect to prevent repainting the whole viewport if not necessary
-			initialLayerRenderer.stackingContext.render(_dirtyRect);
-			
 			_documentNeedsRendering = false;
 			_repaintWholeViewport = false;
-			
-			//reset the dirty rect for next rendering
-			_firstDirtyRect = true;
-			_dirtyRect.x = 0;
-			_dirtyRect.y = 0; 
-			_dirtyRect.width = 0;
-			_dirtyRect.height = 0;
-			_scrollOffsetNeedsUpdate = false;
-		}
-		//special case of rendering, here rendering is needed only because 
-		//one or multiple layer have been scrolled. Can be optimised
-		//to reuse most of the drawn bitmap region
-		else if (_scrollOffsetNeedsUpdate == true)
-		{
-			//no need to update most of the layer bounds, as any 
-			//change which would have changed them would have caused regular
-			//rendering to be done instead
-			
-			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
-			
-			initialLayerRenderer.resetScrollOffset();
-			initialLayerRenderer.updateScrollOffset();
-			
-			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
-			initialLayerRenderer.updateClipRect();
-			
-			//update the hit testing bound to respond accurately to user interaction
-			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
-			
-			//update the native hit testing bounds of the platform if needeed
-			_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
-			
-			_dirtyRect.x = 0;
-			_dirtyRect.y = 0; 
-			_dirtyRect.width = 0;
-			_dirtyRect.height = 0;
-			
-			//layer which have been scrolled reuse here their previous rendered bitmap
-			//and update a dirty rect of all the region which actually needs to be rendered
-			initialLayerRenderer.updateScrollRegion(_dirtyRect);
-			
-			//clear and repaint the scroll region needing it
-			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
-			initialLayerRenderer.stackingContext.render(_dirtyRect);
-			
-			_documentNeedsRendering = false;
-			_repaintWholeViewport = false;
-			
 			//reset the dirty rect for next rendering
 			_firstDirtyRect = true;
 			_dirtyRect.x = 0;
@@ -681,16 +680,6 @@ class InvalidationManager
 	}
 	
 	/**
-	 * Callback called after an invalidation is
-	 * scheduled, starts updating the document
-	 */
-	private function onUpdateSchedule(timeStamp:Float):Void
-	{
-		_invalidationScheduled = false;
-		updateDocument();
-	}
-	
-	/**
 	 * Star cascading the whole document
 	 * 
 	 * @param programmaticChange whether the cascading
@@ -698,18 +687,17 @@ class InvalidationManager
 	 * It is used to determine wether animation/transition
 	 * can be started during the cascade 
 	 */
-	private function startCascade(programmaticChange:Bool):Void
+	private function updateCascade(programmaticChange:Bool):Void
 	{
 		_htmlDocument.cascadeManager.reset();
 		_htmlDocument.documentElement.cascade(_htmlDocument.cascadeManager, programmaticChange);
-		_documentNeedsCascading = false;
 	}
 	
 	/**
 	 * Start the layout of the rendering tree,
 	 * starting with the root ElementRenderer
 	 */
-	private function startLayout(forceLayout:Bool):Void
+	private function updateLayout(forceLayout:Bool):Void
 	{
 		//layout all ElementRenderer, after this, ElementRenderer are 
 		//aware of their bounds relative to their containing block
@@ -720,4 +708,13 @@ class InvalidationManager
 		_htmlDocument.documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
 	}
 	
+	/**
+	 * update the rendering tree data structure
+	 */
+	private function updateRenderingTree():Void
+	{
+		_htmlDocument.documentElement.updateElementRenderer();
+		_htmlDocument.documentElement.elementRenderer.updateAnonymousBlock();
+		_htmlDocument.documentElement.elementRenderer.updateInlineBoxes();
+	}
 }
