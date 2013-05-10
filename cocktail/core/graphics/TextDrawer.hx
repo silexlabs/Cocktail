@@ -99,7 +99,7 @@ class TextDrawer
 				_decorationRect.x = _destPoint.x;
 				_decorationRect.y = _destPoint.y + elementRenderer.getLeadedAscent() + elementRenderer.coreStyle.fontMetrics.underlineOffset;
 				
-				graphicsContext.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
+				graphicsContext.nativeLayer.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
 			}
 			
 			//draw overline
@@ -110,7 +110,7 @@ class TextDrawer
 				_decorationRect.x = _destPoint.x;
 				_decorationRect.y = _destPoint.y;
 				
-				graphicsContext.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
+				graphicsContext.nativeLayer.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
 			}
 			
 			//draw text 
@@ -120,7 +120,7 @@ class TextDrawer
 				var typedTextInlineBox:TextInlineBox = cast(inlineBox);
 				if (typedTextInlineBox.nativeTextBitmap != null)
 				{
-					graphicsContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
+					graphicsContext.nativeLayer.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
 				}
 			}
 			
@@ -132,7 +132,7 @@ class TextDrawer
 				_decorationRect.x = _destPoint.x;
 				_decorationRect.y = _destPoint.y + elementRenderer.getLeadedAscent() - elementRenderer.getLeadedDescent();
 				
-				graphicsContext.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
+				graphicsContext.nativeLayer.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
 			}
 		}
 	}

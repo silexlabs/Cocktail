@@ -31,48 +31,14 @@ import haxe.Stack;
 
 /**
  * The flash implementation of the graphics object. Use native
- * flash Sprite and Bitmap
+ * flash BitmapData to draw
  * 
  * @author Yannick DOMINGUEZ
  */
 class GraphicsSurface extends GraphicsSurfaceBase
 {
 	/**
-	 * The native flash BitmapData
-	 */
-	private var _nativeBitmap:Bitmap;
-	
-	/**
-	 * The native flash Sprite, used a native
-	 * layer
-	 */
-	private var _nativeLayer:Sprite;
-	
-	/**
-	 * A container for the native flash bitmapData
-	 */
-	private var _bitmapContainer:Sprite;
-	
-	/**
-	 * A container for the children layer of
-	 * this GraphicContext. A container is necessary
-	 * so that tha native Bitmap is always below the children
-	 * layer
-	 */
-	private var _childrenNativeLayer:Sprite;
-	
-	/**
-	 * the current width of the BitmapData
-	 */
-	private var _width:Int;
-	
-	/**
-	 * the current height of the BitmapData
-	 */
-	private var _height:Int;
-	
-	/**
-	 * A flash native rectanlge object, which
+	 * A flash native rectangle object, which
 	 * is re-used for each bitmap drawing
 	 * 
 	 * static, only need one instance at a time
@@ -134,50 +100,14 @@ class GraphicsSurface extends GraphicsSurfaceBase
 			_flashColorTransform = new ColorTransform();
 			_clippedRectRectangle = new RectangleVO();
 		}
-		
-		_nativeLayer = new Sprite();
-		_nativeLayer.mouseEnabled = false;
-		
-		_childrenNativeLayer = new Sprite();
-		_childrenNativeLayer.mouseEnabled = false;
-		
-		_bitmapContainer = new Sprite();
-		_bitmapContainer.mouseEnabled = false;
-		
-		_width = 0;
-		_height = 0;
-
-		//build native display list
-		_childrenNativeLayer.addChild(_bitmapContainer);
-		_childrenNativeLayer.addChild(_nativeLayer);
-		
 	}
 	
 	/**
-	 * Create new BitmapData when the size of the window changes
+	 * Create new BitmapData when the size is updated
 	 */
 	override public function initBitmapData(width:Int, height:Int):Void
 	{
-		//here the bitmap data is created for the first time
-		if (_nativeBitmap == null)
-		{
-			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, false);
-			_bitmapContainer.addChild(_nativeBitmap);
-		}
-		else
-		{
-			//no need to update if the size didn't change
-			if (_width == width && _height == height)
-			{
-				return;
-			}
-			
-			_nativeBitmap.bitmapData.dispose();
-			_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
-		}
-		
-		_width = width;
-		_height = height;
+		nativeBitmapData = new BitmapData(width, height, true, 0x00000000);
 	}
 	
 	/**
@@ -186,13 +116,13 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	 */
 	override public function clear(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		if (_nativeBitmap != null)
+		if (nativeBitmapData != null)
 		{
 			_flashRectangle.x = x;
 			_flashRectangle.y = y;
 			_flashRectangle.width = width;
 			_flashRectangle.height = height;
-			_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+			nativeBitmapData.fillRect(_flashRectangle, 0x00000000);
 		}
 	}
 	
@@ -214,52 +144,10 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	 */
 	override public function dispose():Void
 	{
-		if (_nativeBitmap != null)
+		if (nativeBitmapData != null)
 		{
-			_nativeBitmap.bitmapData.dispose();
-			_bitmapContainer.removeChild(_nativeBitmap);
-			_nativeBitmap = null;
-		}
-		
-		_childrenNativeLayer.removeChild(_bitmapContainer);
-		_childrenNativeLayer.removeChild(_nativeLayer);
-		_nativeLayer = null;
-		_childrenNativeLayer = null;
-		_bitmapContainer = null;
-	}
-	
-	/**
-	 * Apply a native flash trnasformation matrix to the 
-	 * native layer Sprite
-	 */
-	override public function transform(matrix:Matrix):Void
-	{
-		//_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
-	}
-	
-	override public function attach(graphicsContext:GraphicsContext, index:Int):Void
-	{
-		graphicsContext.parentNode.nativeLayer.addChildAt(_childrenNativeLayer, index);
-	}
-	
-	override public function detach(graphicsContext:GraphicsContext):Void
-	{
-		if (_childrenNativeLayer.parent != null)
-		{
-			graphicsContext.parentNode.nativeLayer.removeChild(_childrenNativeLayer);
-		}
-	}
-	
-	override public function attachToRoot(rootLayer:NativeLayer):Void
-	{
-		rootLayer.addChild(_childrenNativeLayer);
-	}
-	
-	override public function detachFromRoot():Void
-	{
-		if (_childrenNativeLayer.parent != null)
-		{
-			_childrenNativeLayer.parent.removeChild(_childrenNativeLayer);
+			nativeBitmapData.dispose();
+			nativeBitmapData = null;
 		}
 	}
 	
@@ -273,7 +161,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{	
 		//not ready to draw yet
-		if (_nativeBitmap == null)
+		if (nativeBitmapData == null)
 		{
 			return;
 		}
@@ -304,11 +192,11 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		//draw the bitmap data onto the current bitmap data with the right transformations and alpha
 		if (_useTransparency == true)
 		{
-			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, _flashRectangle, true);
+			nativeBitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, _flashRectangle, true);
 		}
 		else
 		{
-			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, null, null, _flashRectangle, true);
+			nativeBitmapData.draw(bitmapData, _flashMatrix, null, null, _flashRectangle, true);
 		}
 	}
 	
@@ -319,7 +207,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
 		//not ready to draw yet
-		if (_nativeBitmap == null)
+		if (nativeBitmapData == null)
 		{
 			return;
 		}
@@ -372,11 +260,11 @@ class GraphicsSurface extends GraphicsSurfaceBase
 			_flashMatrix.tx = Math.floor(destPoint.x);
 			_flashMatrix.ty = Math.floor(destPoint.y);
 			
-			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, null, false);
+			nativeBitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, null, false);
 		}
 		else
 		{
-			_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, true);
+			nativeBitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, true);
 		}
 	}
 	
@@ -387,7 +275,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	override public function fillRect(rect:RectangleVO, color:ColorVO, clipRect:RectangleVO):Void
 	{
 		//not ready to draw yet
-		if (_nativeBitmap == null)
+		if (nativeBitmapData == null)
 		{
 			return;
 		}
@@ -434,7 +322,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 			
 			roundFlashRect();
 			
-			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
+			nativeBitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	}
 	
@@ -454,10 +342,9 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		roundFlashRect();
 		roundFlashPoint();
 		
-		_nativeBitmap.bitmapData.copyPixels(_nativeBitmap.bitmapData, _flashRectangle, _flashPoint, null, null, false);
+		nativeBitmapData.copyPixels(nativeBitmapData, _flashRectangle, _flashPoint, null, null, false);
 	}
 	
-
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private helper method
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -483,19 +370,4 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		_flashPoint.x = Math.round(_flashPoint.x);
 		_flashPoint.y = Math.round(_flashPoint.y);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function get_nativeBitmapData():NativeBitmapData
-	{
-		return _nativeBitmap.bitmapData;
-	}
-	
-	override private function get_nativeLayer():NativeLayer
-	{
-		return _nativeLayer;
-	}
-	
 }

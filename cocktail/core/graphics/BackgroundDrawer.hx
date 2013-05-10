@@ -109,7 +109,7 @@ class BackgroundDrawer
 				return;
 			}
 			
-			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
+			graphicContext.nativeLayer.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
 		}
 		//if the element has no background image to draw,
 		//early return
@@ -438,7 +438,7 @@ class BackgroundDrawer
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint, clipRect );
+				graphicContext.nativeLayer.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint, clipRect );
 				
 				totalWidth += imageWidth;
 				
@@ -468,7 +468,7 @@ class BackgroundDrawer
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
-				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox, clipRect);
+				graphicContext.nativeLayer.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox, clipRect);
 				
 				totalWidth += imageWidth;
 				

@@ -111,7 +111,7 @@ class BorderDrawer
 			return;
 		}
 		
-		graphicContext.graphics.fillRect(borderBox, borderColor, clipRect);
+		graphicContext.nativeLayer.graphics.fillRect(borderBox, borderColor, clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
