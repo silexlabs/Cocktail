@@ -215,9 +215,7 @@ class HTMLFormElement extends HTMLElement
 		actionURL.query = query;
 		var destination:String = URL.toString(actionURL);
 		
-		_ownerHTMLDocument.window.open(destination);
-		//TODO : navigate to the url, need to refactor cocktail so that
-		//it acts more like a browser
+		_ownerHTMLDocument.navigateToURL(destination);
 	}
 	
 	/**

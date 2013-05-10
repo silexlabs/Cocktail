@@ -228,25 +228,21 @@ class InvalidationManager
 	 */
 	public function updateDocumentImmediately():Void
 	{
-		//may be deactivated
-		if (Config.getInstance().enableSynchronousUpdate == true)
+		//when the document is updated synchronously
+		//only data structure representing the document
+		//need to be updated, so we prevent the document
+		//from rendering now, it will render on next frame
+		//if needed, thus preventing an unecessary repaint
+		//of the document
+		if (_documentNeedsRendering == false)
 		{
-			//when the document is updated synchronously
-			//only data structure representing the document
-			//need to be updated, so we prevent the document
-			//from rendering now, it will render on next frame
-			//if needed, thus preventing an unecessary repaint
-			//of the document
-			if (_documentNeedsRendering == false)
-			{
-				updateDocument();
-			}
-			else
-			{
-				_documentNeedsRendering = false;
-				updateDocument();
-				_documentNeedsRendering = true;
-			}
+			updateDocument();
+		}
+		else
+		{
+			_documentNeedsRendering = false;
+			updateDocument();
+			_documentNeedsRendering = true;
 		}
 	}
 	

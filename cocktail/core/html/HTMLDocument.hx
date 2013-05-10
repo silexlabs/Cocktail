@@ -144,25 +144,37 @@ class HTMLDocument extends Document
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
-	 * Callback listened to by the Window object
+	 * Callback called
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
 	 */
 	public var onEnterFullscreen:Void->Void;
 	
 	/**
-	 * Callback listened to by the Window object
+	 * Callback called
 	 * to exit fullscreen mode when needed using
 	 * platform specific API
 	 */
 	public var onExitFullscreen:Void->Void;
 	
 	/**
-	 * Callback listened to by the Window object
-	 * to chnge the mouse cursor when needed using
+	 * Callback called
+	 * to change the mouse cursor when needed using
 	 * platform specific APIs
 	 */
-	public var onSetMouseCursor:CSSPropertyValue->Void;
+	public var onSetMouseCursor:CSSPropertyValue-> Void;
+	
+	/**
+	 * Store the current mouse cursor value
+	 * to prevent uneccessary mouse cursor change
+	 */
+	private var _currentMouseCursor:CSSPropertyValue;
+	
+	/**
+	 * Callback called when the document must
+	 * navigate to a new url
+	 */
+	public var onNavigateToURL:String->String->Void;
 	
 	/**
 	 * a flag determining if a click event must be dispatched
@@ -372,6 +384,8 @@ class HTMLDocument extends Document
 		
 		_delayLoadEventCounter = 0;
 		_documentLoaded = false;
+		
+		_currentMouseCursor = CSSPropertyValue.KEYWORD(CSSKeywordValue.AUTO);
 	}
 	
 	/**
@@ -1016,14 +1030,19 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Change the current mouse cursor, using platform
-	 * specific APIs
+	 * Change the current mouse cursor if needed
 	 */
 	private function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
-		if (onSetMouseCursor != null)
+		//only update mouse if the value is different
+		//from the current one
+		if (cursor != _currentMouseCursor)
 		{
-			onSetMouseCursor(cursor);
+			_currentMouseCursor = cursor;
+			if (onSetMouseCursor != null)
+			{
+				onSetMouseCursor(cursor);
+			}
 		}
 	}
 	
@@ -1089,6 +1108,19 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * navigate to a new url. By default will tear down
+	 * current document and create a new one for the new
+	 * 
+	 */
+	public function navigateToURL(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
+	{
+		if (onNavigateToURL != null)
+		{
+			onNavigateToURL(url, name);
+		}
+	}
+	
+	/**
 	 * called when the location's href is set
 	 */
 	private function onLocationChanged():Void
@@ -1129,6 +1161,24 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FULLSCREEN METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the user exits or enter fullscreen mode without using
+	 * the DOM api. For instance, in most browser, pressing the escape key
+	 * will exit fullscreen mode.
+	 * 
+	 * Listening to those platform event allows to keep the DOM model
+	 * in sync
+	 */
+	public function onPlatformFullScreenChange(event:Event):Void
+	{
+		//if the platform just exited the fullscreen mode,
+		//then the document must also exit it
+		if (window.platform.fullscreen() == false)
+		{
+			exitFullscreen();
+		}
+	}
 	
 	/**
 	 * Stops any elements within document

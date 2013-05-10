@@ -20,9 +20,9 @@ import cocktail.core.event.EventTarget;
  * tag, added in the head element of the document.
  * 
  * For instance, if you want to override the value
- * of the "enableMouseEvent" attribute to set it to false,
+ * of the "defaultFont" attribute to set it to "sans-serif",
  * add the following meta tag to the document : 
-	 * <meta name="enableMouseEvent" content="false"></meta>
+	 * <meta name="defaultFont" content="sans-serif"></meta>
  * 
  * When a config value is updated this way, it dispatches an
  * event providing the name of the changed param
@@ -36,15 +36,6 @@ import cocktail.core.event.EventTarget;
 class Config extends EventTarget
 {
 	/**
-	 * Disable listening to the platform mouse event. This is
-	 * mainly useful on mobile platform where touch events
-	 * are preferred. If false, Mouse event won't be listened to and dispatch
-	 * anymore however a quick touch tap will still synthesize
-	 * a "click" mouse event
-	 */
-	public var enableMouseEvent(default, null):Bool;
-	
-	/**
 	 * The distance in pixel that a touch on screen has to move to 
 	 * prevent dispatching a click event on next touch up. 
 	 * 
@@ -53,26 +44,6 @@ class Config extends EventTarget
 	 * or drag'n'dropping an element
 	 */ 
 	public var touchMovePreventClickDistance(default, null):Int;
-	
-	/**
-	 * When drawing bitmap, determine if smoothing should be applied
-	 * to it when it not displayed at 100% of its size. This improves
-	 * the rendering of the bitmap but decreases performances.
-	 */
-	public var enableBitmapSmoothing(default, null):Bool;
-	
-	/**
-	 * The document might be updated immediately instead of waiting
-	 * for next update on some conditions. For instance, getting
-	 * the offsetWidth or offsetTop of an HTMLElement requires the document
-	 * to be up to date.
-	 * 
-	 * It can be deactivated for improved performance, but some properties
-	 * might return not up to date value. If you deactivatye it avoid setting
-	 * styles and immediately requesting the size or position of an element, set
-	 * a timer instead
-	 */
-	public var enableSynchronousUpdate(default, null):Bool;
 	
 	/**
 	 * Flash specific.
@@ -220,10 +191,8 @@ class Config extends EventTarget
 	{
 		super();
 		
-		enableMouseEvent = true;
 		touchMovePreventClickDistance = 10;
-		enableBitmapSmoothing = true;
-		enableSynchronousUpdate = true;
+
 		useAdvancedHitTesting = false;
 		useStageVideoIfAvailable = true;
 		defaultFont = "serif";
@@ -269,8 +238,7 @@ class Config extends EventTarget
 		
 		switch(name)
 		{
-			case "enableMouseEvent", "enableSynchronousUpdate",
-			"enableBitmapSmoothing", "useAdvancedHitTesting", "useStageVideoIfAvailable",
+			case "useAdvancedHitTesting", "useStageVideoIfAvailable",
 			"enableCompositing", "objectBelowWhenNoCompositing", "videoBelowWhenNoCompositing":
 				updateBoolParam(name, value);
 				didUpdate = true;

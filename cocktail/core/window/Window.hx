@@ -59,12 +59,6 @@ class Window extends EventCallback
 	 */
 	public var history:History;
 	
-	/**
-	 * Store the current mouse cursor value
-	 * to ensure that it needs changing
-	 */
-	private var _currentMouseCursor:CSSPropertyValue;
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -97,14 +91,6 @@ class Window extends EventCallback
 	 */
 	private function init(htmlDocument:HTMLDocument, platform:Platform):Void
 	{
-		//fullscreen callbacks
-		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
-		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
-		platform.onFullScreenChange = onPlatformFullScreenChange;
-		
-		//mouse cursor callback
-		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
-		
 		document = htmlDocument;
 
 		// history
@@ -120,75 +106,7 @@ class Window extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
-		platform.open(url, name);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// FULLSCREEN CALLBACKS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when the user exits or enter fullscreen mode without using
-	 * the DOM api. For instance, in most browser, pressing the escape key
-	 * will exit fullscreen mode.
-	 * 
-	 * Listening to those platform event allows to keep the DOM model
-	 * in sync
-	 */
-	private function onPlatformFullScreenChange(event:Event):Void
-	{
-		//if the platform just exited the fullscreen mode,
-		//then the document must also exit it
-		if (platform.fullscreen() == false)
-		{
-			document.exitFullscreen();
-		}
-	}
-	
-	/**
-	 * Called when the document request to enter fullscreen mode.
-	 * Start fullscreen mode using platform specific API
-	 */
-	private function onDocumentEnterFullscreen():Void
-	{
-		platform.enterFullscreen();
-	}
-		
-	/**
-	 * Called when the document request to exit fullscreen mode.
-	 * Exit fullscreen mode using platform specific API
-	 */
-	private function onDocumentExitFullscreen():Void
-	{
-		platform.exitFullscreen();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE CURSOR CALLBACKS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Change the current mouse cursor if needed
-	 */
-	private function onDocumentSetMouseCursor(cursor:CSSPropertyValue):Void
-	{
-		//null when first called
-		if (_currentMouseCursor == null)
-		{
-			_currentMouseCursor = cursor;
-			platform.mouseListener.setMouseCursor(cursor);
-		}
-		else
-		{
-			//only update mouse if the value is different
-			//from the current one
-			if (cursor != _currentMouseCursor)
-			{
-				_currentMouseCursor = cursor;
-				platform.mouseListener.setMouseCursor(cursor);
-			}
-		}
-		
+		document.navigateToURL(url, name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

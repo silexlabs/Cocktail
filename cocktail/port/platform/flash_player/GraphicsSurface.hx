@@ -304,11 +304,11 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		//draw the bitmap data onto the current bitmap data with the right transformations and alpha
 		if (_useTransparency == true)
 		{
-			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, _flashRectangle, Config.getInstance().enableBitmapSmoothing);
+			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, _flashRectangle, true);
 		}
 		else
 		{
-			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, null, null, _flashRectangle, Config.getInstance().enableBitmapSmoothing);
+			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, null, null, _flashRectangle, true);
 		}
 	}
 	

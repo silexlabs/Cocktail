@@ -261,6 +261,14 @@ class CocktailView
 		platform.touchListener.onTouchStart = document.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = document.onPlatformTouchEvent;
 		platform.touchListener.onTouchEnd = document.onPlatformTouchEvent;
+		
+		platform.onFullScreenChange = document.onPlatformFullScreenChange;
+		document.onEnterFullscreen = platform.enterFullscreen;
+		document.onExitFullscreen = platform.exitFullscreen;
+		
+		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
+		
+		document.onNavigateToURL = platform.open;
 	}
 	
 	/**
