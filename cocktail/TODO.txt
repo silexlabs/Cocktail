@@ -38,11 +38,11 @@ This is not an exhaustive list, only used as a remainder
 - overflow, no implementation of the "scroll" value
 - for color style, hsl and hsla not implemented
 - for selectors, lang pseudoClass not implemented
+- background-attachment implemented as CSS style but not implemented at rendering
 
 === buggy/incomplete implementations
 
 - "clear" style implementation should be improved
-- background-attachment implemented as CSS style but not implemented at rendering
 - vertical-align, other than baseline, not tested enough
 - white-space, not tested enough
 - in text, \n and \t are ignored
