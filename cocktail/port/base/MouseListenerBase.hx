@@ -77,12 +77,8 @@ class MouseListenerBase
 	{
 		_platform = platform;
 		
-		//mouse event might be disabled entirely
-		if (Config.getInstance().enableMouseEvent == true)
-		{
-			//starts to listen to native mouse events
-			setNativeListeners();
-		}
+		//starts to listen to native mouse events
+		setNativeListeners();
 	}
 	
 	/**
