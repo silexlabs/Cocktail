@@ -53,8 +53,6 @@ This is not an exhaustive list, only used as a remainder
 
 - anonymous text element should be wrapped in anonymous inline box
 - graphics context tree should be more isolated when compositing disabled, add a ComposableLayerRenderer for when compositing enabled ?
-- graphics context owns native layers, it should be the opposite
-- move all files at the root of port to a bindings folder ? or have only one file bindings ?
 
 == CSS 3 ==
 
