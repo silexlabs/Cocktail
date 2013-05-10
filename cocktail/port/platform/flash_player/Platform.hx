@@ -54,10 +54,10 @@ class Platform extends PlatformBase
 	private var _rootSprite:Sprite;
 	
 	/**
-	 * The Sprite used as root for the native layers
+	 * The Sprite used as root for the platform layers
 	 * of the document
 	 */
-	private var _nativeLayersRootSprite:Sprite;
+	private var _platformLayersRootSprite:Sprite;
 	
 	/**
 	 * The sprite used for hit testing, e.g listening
@@ -126,9 +126,9 @@ class Platform extends PlatformBase
 			_rootSprite.parent.removeChild(_rootSprite);
 		}
 		
-		if (_nativeLayersRootSprite.parent != null)
+		if (_platformLayersRootSprite.parent != null)
 		{
-			_nativeLayersRootSprite.parent.removeChild(_nativeLayersRootSprite);
+			_platformLayersRootSprite.parent.removeChild(_platformLayersRootSprite);
 		}
 		
 		if (hitTestingSprite.parent != null)
@@ -145,20 +145,20 @@ class Platform extends PlatformBase
 	{
 		_rootSprite = new Sprite();
 		
-		_nativeLayersRootSprite = new Sprite();
+		_platformLayersRootSprite = new Sprite();
 		
 		hitTestingSprite = new Sprite();
 		updateHitTestingSprite();
 		
 		if (Config.getInstance().useAdvancedHitTesting == true)
 		{
-			_rootSprite.addChild(_nativeLayersRootSprite);
+			_rootSprite.addChild(_platformLayersRootSprite);
 			_rootSprite.addChild(hitTestingSprite);
 		}
 		else
 		{
-			hitTestingSprite = _nativeLayersRootSprite;
-			_rootSprite.addChild(_nativeLayersRootSprite);
+			hitTestingSprite = _platformLayersRootSprite;
+			_rootSprite.addChild(_platformLayersRootSprite);
 		}
 	}
 	
@@ -212,18 +212,18 @@ class Platform extends PlatformBase
 	 * Return the root Sprite of the document, which will needs
 	 * to be attached to the Stage to display the whole document
 	 */
-	override public function getRootNativeLayer():PlatformLayer
+	override public function getRootPlatformLayer():PlatformLayer
 	{
 		return _rootSprite;
 	}
 	
 	/**
 	 * Return the Sprite to be used for the top of the
-	 * native layer tree
+	 * platform layer tree
 	 */
-	override public function getTopNativeLayer():PlatformLayer
+	override public function getTopPlatformLayer():PlatformLayer
 	{
-		return _nativeLayersRootSprite;
+		return _platformLayersRootSprite;
 	}
 	
 	/**

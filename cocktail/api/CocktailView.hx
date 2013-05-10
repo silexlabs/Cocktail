@@ -212,7 +212,7 @@ class CocktailView
 	private function initPlatform():Platform
 	{
 		var platform:Platform = new Platform();
-		root = platform.getRootNativeLayer();
+		root = platform.getRootPlatformLayer();
 		return platform;
 	}
 	
