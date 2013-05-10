@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.layout.computer.boxComputers;
+package cocktail.core.boxmodel;
 import cocktail.core.css.CSSStyleDeclaration;
 
 import cocktail.core.css.CoreStyle;
