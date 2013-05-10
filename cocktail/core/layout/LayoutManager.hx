@@ -8,17 +8,17 @@
 */
 package cocktail.core.layout;
 
-import cocktail.core.layout.computer.boxComputers.BlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.FloatBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
-import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
+import cocktail.core.boxmodel.BlockBoxStylesComputer;
+import cocktail.core.boxmodel.BoxStylesComputer;
+import cocktail.core.boxmodel.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.boxmodel.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.boxmodel.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.boxmodel.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.boxmodel.EmbeddedPositionedBoxStylesComputer;
+import cocktail.core.boxmodel.FloatBoxStylesComputer;
+import cocktail.core.boxmodel.InlineBlockBoxStylesComputer;
+import cocktail.core.boxmodel.InLineBoxStylesComputer;
+import cocktail.core.boxmodel.PositionedBoxStylesComputer;
 import cocktail.core.floats.FloatsManager;
 import cocktail.core.renderer.ElementRenderer;
 
