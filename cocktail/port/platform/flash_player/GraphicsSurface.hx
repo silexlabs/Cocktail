@@ -31,14 +31,14 @@ import haxe.Stack;
 
 /**
  * The flash implementation of the graphics object. Use native
- * flash Sprite and Bitmap
+ * flash BitmapData to draw
  * 
  * @author Yannick DOMINGUEZ
  */
 class GraphicsSurface extends GraphicsSurfaceBase
 {
 	/**
-	 * A flash native rectanlge object, which
+	 * A flash native rectangle object, which
 	 * is re-used for each bitmap drawing
 	 * 
 	 * static, only need one instance at a time
@@ -103,7 +103,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 	}
 	
 	/**
-	 * Create new BitmapData when the size of the window changes
+	 * Create new BitmapData when the size is updated
 	 */
 	override public function initBitmapData(width:Int, height:Int):Void
 	{

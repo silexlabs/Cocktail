@@ -22,8 +22,7 @@ import cocktail.core.css.CSSData;
 /**
  * This is the base class for classes which 
  * actually implements the platform specific
- * API calls to draw and build the native display
- * list of the target platform.
+ * API calls to draw on bitmap
  * 
  * It is implemented for each graphic target platform
  * 
