@@ -50,19 +50,12 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	/**
 	 * A reference to a native layer
 	 */
-	public var nativeLayer(get_nativeLayer, never):NativeLayer;
+	public var nativeLayer(default, null):NativeLayer;
 	
 	/**
 	 * A reference to the LayerRenderer which created this GraphicsContext
 	 */
 	public var layerRenderer(default, null):LayerRenderer;
-	
-	/**
-	 * An instance of the class which actually implements the 
-	 * platform specific API calls to draw and build the native
-	 * display list. 
-	 */
-	public var graphics(default, null):GraphicsSurface;
 	
 	/**
 	 * A flag set when the native layers needs to be re-attached to the native
@@ -81,7 +74,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 		super();
 		this.layerRenderer = layerRenderer;
 		_needsNativeLayerUpdate = true;
-		graphics = new GraphicsSurface();
+		nativeLayer = new NativeLayer();
 	}
 	
 	/**
@@ -90,8 +83,8 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 */
 	public function dispose():Void
 	{
-		graphics.dispose();
-		graphics = null;
+		nativeLayer.dispose();
+		nativeLayer = null;
 		layerRenderer = null;
 	}
 	
@@ -177,7 +170,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 		//some layer don't need their own bitmap surface
 		if (layerRenderer.needsBitmap() ==  true)
 		{
-			graphics.initBitmapData(viewportWidth, viewportHeight);
+			nativeLayer.initBitmapData(viewportWidth, viewportHeight);
 		}
 		
 		var child:GraphicsContext = firstChild;
@@ -286,7 +279,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 			previousGraphicsContextSibling = previousGraphicsContextSibling.previousSibling;
 		}
 		
-		graphics.attach(this, index);
+		nativeLayer.attach(parentNode.nativeLayer.layer, index);
 	}
 	
 	/**
@@ -294,16 +287,6 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 */
 	private function doDetach():Void
 	{
-		graphics.detach(this);
+		nativeLayer.detach(parentNode.nativeLayer.layer);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_nativeLayer():NativeLayer
-	{
-		return graphics.nativeLayer;
-	}
-	
 }

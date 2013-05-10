@@ -1188,24 +1188,24 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//layer with the graphics context
 		if (alpha != 1.0)
 		{
-			graphicsContext.graphics.beginTransparency(alpha);
+			graphicsContext.nativeLayer.graphics.beginTransparency(alpha);
 		}
 		
 		//apply layer matrix to graphics context, so that all element
 		//renderers of the lyer use those transformations
-		graphicsContext.graphics.beginTransformations(matrix);
+		graphicsContext.nativeLayer.graphics.beginTransformations(matrix);
 		
 		//render the rootElementRenderer itself which will also
 		//render all ElementRenderer belonging to this LayerRenderer
 		rootElementRenderer.render(graphicsContext, _layerDirtyRect, scrollOffset);
 		
 		//stop using the layer's transformations
-		graphicsContext.graphics.endTransformations();
+		graphicsContext.nativeLayer.graphics.endTransformations();
 		
 		//end transparency layer
 		if (alpha != 1.0)
 		{
-			graphicsContext.graphics.endTransparency();
+			graphicsContext.nativeLayer.graphics.endTransparency();
 		}
 		
 		_canUpdateScrollRegion = false;
@@ -1336,7 +1336,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			}
 			
 			//draw the region which can be copied at its new position after scrolling
-			graphicsContext.graphics.copyRect(copyRect, copyDestination.x, copyDestination.y);
+			graphicsContext.nativeLayer.graphics.copyRect(copyRect, copyDestination.x, copyDestination.y);
 			_canUpdateScrollRegion = false;
 		}
 		
@@ -1357,7 +1357,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	private function doClear(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		graphicsContext.graphics.clear(x, y, width, height);
+		graphicsContext.nativeLayer.graphics.clear(x, y, width, height);
 	}
 	
 	/**

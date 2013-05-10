@@ -186,7 +186,7 @@ class PlatformBase
 	 * return the native layer used as the root
 	 * of the document
 	 */
-	public function getRootNativeLayer():NativeLayer
+	public function getRootNativeLayer():PlatformLayer
 	{
 		return null;
 	}
@@ -195,7 +195,7 @@ class PlatformBase
 	 * Return the native layer used as the top of the
 	 * native layer tree
 	 */
-	public function getTopNativeLayer():NativeLayer
+	public function getTopNativeLayer():PlatformLayer
 	{
 		return null;
 	}

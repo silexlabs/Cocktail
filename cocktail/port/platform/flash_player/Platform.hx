@@ -212,7 +212,7 @@ class Platform extends PlatformBase
 	 * Return the root Sprite of the document, which will needs
 	 * to be attached to the Stage to display the whole document
 	 */
-	override public function getRootNativeLayer():NativeLayer
+	override public function getRootNativeLayer():PlatformLayer
 	{
 		return _rootSprite;
 	}
@@ -221,7 +221,7 @@ class Platform extends PlatformBase
 	 * Return the Sprite to be used for the top of the
 	 * native layer tree
 	 */
-	override public function getTopNativeLayer():NativeLayer
+	override public function getTopNativeLayer():PlatformLayer
 	{
 		return _nativeLayersRootSprite;
 	}

@@ -52,8 +52,8 @@ class InitialGraphicsContext extends GraphicsContext
 	{
 		//retrieve platform specific root layer
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
-		var rootNativeLayer:NativeLayer = htmlDocument.window.platform.getTopNativeLayer();
-		graphics.attachToRoot(rootNativeLayer);
+		var rootPlatformLayer:PlatformLayer = htmlDocument.window.platform.getTopNativeLayer();
+		nativeLayer.attach(rootPlatformLayer, 0);
 		
 		//when the initial graphics context, is attached,
 		//the bitmap size needs to be invalidated so that
@@ -68,6 +68,8 @@ class InitialGraphicsContext extends GraphicsContext
 	 */
 	override private function doDetach():Void
 	{
-		graphics.detachFromRoot();
+		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
+		var rootPlatformLayer:PlatformLayer = htmlDocument.window.platform.getTopNativeLayer();
+		nativeLayer.detach(rootPlatformLayer);
 	}
 }

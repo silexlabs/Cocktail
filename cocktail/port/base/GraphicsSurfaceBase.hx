@@ -32,15 +32,10 @@ import cocktail.core.css.CSSData;
 class GraphicsSurfaceBase
 {
 	/**
-	 * A reference to a native layer
-	 */
-	public var nativeLayer(get_nativeLayer, null):NativeLayer;
-	
-	/**
 	 * A reference to a native bitmap data object of the 
 	 * underlying platform
 	 */
-	public var nativeBitmapData(get_nativeBitmapData, null):NativeBitmapData;
+	public var nativeBitmapData(default, null):NativeBitmapData;
 	
 	/**
 	 * A flag determining wether to use the specified alpha when drawing
@@ -91,58 +86,10 @@ class GraphicsSurfaceBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Attach the native layer to the native display list
-	 * 
-	 * @param	graphicsContext the graphic context containing
-	 * the native layer where this native layer should be attached
-	 * @param	index the index of the graphic context owning this
-	 * graphic context implemention in its parent's children list
-	 */
-	public function attach(graphicsContext:GraphicsContext, index:Int):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Detach the native from the native display list
-	 */
-	public function detach(graphicsContext:GraphicsContext):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach the native layer to the root
-	 * of the native display list, used for
-	 * the root graphics context
-	 */
-	public function attachToRoot(rootLayer:NativeLayer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Detach the native layer from
-	 * the root of the native display list
-	 */
-	public function detachFromRoot():Void
-	{
-		//abstract
-	}
-	
-	/**
 	 * clean-up method, free memory used
 	 * by graphics context
 	 */
 	public function dispose():Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Apply a transformation matrix to the layer
-	 */
-	public function transform(matrix:Matrix):Void
 	{
 		//abstract
 	}
@@ -247,19 +194,4 @@ class GraphicsSurfaceBase
 	{
 		//abstract
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_nativeBitmapData():NativeBitmapData
-	{
-		return null;
-	}
-	
-	private function get_nativeLayer():NativeLayer
-	{
-		return null;
-	}
-	
 }
