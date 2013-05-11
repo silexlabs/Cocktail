@@ -1251,13 +1251,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					{
 						var hypotheticalChildYPosition:Float = inlineFormattingData.lineBoxPosition.y + child.coreStyle.usedValues.marginTop;
 						
-						if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
+						if (floatsManager.hasClearance(child, hypotheticalChildYPosition + _offsetFromBlockFormattingRoot.y) == true)
 						{
 							registerClearElement(child);
 							
 							//if float does have clearance, place it below any other float, acting more like
 							//a block formatting
-							var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
+							var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition + _offsetFromBlockFormattingRoot.y);
 							var clearedFloatPosition:PointVO = new PointVO(0, 0);
 							clearedFloatPosition.y = inlineFormattingData.lineBoxPosition.y + clearance;
 							registerFloatedElement(child, clearedFloatPosition);
