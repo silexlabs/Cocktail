@@ -269,7 +269,7 @@ class BackgroundDrawer
 				//TODO 2 : can use hit testing bounds instead ?
 				GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
 			
-				var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+				var computedGradientStyles:ComputedBackgroundStyleVO = BackgroundStylesComputer.computeIndividualBackground(
 				style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 				

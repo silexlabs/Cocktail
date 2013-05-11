@@ -83,7 +83,7 @@ class BackgroundStylesComputer
 	backgroundOrigin:CSSPropertyValue,
 	backgroundClip:CSSPropertyValue,
 	backgroundRepeat:CSSPropertyValue,
-	backgroundImage:CSSPropertyValue):ComputedBackgroundStyleData
+	backgroundImage:CSSPropertyValue):ComputedBackgroundStyleVO
 	{
 		//get the area onto which the background image is positioned
 		var backgroundPositioningArea:RectangleVO = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
@@ -99,14 +99,13 @@ class BackgroundStylesComputer
 		//get the clipping area (the area where the background image is actually displayed)
 		var computedBackgroundClip:RectangleVO = getBackgroundPaintingArea(style, backgroundClip, backgroundBox);
 		
-		var computedBackgroundStyle:ComputedBackgroundStyleData = {
-			backgroundOrigin:backgroundPositioningArea,
-			backgroundClip:computedBackgroundClip,
-			backgroundRepeat:backgroundRepeat,
-			backgroundImage:backgroundImage,
-			backgroundSize:computedBackgroundSize,
-			backgroundPosition:computedBackgroundPosition
-		}
+		var computedBackgroundStyle:ComputedBackgroundStyleVO = new ComputedBackgroundStyleVO();
+		computedBackgroundStyle.backgroundOrigin = backgroundPositioningArea;
+		computedBackgroundStyle.backgroundClip = computedBackgroundClip;
+		computedBackgroundStyle.backgroundRepeat = backgroundRepeat;
+		computedBackgroundStyle.backgroundImage = backgroundImage;
+		computedBackgroundStyle.backgroundSize = computedBackgroundSize;
+		computedBackgroundStyle.backgroundPosition = computedBackgroundPosition;
 		
 		return computedBackgroundStyle;
 	}

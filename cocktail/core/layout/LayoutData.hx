@@ -71,14 +71,14 @@ import cocktail.core.css.CSSData;
 	 * Store the computed background style
 	 * for one background image
 	 */
-	typedef ComputedBackgroundStyleData = {
+	class ComputedBackgroundStyleVO {
 		
 		/**
 		 * The size of the background image, it might
 		 * be tiled based on the background repeat
 		 * style
 		 */
-		var backgroundSize:DimensionVO;
+		public var backgroundSize:DimensionVO;
 		
 		/**
 		 * a rectangle used as origin to position
@@ -86,32 +86,37 @@ import cocktail.core.css.CSSData;
 		 * be used to clip it based on the
 		 * background clip style
 		 */
-		var backgroundOrigin:RectangleVO;
+		public var backgroundOrigin:RectangleVO;
 		
 		/**
 		 * The rectangle clipping the background
 		 * image, might be the rectangle of the content,
 		 * padding or border box of the htmlElement
 		 */
-		var backgroundClip:RectangleVO;
+		public var backgroundClip:RectangleVO;
 		
 		/**
 		 * the point of origin of the background image
 		 * relative to the backgroundOrigin rectangle
 		 */
-		var backgroundPosition:PointVO;
+		public var backgroundPosition:PointVO;
 		
 		/**
 		 * how to repeat the background image in the
 		 * x and y directions
 		 */
-		var backgroundRepeat:CSSPropertyValue;
+		public var backgroundRepeat:CSSPropertyValue;
 		
 		/**
 		 * the data of the background image (url or
 		 * gradient data)
 		 */
-		var backgroundImage:CSSPropertyValue;
+		public var backgroundImage:CSSPropertyValue;
+		
+		public function new()
+		{
+			
+		}
 	}
 	
 	/**
@@ -166,6 +171,12 @@ import cocktail.core.css.CSSData;
 		}
 	}
 	
+	/**
+	 * Represents a floated element.
+	 * Keep a ref to the floated element
+	 * and its bounds on the space of its 
+	 * block formatting context
+	 */
 	class FloatVO {
 		
 		public var node(default, null):ElementRenderer;
