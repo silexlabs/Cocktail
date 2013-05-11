@@ -307,14 +307,10 @@ src.Cheers.main = function() {
 }
 src.Cheers.prototype = {
 	update: function() {
-		var style = js.Lib.document.createElement("style");
-		style.type = "text/css";
-		style.innerHTML = this.cssCodeMirror.getValue();
-		var iframe = js.Lib.document.getElementById("browser");
-		iframe.src = "data:text/html;charset=utf-8," + Std.string(this.htmlCodeMirror.getValue());
-		iframe.contentDocument.head.appendChild(style);
 		var object = js.Lib.document.getElementById("cocktail");
 		object.updateDocument(this.htmlCodeMirror.getValue(),this.cssCodeMirror.getValue());
+		var iframe = js.Lib.document.getElementById("browser");
+		iframe.src = "data:text/html;charset=utf-8," + Std.string(object.getContent());
 	}
 	,onInput: function(e) {
 		var _g = this;
@@ -328,8 +324,8 @@ src.Cheers.prototype = {
 	,init: function() {
 		this.htmlCodeMirror = CodeMirror(document.getElementById('html-editor'), {mode:'html'});
 		this.cssCodeMirror = CodeMirror(document.getElementById('css-editor'), {mode:'css'});
-		this.htmlCodeMirror.setValue("<html><head></head><body>ssssssssssssss</body></html>");
-		this.cssCodeMirror.setValue("bim");
+		this.htmlCodeMirror.setValue("<!doctype html><html><head></head><body>ssssssssssssss</body></html>");
+		this.cssCodeMirror.setValue("body {margin:0;}");
 		this.update();
 		this.htmlCodeMirror.on("change",$bind(this,this.onInput));
 		this.cssCodeMirror.on("change",$bind(this,this.onInput));

@@ -10,19 +10,24 @@
 		<script src="lib/mode/css.js"></script>
 	</head>
 	<body>
-		<header></header>
-		<div class="box">
-			<div class="title">HTML</div>
-			<div id="html-editor"></div>
+		<div class="column left">
+			<div class="box html">
+				<div class="title">HTML</div>
+				<div id="html-editor"></div>
+			</div>
+			<div class="box css">
+				<div class="title">CSS</div>
+				<div id="css-editor"></div>
+			</div>
 		</div>
-		<div class="box">
-			<div class="title">CSS</div>
-			<div id="css-editor"></div>
+		<div class="column center">
+			<iframe id="browser"  height="100%" width="100%" ></iframe>
 		</div>
-		<iframe width="300" height="300" id="browser" ></iframe>
-		<object width="300" height="300" id="cocktail" data="cocktail.swf">
-			<param name="allowScriptAccess" value="sameDomain" />
-			<param name="scale" value="noscale" />
-		</object> 
+		<div class="column right">
+			<object id="cocktail" height="100%" width="100%" data="cocktail.swf" >
+				<param name="allowScriptAccess" value="sameDomain" />
+				<param name="scale" value="noscale" />
+			</object> 
+		</div>
 	</body>
 </html>
