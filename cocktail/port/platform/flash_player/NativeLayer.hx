@@ -126,8 +126,10 @@ class NativeLayer extends NativeLayerBase
 				return;
 			}
 			
+			//else create new bitmap data and attach it to bitmap
 			graphics.dispose();
 			graphics.initBitmapData(width, height);
+			_nativeBitmap.bitmapData = graphics.nativeBitmapData;
 		}
 		
 		_width = width;
