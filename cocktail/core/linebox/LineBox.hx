@@ -610,8 +610,10 @@ class LineBox
 	 * box by stretching each white space equally
 	 * so that inline boxes fill the whole line box
 	 */
-	private function alignJustify(x:Float, remainingSpace:Float, inlineBox:InlineBox, spacesInLine:Int):Void
+	private function alignJustify(x:Float, remainingSpace:Float, inlineBox:InlineBox, spacesInLine:Int):Float
 	{
+		x += inlineBox.paddingLeft + inlineBox.borderLeft + inlineBox.marginLeft;
+		
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
 		{
@@ -629,11 +631,15 @@ class LineBox
 			
 			if (child.firstChild != null)
 			{
-				alignJustify(x, remainingSpace, child, spacesInLine);
+				x = alignJustify(x, remainingSpace, child, spacesInLine);
 			}
 			
 			child = child.nextSibling;
 		}
+		
+		x += inlineBox.marginRight + inlineBox.borderRight + inlineBox.paddingRight;
+		
+		return x;
 	}
 	
 	/////////////////////////////////
