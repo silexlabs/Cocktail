@@ -171,6 +171,11 @@ class HTMLDocument extends Document
 	private var _currentMouseCursor:CSSPropertyValue;
 	
 	/**
+	 * Callback called just after a document update
+	 */
+	public var onDocumentUpdated:Void->Void;
+	
+	/**
 	 * Callback called when the document must
 	 * navigate to a new url
 	 */
@@ -547,6 +552,28 @@ class HTMLDocument extends Document
 		if (_delayLoadEventCounter == 0 && _documentLoaded == false)
 		{
 			onDocumentLoaded();
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC UPDATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * called by the invalidattion manager
+	 * after an update of the document, 
+	 * the document in turn call an update
+	 * callback set by the embedding application,
+	 * if provided.
+	 * 
+	 * This can be used as a hook to perform 
+	 * operations just after document update
+	 */
+	public function onUpdated():Void
+	{
+		if (onDocumentUpdated != null)
+		{
+			onDocumentUpdated();
 		}
 	}
 	
