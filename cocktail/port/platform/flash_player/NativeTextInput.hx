@@ -97,7 +97,7 @@ class NativeTextInput extends NativeTextInputBase
 	 */
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		var containerGraphicContext:DisplayObjectContainer = graphicContext.nativeLayer.platformLayer;
 		containerGraphicContext.addChild(_textField);
 	}
 	
@@ -106,7 +106,7 @@ class NativeTextInput extends NativeTextInputBase
 	 */
 	override public function detach(graphicContext:GraphicsContext):Void
 	{
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		var containerGraphicContext:DisplayObjectContainer = graphicContext.nativeLayer.platformLayer;
 		containerGraphicContext.removeChild(_textField);
 	}
 	
