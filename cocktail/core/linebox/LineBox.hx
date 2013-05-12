@@ -316,6 +316,11 @@ class LineBox
 				inlineBoxCoreStyle.hasPreLineWhiteSpace == true)
 				{
 					child.parentNode.removeChild(child);
+					
+					//remove the space width from the total width of inlinebox in the line
+					_addedWidth -= child.bounds.width;
+					//there is one less space in the line
+					_spacesNumber--;
 				}
 				else
 				{
@@ -510,7 +515,19 @@ class LineBox
 								//when justifying, inline boxes takes the whole
 								//line box width
 								concatenatedLength = bounds.width;
-								alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
+								
+								//justification is done by modifying the width of each space on the line.
+								//Each space will have the same width once justified
+								
+								//first get the total width of all inline boxes which are not space
+								var concatedWidthWithoutSpaces:Float = getConcatenatedWidthWithoutSpaces(rootInlineBox);
+								
+								//then deduce the width that each space should have, by taking the remaining available space
+								//on the line once all non-space inline boxes width have been removed, and divising it
+								//by the number of space in the line
+								var spaceWidth:Float = (concatenatedLength - concatedWidthWithoutSpaces) /_spacesNumber;
+								
+								alignJustify(x, rootInlineBox, spaceWidth);
 						}
 						
 					
@@ -613,32 +630,35 @@ class LineBox
 	}
 	
 	/**
-	 * Justify inline boxes of this line
-	 * box by stretching each white space equally
-	 * so that inline boxes fill the whole line box
+	 * Justifying is similar to left alignement, except that all
+	 * space inline box are streched so that so whole line box gets
+	 * filled. The width for the streched spaces is provided
 	 */
-	private function alignJustify(x:Float, remainingSpace:Float, inlineBox:InlineBox, spacesInLine:Int):Float
+	private function alignJustify(x:Float, inlineBox:InlineBox, spacesWidth:Float):Float
 	{
 		x += inlineBox.paddingLeft + inlineBox.borderLeft + inlineBox.marginLeft;
 		
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
 		{
-			if (child.isSpace == true)
-			{
-				var spaceWidth:Float = (remainingSpace / spacesInLine);
-				
-				spacesInLine--;
-				remainingSpace -= spaceWidth;
-				x += spaceWidth;
-			}
-			
-			child.bounds.x = x;
-			x += child.bounds.width;
-			
 			if (child.firstChild != null)
 			{
-				x = alignJustify(x, remainingSpace, child, spacesInLine);
+				x = alignJustify(x, child, spacesWidth);
+			}
+			else
+			{
+				//when space, use provided streched space width
+				//instead of actual width of the space
+				if (child.isSpace == true)
+				{
+					child.bounds.x = x;
+					x += spacesWidth;
+				}
+				else
+				{
+					child.bounds.x = x + child.marginLeft;
+					x += child.bounds.width + child.marginLeft + child.marginRight;
+				}
 			}
 			
 			child = child.nextSibling;
@@ -647,6 +667,36 @@ class LineBox
 		x += inlineBox.marginRight + inlineBox.borderRight + inlineBox.paddingRight;
 		
 		return x;
+	}
+	
+	/**
+	 * utils method returning the total space taken by inline boxes excluding
+	 * the space inline box. This is used to determine the space of width 
+	 * when justificating the line box
+	 */
+	private function getConcatenatedWidthWithoutSpaces(inlineBox:InlineBox):Float
+	{
+		var width:Float = 0;
+		
+		var child:InlineBox = inlineBox.firstChild;
+		while(child != null)
+		{
+			if (child.firstChild != null)
+			{
+				width += getConcatenatedWidthWithoutSpaces(child);
+			}
+			else
+			{
+				if (child.isSpace == false)
+				{
+					width += child.bounds.width;
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		return width;
 	}
 	
 	/////////////////////////////////
