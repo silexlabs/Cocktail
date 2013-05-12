@@ -80,6 +80,9 @@ class NativeLayer extends NativeLayerBase
 		//build native display list
 		_childrenNativeLayer.addChild(_bitmapContainer);
 		_childrenNativeLayer.addChild(_nativeLayer);
+		
+		//set the layer accessible from outside
+		platformLayer = _nativeLayer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
