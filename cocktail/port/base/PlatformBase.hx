@@ -200,17 +200,6 @@ class PlatformBase
 		return null;
 	}
 	
-	/**
-	 * Called after the hit testing bounds of each
-	 * elements in the document is ready, gives the 
-	 * platform an opportunity to update its native
-	 * hit testing bounds if needed
-	 */
-	public function updateHitTestingBounds(stackingContext:StackingContext):Void
-	{
-		
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
