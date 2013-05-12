@@ -482,7 +482,10 @@ class LineBox
 			switch (_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.textAlign))
 			{
 				case RIGHT:
-					alignRight(x, remainingSpace, rootInlineBox);
+					//for right align, start from the right of the line box,
+					//so start with the line box width
+					x = bounds.width - x;
+					alignRight(x, rootInlineBox);
 					
 				case CENTER:
 					alignCenter(x, remainingSpace, rootInlineBox);
@@ -582,25 +585,29 @@ class LineBox
 	 * Align the inline boxes of this line
 	 * box from right to left
 	 */
-	private function alignRight(x:Float, remainingSpace:Float, inlineBox:InlineBox):Float
+	private function alignRight(x:Float, inlineBox:InlineBox):Float
 	{
-		x += inlineBox.marginLeft + inlineBox.borderLeft + inlineBox.paddingLeft;
+		x -= inlineBox.paddingRight + inlineBox.borderRight + inlineBox.marginRight;
 		
-		var child:InlineBox = inlineBox.firstChild;
+		//inline box tree is traversed in reverse order, 
+		//(it starts with the box at the right-most of the linebox)
+		var child:InlineBox = inlineBox.lastChild;
 		while(child != null)
 		{
-			if (child.firstChild != null)
+			if (child.lastChild != null)
 			{
-				x = alignRight(x, remainingSpace, child);
+				x = alignRight(x, child);
+			}
+			else
+			{
+				child.bounds.x = x - child.bounds.width + child.marginLeft;
+				x -= child.bounds.width + child.marginLeft + child.marginRight;
 			}
 			
-			child.bounds.x = x + remainingSpace;
-			x += child.bounds.width;
-			
-			child = child.nextSibling;
+			child = child.previousSibling;
 		}
 		
-		x += inlineBox.marginRight + inlineBox.borderRight + inlineBox.paddingRight;
+		x -= inlineBox.paddingLeft + inlineBox.borderLeft + inlineBox.marginLeft;
 		
 		return x;
 	}
