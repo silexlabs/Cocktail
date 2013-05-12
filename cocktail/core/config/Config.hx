@@ -48,21 +48,6 @@ class Config extends EventTarget
 	/**
 	 * Flash specific.
 	 * 
-	 * When true, if there are html elements displayed on top of a swf
-	 * loaded with an object tag, the html elements can be interacted with.
-	 * 
-	 * If false, the swf movie will receive all the mouse and touch event and
-	 * will prevent cocktail from receiving them
-	 * 
-	 * You can disable it for a small performance boost in the cases where
-	 * you either don't have any swf movie in your document or if there is
-	 * no interactive content on top of those swf movie
-	 */
-	public var useAdvancedHitTesting(default, null):Bool;
-	
-	/**
-	 * Flash specific.
-	 * 
 	 * When true use flash StageVideo API introduce in flash player 10.2
 	 * which allows hardware rendering of video for reduced cpu usage.
 	 * If falls back to software rendering if hardware do not permit it.
@@ -193,7 +178,6 @@ class Config extends EventTarget
 		
 		touchMovePreventClickDistance = 10;
 
-		useAdvancedHitTesting = false;
 		useStageVideoIfAvailable = true;
 		defaultFont = "serif";
 		defaultFontColor = "#000000";
@@ -238,7 +222,7 @@ class Config extends EventTarget
 		
 		switch(name)
 		{
-			case "useAdvancedHitTesting", "useStageVideoIfAvailable",
+			case "useStageVideoIfAvailable",
 			"enableCompositing", "objectBelowWhenNoCompositing", "videoBelowWhenNoCompositing":
 				updateBoolParam(name, value);
 				didUpdate = true;
