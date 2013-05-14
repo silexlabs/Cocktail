@@ -35,7 +35,7 @@ class NativeTextInput extends NativeTextInputBase
 	private static inline var SERIF_GENERIC_FONT_NAME:String = "serif";
 	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
 	
-	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans";
+	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans-serif";
 	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
 	
 	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "typewriter";
