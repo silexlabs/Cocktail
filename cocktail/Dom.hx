@@ -22,6 +22,8 @@ typedef Style = cocktail.core.css.CSSStyleDeclaration;
 typedef Window = cocktail.core.window.Window;
 typedef Document = cocktail.core.html.HTMLDocument;
 typedef FormElement = cocktail.core.html.HTMLInputElement;
+typedef Radio = cocktail.core.html.HTMLInputElement;
+typedef Checkbox = cocktail.core.html.HTMLInputElement;
 typedef TextArea = cocktail.core.html.HTMLTextAreaElement;
 
 typedef Event = cocktail.core.event.Event;
