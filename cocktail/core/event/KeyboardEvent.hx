@@ -70,6 +70,17 @@ class KeyboardEvent extends UIEvent
 	 */
 	public static inline var DOM_KEY_LOCATION_JOYSTICK:Int = 0x05;
 	
+		// MODIFIERS IDENTS
+	//////////////////////////
+	
+	private static inline var CONTROL_KEY:String = "Control";
+	
+	private static inline var SHIFT_KEY:String = "Shift";
+	
+	private static inline var ALT_KEY:String = "Alt";
+	
+	private static inline var META_KEY:String = "Meta";
+	
 	/**
 	 * char holds the character value of the key pressed.
 	 * 
@@ -176,5 +187,49 @@ class KeyboardEvent extends UIEvent
 		repeat = repeatArg;
 		location = locationArg;
 		locale = localeArg;
+		
+		setModifiersListArg(modifiersListArg);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * extract modifier keys from the provided
+	 * white space separated list
+	 */
+	private function setModifiersListArg(modifiersListArg:String):Void
+	{
+	
+		ctrlKey = false;
+		shiftKey = false;
+		altKey = false;
+		metaKey = false;
+		
+		if (modifiersListArg == null)
+		{
+			return;
+		}
+		
+		//match all modifiers
+		var modifiers:Array<String> = modifiersListArg.split(" ");
+		for (i in 0...modifiers.length)
+		{
+			switch(modifiers[i])
+			{
+				case SHIFT_KEY:
+					shiftKey = true;
+					
+				case ALT_KEY:
+					altKey = true;
+					
+				case CONTROL_KEY:
+					ctrlKey = true;
+				
+				case META_KEY:
+					metaKey = true;
+			}
+		}
 	}
 }
