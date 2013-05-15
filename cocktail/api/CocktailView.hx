@@ -246,29 +246,13 @@ class CocktailView
 	 */
 	private function setPlatformBindings(platform:Platform, htmlDocument:HTMLDocument):Void
 	{
-		platform.mouseListener.onMouseDown = document.onPlatformMouseEvent;
-		platform.mouseListener.onMouseUp = document.onPlatformMouseEvent;
-		platform.mouseListener.onMouseMove = document.onPlatformMouseMoveEvent;
-		platform.mouseListener.onMouseWheel = document.onPlatformMouseWheelEvent;
-		platform.mouseListener.onMouseLeave = document.onPlatformMouseLeaveEvent;
-		
-		platform.keyboardListener.onKeyDown = document.onPlatformKeyDownEvent;
-		platform.keyboardListener.onKeyUp = document.onPlatformKeyUpEvent;
-		
-		platform.onResize = document.onPlatformResizeEvent;
-		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
-		
-		platform.touchListener.onTouchStart = document.onPlatformTouchEvent;
-		platform.touchListener.onTouchMove = document.onPlatformTouchEvent;
-		platform.touchListener.onTouchEnd = document.onPlatformTouchEvent;
-		
-		platform.onFullScreenChange = document.onPlatformFullScreenChange;
-		document.onEnterFullscreen = platform.enterFullscreen;
-		document.onExitFullscreen = platform.exitFullscreen;
-		
-		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
-		
-		document.onNavigateToURL = platform.open;
+		setMouseBindings(platform, htmlDocument);
+		setKeyboardBindings(platform, htmlDocument);
+		setTouchBindings(platform, htmlDocument);
+		setFullscreenBindings(platform, htmlDocument);
+		setViewportBindings(platform, htmlDocument);
+		setMouseCursorBindings(platform, htmlDocument);
+		setNavigationBindings(platform, htmlDocument);
 	}
 	
 	/**
@@ -297,6 +281,78 @@ class CocktailView
 			
 			window.platform.viewport = rect;
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PLATFORM AND DOCUMENT BINDINGS
+	// link the platform and document object, override those metohds
+	// to alter cocktail's default behaviour
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Binds the platform mouse events to the document
+	 */
+	private function setMouseBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.mouseListener.onMouseDown = htmlDocument.onPlatformMouseEvent;
+		platform.mouseListener.onMouseUp = htmlDocument.onPlatformMouseEvent;
+		platform.mouseListener.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
+		platform.mouseListener.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
+		platform.mouseListener.onMouseLeave = htmlDocument.onPlatformMouseLeaveEvent;
+	}
+	
+	/**
+	 * Binds the mouse cursor events to the document
+	 */
+	private function setMouseCursorBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
+	}
+	
+	/**
+	 * Binds the keyboard events to the document
+	 */
+	private function setKeyboardBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.keyboardListener.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
+		platform.keyboardListener.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
+	}
+	
+	/**
+	 * Binds the touch events to the document
+	 */
+	private function setTouchBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchEnd = htmlDocument.onPlatformTouchEvent;
+	}
+	
+	/**
+	 * Binds the fullscreen events and API to the document
+	 */
+	private function setFullscreenBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.onFullScreenChange = document.onPlatformFullScreenChange;
+		document.onEnterFullscreen = platform.enterFullscreen;
+		document.onExitFullscreen = platform.exitFullscreen;
+	}
+	
+	/**
+	 * Binds the viewport events to the document
+	 */
+	private function setViewportBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.onResize = document.onPlatformResizeEvent;
+		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
+	}
+	
+	/**
+	 * Binds the navigation events to the document
+	 */
+	private function setNavigationBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		document.onNavigateToURL = platform.open;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
