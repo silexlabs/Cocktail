@@ -9,6 +9,7 @@
 package cocktail.port.platform.air;
 
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.base.NativeTextInputBase;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Rectangle;
@@ -55,9 +56,9 @@ class NativeTextInput extends NativeTextInputBase
 	 * class constructor.
 	 * Init the StageText object
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		super();
+		super(node);
 		_stageText = Type.createInstance(Type.resolveClass("flash.text.StageText"), []);
 	}
 	

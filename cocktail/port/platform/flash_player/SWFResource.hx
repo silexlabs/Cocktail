@@ -52,7 +52,7 @@ class SWFResource extends ResourceBase
 		var bytes = nme.Assets.getBytes(url);
 		if (bytes != null)
 		{
-			#if air
+			#if (air || flash)
 			
 			//if the runtime is air, use native flash api to load
 			//content from bytes
@@ -64,7 +64,8 @@ class SWFResource extends ResourceBase
 			_loader.loadBytes(bytes, loadingContext);
 			return;
 			
-			#else
+			//check wether swf lib is available
+			#elseif swf
 			//if they are, create a movieclip from it
 			var swf:format.SWF = new format.SWF(bytes);
 			nativeResource = swf.createMovieClip();
