@@ -10,8 +10,8 @@ package cocktail.port.platform.air;
 import cocktail.core.html.HTMLElement;
 
 /**
- * This is the flash port of for the native password input,
- * similar to flahs native text input
+ * This is the air port of for the native password input,
+ * similar to an air stage text
  * 
  * @author Yannick DOMINGUEZ
  */
