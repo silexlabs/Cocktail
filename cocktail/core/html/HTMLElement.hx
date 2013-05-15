@@ -1418,6 +1418,13 @@ class HTMLElement extends Element<HTMLElement>
 			return false;
 		}
 		
+		//if it isn't currently rendered,
+		//it can't be focused
+		if (elementRenderer == null)
+		{
+			return false;
+		}
+		
 		//it can be focused if it is inherently
 		//focusable
 		else if (isDefaultFocusable() == true)
