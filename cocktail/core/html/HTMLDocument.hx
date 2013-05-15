@@ -75,16 +75,6 @@ import haxe.Stack;
 class HTMLDocument extends Document
 {
 	/**
-	 * key code listened to by the Document
-	 */
-	
-	private static inline var TAB_KEY_CODE:Int = 9;
-	
-	private static inline var ENTER_KEY_CODE:Int = 13;
-	
-	private static inline var SPACE_KEY_CODE:Int = 32;
-	
-	/**
 	 * A coefficient to apply to apply to the mouse
 	 * wheel delta to get the right scroll amount, based
 	 * on Windows implementation
@@ -578,6 +568,28 @@ class HTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC FOCUS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * focus the next element after the current
+	 * active element
+	 */
+	public function focusNextElement():Void
+	{
+		activeElement = _focusManager.getNextFocusedElement(false, body, activeElement);
+	}
+	
+	/**
+	 * focus the previous element before the current
+	 * active element
+	 */
+	public function focusPreviousElement():Void
+	{
+		activeElement = _focusManager.getNextFocusedElement(true, body, activeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC STYLE MANAGER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -890,33 +902,13 @@ class HTMLDocument extends Document
 		}
 	}
 	
-	
 	/**
-	 * When a key is pressed, dispatch the keyboardEvent
-	 * on the active element and detect if a tab
-	 * focus or a simulated click must happen.
+	 * When a key down event happens, dispatches it
+	 * on the activeElement
 	 */
 	public function onPlatformKeyDownEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
-
-		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ? 
-		switch (Std.parseInt(keyboardEvent.keyChar))
-		{
-			case TAB_KEY_CODE:
-				//only do sequantial navigation if default was not prevented
-				if (keyboardEvent.defaultPrevented == false)
-				{
-					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, body, activeElement);
-				}
-	
-			case ENTER_KEY_CODE, SPACE_KEY_CODE:
-				//only simulate click if default was not prevented
-				if (keyboardEvent.defaultPrevented == false)
-				{
-					activeElement.triggerActivationBehaviour();
-				}
-		}
 	}
 	
 	/**

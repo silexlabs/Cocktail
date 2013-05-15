@@ -201,7 +201,6 @@ class KeyboardEvent extends UIEvent
 	 */
 	private function setModifiersListArg(modifiersListArg:String):Void
 	{
-	
 		ctrlKey = false;
 		shiftKey = false;
 		altKey = false;

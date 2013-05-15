@@ -9,6 +9,7 @@
 package cocktail.api;
 
 import cocktail.core.event.EventConstants;
+import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
 import cocktail.core.timer.Timer;
@@ -49,6 +50,18 @@ typedef Viewport = {
  */
 class CocktailView
 {
+	/**
+	 * key code listened to, to interact with the 
+	 * Document
+	 */
+	
+	private static inline var TAB_KEY_CODE:Int = 9;
+	
+	private static inline var ENTER_KEY_CODE:Int = 13;
+	
+	private static inline var SPACE_KEY_CODE:Int = 32;
+	
+	
 	/**
 	 * the wrapped html document
 	 */
@@ -246,29 +259,13 @@ class CocktailView
 	 */
 	private function setPlatformBindings(platform:Platform, htmlDocument:HTMLDocument):Void
 	{
-		platform.mouseListener.onMouseDown = document.onPlatformMouseEvent;
-		platform.mouseListener.onMouseUp = document.onPlatformMouseEvent;
-		platform.mouseListener.onMouseMove = document.onPlatformMouseMoveEvent;
-		platform.mouseListener.onMouseWheel = document.onPlatformMouseWheelEvent;
-		platform.mouseListener.onMouseLeave = document.onPlatformMouseLeaveEvent;
-		
-		platform.keyboardListener.onKeyDown = document.onPlatformKeyDownEvent;
-		platform.keyboardListener.onKeyUp = document.onPlatformKeyUpEvent;
-		
-		platform.onResize = document.onPlatformResizeEvent;
-		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
-		
-		platform.touchListener.onTouchStart = document.onPlatformTouchEvent;
-		platform.touchListener.onTouchMove = document.onPlatformTouchEvent;
-		platform.touchListener.onTouchEnd = document.onPlatformTouchEvent;
-		
-		platform.onFullScreenChange = document.onPlatformFullScreenChange;
-		document.onEnterFullscreen = platform.enterFullscreen;
-		document.onExitFullscreen = platform.exitFullscreen;
-		
-		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
-		
-		document.onNavigateToURL = platform.open;
+		setMouseBindings(platform, htmlDocument);
+		setKeyboardBindings(platform, htmlDocument);
+		setTouchBindings(platform, htmlDocument);
+		setFullscreenBindings(platform, htmlDocument);
+		setViewportBindings(platform, htmlDocument);
+		setMouseCursorBindings(platform, htmlDocument);
+		setNavigationBindings(platform, htmlDocument);
 	}
 	
 	/**
@@ -298,7 +295,125 @@ class CocktailView
 			window.platform.viewport = rect;
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PLATFORM AND DOCUMENT BINDINGS
+	// link the platform and document object, override those metohds
+	// to alter cocktail's default behaviour
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Binds the platform mouse events to the document
+	 */
+	private function setMouseBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.mouseListener.onMouseDown = htmlDocument.onPlatformMouseEvent;
+		platform.mouseListener.onMouseUp = htmlDocument.onPlatformMouseEvent;
+		platform.mouseListener.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
+		platform.mouseListener.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
+		platform.mouseListener.onMouseLeave = htmlDocument.onPlatformMouseLeaveEvent;
+	}
+	
+	/**
+	 * Binds the mouse cursor events to the document
+	 */
+	private function setMouseCursorBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
+	}
+	
+	/**
+	 * Binds the keyboard events to the document
+	 */
+	private function setKeyboardBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.keyboardListener.onKeyDown = onPlatformKeyDown;
+		platform.keyboardListener.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
+	}
+	
+	/**
+	 * Binds the touch events to the document
+	 */
+	private function setTouchBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchEnd = htmlDocument.onPlatformTouchEvent;
+	}
+	
+	/**
+	 * Binds the fullscreen events and API to the document
+	 */
+	private function setFullscreenBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.onFullScreenChange = document.onPlatformFullScreenChange;
+		document.onEnterFullscreen = platform.enterFullscreen;
+		document.onExitFullscreen = platform.exitFullscreen;
+	}
+	
+	/**
+	 * Binds the viewport events to the document
+	 */
+	private function setViewportBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		platform.onResize = document.onPlatformResizeEvent;
+		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
+	}
+	
+	/**
+	 * Binds the navigation events to the document
+	 */
+	private function setNavigationBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	{
+		document.onNavigateToURL = platform.open;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE PLATFORM AND DOCUMENT BINDINGS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * add custom behaviour after a key down event
+	 */
+	private function onPlatformKeyDown(keyboardEvent:KeyboardEvent):Void
+	{
+		document.onPlatformKeyDownEvent(keyboardEvent);
+		onAfterKeyDownEvent(keyboardEvent, document);
+	}
+	
+	/**
+	 * by default after a key down event, do sequential 
+	 * navigation (focus next or previous element) or
+	 * simulate a click on the currently focused element
+	 * if the right key are pressed
+	 */
+	private function onAfterKeyDownEvent(keyboardEvent:KeyboardEvent, htmlDocument:HTMLDocument):Void
+	{
+		switch (Std.parseInt(keyboardEvent.keyChar))
+		{
+			case TAB_KEY_CODE:
+				//only do sequantial navigation if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
+				{
+					if (keyboardEvent.shiftKey == true)
+					{
+						htmlDocument.focusPreviousElement();
+					}
+					else
+					{
+						htmlDocument.focusNextElement();
+					}
+				}
+	
+			case ENTER_KEY_CODE, SPACE_KEY_CODE:
+				//only simulate click if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
+				{
+					htmlDocument.activeElement.triggerActivationBehaviour();
+				}
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
