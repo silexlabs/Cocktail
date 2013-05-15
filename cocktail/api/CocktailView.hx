@@ -9,6 +9,7 @@
 package cocktail.api;
 
 import cocktail.core.event.EventConstants;
+import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
 import cocktail.core.timer.Timer;
@@ -49,6 +50,18 @@ typedef Viewport = {
  */
 class CocktailView
 {
+	/**
+	 * key code listened to, to interact with the 
+	 * Document
+	 */
+	
+	private static inline var TAB_KEY_CODE:Int = 9;
+	
+	private static inline var ENTER_KEY_CODE:Int = 13;
+	
+	private static inline var SPACE_KEY_CODE:Int = 32;
+	
+	
 	/**
 	 * the wrapped html document
 	 */
@@ -314,7 +327,7 @@ class CocktailView
 	 */
 	private function setKeyboardBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
 	{
-		platform.keyboardListener.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
+		platform.keyboardListener.onKeyDown = onPlatformKeyDown;
 		platform.keyboardListener.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 	}
 	
@@ -354,7 +367,53 @@ class CocktailView
 	{
 		document.onNavigateToURL = platform.open;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE PLATFORM AND DOCUMENT BINDINGS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * add custom behaviour after a key down event
+	 */
+	private function onPlatformKeyDown(keyboardEvent:KeyboardEvent):Void
+	{
+		document.onPlatformKeyDownEvent(keyboardEvent);
+		onAfterKeyDownEvent(keyboardEvent, document);
+	}
+	
+	/**
+	 * by default after a key down event, do sequential 
+	 * navigation (focus next or previous element) or
+	 * simulate a click on the currently focused element
+	 * if the right key are pressed
+	 */
+	private function onAfterKeyDownEvent(keyboardEvent:KeyboardEvent, htmlDocument:HTMLDocument):Void
+	{
+		switch (Std.parseInt(keyboardEvent.keyChar))
+		{
+			case TAB_KEY_CODE:
+				//only do sequantial navigation if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
+				{
+					if (keyboardEvent.shiftKey == true)
+					{
+						htmlDocument.focusPreviousElement();
+					}
+					else
+					{
+						htmlDocument.focusNextElement();
+					}
+				}
+	
+			case ENTER_KEY_CODE, SPACE_KEY_CODE:
+				//only simulate click if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
+				{
+					htmlDocument.activeElement.triggerActivationBehaviour();
+				}
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
