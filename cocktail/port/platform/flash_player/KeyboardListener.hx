@@ -82,9 +82,38 @@ class KeyboardListener extends KeyboardListenerBase
 		//TODO : check if charcode and keycode return right values
 		var keyboardEvent:KeyboardEvent = new KeyboardEvent();
 		keyboardEvent.initKeyboardEvent(eventType, true, true, null, Std.string(typedEvent.charCode), Std.string(typedEvent.keyCode), 0,
-		"",	false, "");
+		getModifersList(typedEvent), false, "");
 		
 		return keyboardEvent;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * serialised all pressed modifiers as a white-space separated list
+	 */
+	private function getModifersList(keyboardEvent:flash.events.KeyboardEvent):String
+	{
+		var modifiersList:String = "";
+		
+		if (keyboardEvent.shiftKey == true)
+		{
+			modifiersList += "Shift ";
+		}
+		
+		if (keyboardEvent.ctrlKey == true)
+		{
+			modifiersList += "Control ";
+		}
+		
+		if (keyboardEvent.altKey == true)
+		{
+			modifiersList += "Alt";
+		}
+		
+		return modifiersList; 
 	}
 	
 }
