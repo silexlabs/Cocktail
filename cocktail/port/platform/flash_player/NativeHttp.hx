@@ -72,6 +72,22 @@ class NativeHttp extends NativeHttpBase
 	{
 		super.doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		
+		//if built with nme, the text might have been
+		//embedded at compile-time
+		//TODO : also support bytes
+		#if nme
+		var asset:String = nme.Assets.getText(url);
+		
+		//if the asset was embbedded, store it
+		if (asset != null)
+		{
+			response = asset;
+			complete = true;
+			responseHeadersLoaded = true;
+			return;
+		}
+		#end
+		
 		//create a flash URLRequest, storing each parameters of the request
 		var urlRequest:URLRequest = new URLRequest(url);
 		urlRequest.method = method;
