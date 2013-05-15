@@ -13,7 +13,11 @@ import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
+#if (nme && !flash && !air)
+import flash.text.TextField;
+#else
 import flash.text.engine.TextLine;
+#end
 
 /**
  * This is the flash port of the class wrapping a native text element.
@@ -26,7 +30,7 @@ import flash.text.engine.TextLine;
  */
 class NativeText extends NativeTextBase
 {
-	#if nme
+	#if (nme && !flash && !air)
 	/**
 	 * The native text element casted as a TextField
 	 */
@@ -58,7 +62,7 @@ class NativeText extends NativeTextBase
 	{
 		super(nativeTextElement);
 		
-		#if nme
+		#if (nme && !flash && !air)
 		_textField = cast(nativeTextElement);
 		#else
 		_textLine = cast(nativeTextElement);
@@ -70,7 +74,7 @@ class NativeText extends NativeTextBase
 	 */
 	override public function dispose():Void
 	{
-		#if nme
+		#if (nme && !flash && !air)
 		_textField = null;
 		#else
 		_textLine = null;
@@ -90,7 +94,7 @@ class NativeText extends NativeTextBase
 	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
 		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-		#if nme
+		#if (nme && !flash && !air)
 		_nativeBitmap.draw(_nativeTextElement);
 		#else
 		_matrix.identity();
@@ -110,7 +114,7 @@ class NativeText extends NativeTextBase
 	 */
 	override private function get_width():Float
 	{
-		#if nme
+		#if (nme && !flash && !air)
 		return _textField.width;
 		#else
 		return _textLine.textWidth;

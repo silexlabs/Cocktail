@@ -13,19 +13,13 @@ package cocktail.port;
  * for suppported platform
  */
 
-//types common to all platform
+//types common to all platforms
 typedef NativeCheckbox = cocktail.port.base.NativeInputBase;
 typedef NativeInput = cocktail.port.base.NativeInputBase;
 typedef NativeRadio = cocktail.port.base.NativeInputBase;
 
-//bindings for air
-#if (air && !macro)
-typedef Platform =  cocktail.port.platform.air.Platform;
-typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
-#end
-
-//bindings for flash and nme
-#if ((flash || nme) && !macro)
+//bindings common to flash/air and nme
+#if ((flash || nme || air) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef KeyboardListener =  cocktail.port.platform.flash_player.KeyboardListener;
@@ -39,28 +33,29 @@ typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswor
 typedef NativeTextArea =  cocktail.port.platform.flash_player.NativeTextArea;
 typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
-#end
-
-//bindings for flash
-#if (flash && !macro)
 typedef NativeAudio =  cocktail.port.platform.flash_player.NativeAudio;
 typedef NativeHttp =  cocktail.port.platform.flash_player.NativeHttp;
 typedef NativeText =  cocktail.port.platform.flash_player.NativeText;
-typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
-typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
-typedef Platform =  cocktail.port.platform.flash_player.Platform;
-typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
-#end
 
-//bindings for nme
-#if (nme && !macro)
-typedef NativeAudio =  cocktail.port.platform.nme.NativeAudio;
-typedef NativeHttp =  cocktail.port.platform.nme.NativeHttp;
-typedef NativeText =  cocktail.port.platform.nme.NativeText;
-typedef NativeVideo =  cocktail.port.base.NativeMedia;
-typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
-typedef Platform =  cocktail.port.platform.flash_player.Platform;
-typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
+	//bindings for flash or air, compiled either using nme or without
+	#if (flash || air)
+		typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
+		typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
+		
+		#if air
+			typedef Platform =  cocktail.port.platform.air.Platform;
+			typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
+		#else
+			typedef Platform =  cocktail.port.platform.flash_player.Platform;
+			typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
+		#end
+	//bindings for nme when not building for flash or air	
+	#elseif nme
+		typedef NativeVideo =  cocktail.port.base.NativeMedia;
+		typedef FontBuilder = cocktail.port.platform.nme.FontBuilder;
+		typedef Platform =  cocktail.port.platform.flash_player.Platform;
+		typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
+	#end
 #end
 
 //default bindings for all the other platform to set a default 
