@@ -52,7 +52,7 @@ class SWFResource extends ResourceBase
 		var bytes = nme.Assets.getBytes(url);
 		if (bytes != null)
 		{
-			#if air
+			#if (air || flash)
 			
 			//if the runtime is air, use native flash api to load
 			//content from bytes
