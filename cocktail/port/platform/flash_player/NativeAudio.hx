@@ -177,6 +177,20 @@ class NativeAudio extends NativeMedia
 	 */
 	private function initSound(src:String):Void
 	{
+		//if built with nme the soune might
+		//have been embedded at compile time
+		#if nme
+		var asset:Sound = nme.Assets.getSound(src);
+		
+		//here the sound file was embedded, use it
+		if (asset != null)
+		{
+			_sound = asset;
+			onNativeLoadedMetaData();
+			return;
+		}
+		#end
+		
 		//in flash, Sound object can't be reused
 		//for multiple sounds
 		_sound = new Sound();

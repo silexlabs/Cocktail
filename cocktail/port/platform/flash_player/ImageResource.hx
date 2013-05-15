@@ -11,6 +11,7 @@ package cocktail.port.platform.flash_player;
 import cocktail.port.base.ResourceBase;
 import cocktail.core.url.URL;
 import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
@@ -58,6 +59,24 @@ class ImageResource extends ResourceBase
 	 */
 	override private function load(url:String):Void
 	{
+		//if built with nme, the asset might have been embedded
+		//at compile-time
+		#if nme
+		var asset:BitmapData = nme.Assets.getBitmapData(url);
+		
+		//here the asset was embedded, no need
+		//to load
+		if (asset != null)
+		{
+			nativeResource = asset;
+			intrinsicHeight = asset.height;
+			intrinsicWidth = asset.width;
+			intrinsicRatio = intrinsicWidth / intrinsicHeight;
+			onLoadComplete();
+			return;
+		}
+		#end
+		
 		_loader.unload();
 		
 		//listen for complete/error event on the loader
@@ -68,7 +87,7 @@ class ImageResource extends ResourceBase
 		var request:URLRequest = new URLRequest(url);
 		
 		//add a loading context so that the resource will be loaded in the current context
-		#if flash9
+		#if flash
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		var loadingContext:LoaderContext = new LoaderContext(true);
 
@@ -134,8 +153,15 @@ class ImageResource extends ResourceBase
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
+		#if flash
 		intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
 		intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
+		//nme don't support contentLoaderInfo
+		#elseif nme
+		intrinsicHeight = Math.round(loader.height);
+		intrinsicWidth = Math.round(loader.width);
+		#end
+		
 		intrinsicRatio = intrinsicWidth / intrinsicHeight;
 	}
 	
