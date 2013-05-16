@@ -99,6 +99,10 @@ class NativeTextInput extends NativeTextInputBase
 	{
 		var containerGraphicContext:DisplayObjectContainer = graphicContext.nativeLayer.platformLayer;
 		containerGraphicContext.addChild(_textField);
+		
+		//note : the mask should be attached as well to be certain that it is in the 
+		//same coordinate space as the text field
+		containerGraphicContext.addChild(_mask);
 	}
 	
 	/**
@@ -108,6 +112,8 @@ class NativeTextInput extends NativeTextInputBase
 	{
 		var containerGraphicContext:DisplayObjectContainer = graphicContext.nativeLayer.platformLayer;
 		containerGraphicContext.removeChild(_textField);
+		
+		containerGraphicContext.removeChild(_mask);
 	}
 	
 	/**
