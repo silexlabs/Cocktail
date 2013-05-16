@@ -19,3 +19,10 @@ object such as swf, so that their mouse and touch event could be catched.
 Removed as was specific to flash but included implementation in core package
 and can be re-implemented using the embedding api, by using the onUpdate
 callback of the document
+
+
+Removed Air port == b531b14967141884b0918b7c533fcc5a33919cba
+Included use of StageText APi instead of regular Textfield. However it
+was not tested, probably buggy and not as well implemented as text field.
+Air now use text field as well. If the need arise for StageText, it should
+be trivial to re-implement
