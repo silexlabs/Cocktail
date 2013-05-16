@@ -195,8 +195,13 @@ class Platform extends PlatformBase
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
 		
 		//not supported by nme
-		#if flash9
+		#if flash
 		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
+		
+		//stage orientation only supported for air
+		#if air
+		Lib.current.stage.addEventListener(flash.events.StageOrientationEvent.ORIENTATION_CHANGE, onNativeOrientationChange);
 		#end
 	}
 	
@@ -208,8 +213,13 @@ class Platform extends PlatformBase
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
 		
 		//not supported by nme
-		#if flash9
+		#if flash
 		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
+		
+		//stage orientation only supported for air
+		#if air
+		flash.Lib.current.stage.removeEventListener(flash.events.StageOrientationEvent.ORIENTATION_CHANGE, onNativeOrientationChange);
 		#end
 	}
 	
@@ -253,6 +263,16 @@ class Platform extends PlatformBase
 	{
 		updateHitTestingSprite();
 		super.onNativeResize(event);
+	}
+	
+	/**
+	 * When orientation changes, the hit testing Sprite
+	 * must be updated
+	 */
+	override private function onNativeOrientationChange(event:Dynamic):Void
+	{
+		updateHitTestingSprite();
+		super.onNativeOrientationChange(event);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
