@@ -19,7 +19,7 @@ typedef NativeInput = cocktail.port.base.NativeInputBase;
 typedef NativeRadio = cocktail.port.base.NativeInputBase;
 
 //bindings common to flash/air and nme
-#if ((flash || nme || air) && !macro)
+#if ((flash || nme) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef KeyboardListener =  cocktail.port.platform.flash_player.KeyboardListener;
@@ -54,7 +54,7 @@ typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswor
 
 //default bindings for all the other platform to set a default 
 //allowig build
-#if (!flash && !nme && !air)
+#if (!flash && !nme)
 typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.port.base.ResourceBase;
