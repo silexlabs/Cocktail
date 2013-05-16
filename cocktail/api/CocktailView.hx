@@ -409,7 +409,10 @@ class CocktailView
 				//only simulate click if default was not prevented
 				if (keyboardEvent.defaultPrevented == false)
 				{
-					htmlDocument.activeElement.triggerActivationBehaviour();
+					if (htmlDocument.activeElement != null)
+					{
+						htmlDocument.activeElement.triggerActivationBehaviour();
+					}
 				}
 		}
 	}
