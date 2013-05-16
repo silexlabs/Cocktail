@@ -107,7 +107,6 @@ class NativeHttp extends NativeHttpBase
 		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
 		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 		_urlLoader.addEventListener(Event.COMPLETE, onNativeLoadComplete);
-		_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 		
 		//actually starts the request
 		_urlLoader.load(urlRequest);
@@ -144,33 +143,6 @@ class NativeHttp extends NativeHttpBase
 	private function onHttpStatus(event:HTTPStatusEvent):Void
 	{
 		status = event.status;
-	}
-	
-	/**
-	 * Called when there is a cross-domain loading issue.
-	 * 
-	 * This can happen when a swf is loaded from another domain.
-	 * Restart the load with a specialised SWF loader which can
-	 * circumvent those errors, 
-	 * this is hackish, main hack is that it assumes that this is
-	 * a swf which is loaded
-	 */
-	private function onSecurityError(event:SecurityErrorEvent):Void
-	{
-		var resource:SWFResource = new SWFResource(_url);
-		resource.addEventListener(EventConstants.LOAD, function(e) {
-			var swfLoader:Loader = resource.nativeResource;
-			response = swfLoader;
-			complete = true;
-			
-			//send the event instantaneously in this case, to prevent
-			//from missing init event dispatched by the loaded swf, close
-			//the loading to prevent scheduling another progress update which
-			//would dispatch another load event
-			close();
-			onLoadProgress(0);
-			
-		});
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
