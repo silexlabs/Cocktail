@@ -23,6 +23,9 @@ import cocktail.port.Bindings;
  * This is the flash AVM2 implementation of the touch event listener.
  * Listens to flash native touch event
  * 
+ * note : the Multitouch.inputMode should be set to MultiTouchInputPoint.TOUCH_POINT,
+ * so that individual touch event are dispatched by flash
+ * 
  * @author Yannick DOMINGUEZ
  */
 class TouchListener extends TouchListenerBase
@@ -33,10 +36,6 @@ class TouchListener extends TouchListenerBase
 	public function new(platform:Platform) 
 	{
 		super(platform);
-		
-		//must active the input only mode in flash to receive low level
-		//touch input instead of gesture
-		Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
