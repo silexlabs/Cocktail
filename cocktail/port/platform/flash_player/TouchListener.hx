@@ -12,7 +12,6 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
 import cocktail.port.base.TouchListenerBase;
-import cocktail.port.platform.flash_player.Tools;
 import cocktail.core.event.EventData;
 import flash.Lib;
 import flash.ui.Multitouch;
@@ -92,7 +91,7 @@ class TouchListener extends TouchListenerBase
 		}
 
 		var localPoint = new flash.geom.Point(typedEvent.localX, typedEvent.localY);
-		localPoint = Tools.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
+		localPoint = _platform.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
 		
 		var touch:Touch = {
 			identifier:typedEvent.touchPointID,

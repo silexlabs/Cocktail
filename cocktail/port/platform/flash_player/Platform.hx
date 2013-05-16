@@ -24,10 +24,13 @@ import cocktail.core.geom.GeomData;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.Bindings;
 import flash.display.Bitmap;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.display.StageDisplayState;
 import flash.display.StageQuality;
 import flash.display.Graphics;
+import flash.geom.Point;
 import flash.Lib;
 import flash.net.URLRequest;
 import haxe.Log;
@@ -181,6 +184,41 @@ class Platform extends PlatformBase
 	override public function getTopPlatformLayer():PlatformLayer
 	{
 		return _platformLayersRootSprite;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Public utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	* when the mouse event target is not the hit testing sprite (might be a text field for instance),
+	* convert the mouse event point on the space of the hit testing sprite
+	*/
+	public function convertToHitTestingSpriteSpace(point:Point, target:DisplayObject, hitTestingSprite:flash.display.DisplayObject):Point
+	{
+		if (target == hitTestingSprite)
+		{
+			return point;
+		}
+
+		point.x += target.x;
+		point.y += target.y;
+
+		var parent:DisplayObjectContainer = target.parent;
+		while (parent != hitTestingSprite)
+		{
+			point.x += parent.x;
+			point.y += parent.y;
+
+			parent = parent.parent;
+
+			if (parent == null)
+			{
+				return point;
+			}
+		}
+
+		return point;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

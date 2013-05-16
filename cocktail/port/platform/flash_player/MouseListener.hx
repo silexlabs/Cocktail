@@ -14,7 +14,6 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.base.MouseListenerBase;
 import cocktail.port.Bindings;
-import cocktail.port.platform.flash_player.Tools;
 import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
@@ -196,7 +195,7 @@ class MouseListener extends MouseListenerBase
 		var mouseEvent:MouseEvent = new MouseEvent();
 		
 		var localPoint:Point = new Point(typedEvent.localX, typedEvent.localY);
-		localPoint = Tools.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
+		localPoint = _platform.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
 		
 		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
 		//the viewport of the document
