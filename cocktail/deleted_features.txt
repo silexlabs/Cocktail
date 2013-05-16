@@ -26,3 +26,8 @@ Included use of StageText APi instead of regular Textfield. However it
 was not tested, probably buggy and not as well implemented as text field.
 Air now use text field as well. If the need arise for StageText, it should
 be trivial to re-implement
+
+Removed SWFResource == 3ff303c2c737598f5ae8aeb0add5320d683f4a7b
+Loads SWF for flash target. Now swf loaded as byte instead, this class was
+only used as fallback for very specific case related to security. If
+needed, will be trivial to put back
