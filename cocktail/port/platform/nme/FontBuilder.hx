@@ -26,7 +26,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class FontBuilder extends FlashFontBuilderBase
+class FontBuilder extends FlashFontBuilderBase 
 {
 	/**
 	 * class constructor
