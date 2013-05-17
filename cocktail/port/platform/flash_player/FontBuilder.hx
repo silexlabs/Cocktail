@@ -11,7 +11,6 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.port.base.FontBuilderBase;
 import cocktail.port.Bindings;
 
 import flash.text.engine.ElementFormat;
@@ -33,29 +32,8 @@ import cocktail.core.layout.LayoutData;
  * 
  * @author lexa
  */
-class FontBuilder extends FontBuilderBase
+class FontBuilder extends FlashFontBuilderBase
 {
-	/**
-	 * used to hold a runtime specific default
-	 * font name for serif font
-	 */
-	private static inline var SERIF_CSS_FONT_NAME:String = "SERIF";
-	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for sans-serif font
-	 */
-	private static inline var SANS_SERIF_CSS_FONT_NAME:String = "SANS-SERIF";
-	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for monospace font (like courier)
-	 */
-	private static inline var MONOSPACE_CSS_FONT_NAME:String = "MONOSPACE";
-	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
-	
 	/**
 	 * The character used to compute the x height of a font metrics
 	 */
@@ -152,50 +130,6 @@ class FontBuilder extends FontBuilderBase
 		
 		return text;
 	}	
-	
-	/**
-	 * Takes the array containing every font to apply to the
-	 * text (ordered by priority, the first available font being
-	 * used) and return a comma separated list containing the ordered
-	 * font names
-	 * 
-	 * @return a comma separated list of font, generally ordered from most
-	 * specific to most generic, e.g "Universe,Arial,_sans"
-	 */
-	override public function getNativeFontFamily(value:Array<String>):String
-	{
-		var fontFamily:String = "";
-		
-		var length:Int = value.length;
-		for (i in 0...length)
-		{
-			var fontName:String = value[i];
-			
-			//check if the font name is a generic CSS font name,
-			//in which case, it needs to be replaced with the corresponding
-			//flash generic font name
-			switch (fontName.toUpperCase())
-			{
-				case SERIF_CSS_FONT_NAME:
-					fontName = SERIF_FLASH_FONT_NAME;
-					
-				case SANS_SERIF_CSS_FONT_NAME:
-					fontName = SANS_SERIF_FLASH_FONT_NAME;
-					
-				case MONOSPACE_CSS_FONT_NAME:
-					fontName = MONOSPACE_FLASH_FONT_NAME;
-			}
-			
-			fontFamily += fontName;
-			
-			if (i < value.length - 1)
-			{
-				fontFamily += ",";
-			}
-		}
-		
-		return fontFamily;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font rendering and measure
