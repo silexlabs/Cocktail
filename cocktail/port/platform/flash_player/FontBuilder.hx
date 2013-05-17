@@ -173,7 +173,7 @@ class FontBuilder extends FontBuilderBase
 		fontMetrics.ascent =  textField.textHeight / 2;
 
 		textField.text = ",";
-		fontMetrics.descent = textField.textHeight / 2;s
+		fontMetrics.descent = textField.textHeight / 2;
 		#end
 	}
 	
