@@ -135,6 +135,10 @@ class CSSValueConverter
 			case IDENTIFIER(value):
 				fontNames = [value];
 				
+			case STRING(value):
+				trace(value);
+				fontNames = [value];
+				
 			default:	
 				throw 'Illegal value for font family style';
 				
