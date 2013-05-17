@@ -70,25 +70,19 @@ class FontBuilder extends FontBuilderBase
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.size = fontSize;
 		textFormat.font = fontFamily;
-		
 		textField.setTextFormat(textFormat);
 		
-		textField.text = "x";
+		var fontMetricsVO:FontMetricsVO = new FontMetricsVO(fontSize, 0, 0, 0, 0, 0, 0, 0);
 		
-		var ascent:Float =  textField.textHeight / 2;
-
-		textField.text = ",";
-		
-		var descent:Float = textField.textHeight / 2;
+		setAscentAndDescent(textField, fontMetricsVO);
 		
 		textField.text = "x";
-		
-		var xHeight:Float = textField.textHeight;
+		fontMetricsVO.xHeight = textField.textHeight;
 	
 		textField.text = " ";
-		var spaceWidth:Float = textField.textWidth;
+		fontMetricsVO.spaceWidth = textField.textWidth;
 		
-		return new FontMetricsVO(fontSize, ascent, descent, xHeight, 1.0, 1.0, 1.0, spaceWidth);
+		return fontMetricsVO;
 	}
 	
 	/**
@@ -152,6 +146,36 @@ class FontBuilder extends FontBuilderBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * find the ascent and descent of the measured font and set it
+	 * on the font metrics object
+	 * @param	textField
+	 * @param	fontMetrics
+	 */
+	private function setAscentAndDescent(textField:TextField, fontMetrics:FontMetricsVO):Void
+	{
+		//for flash, we can access the text line ascent and descent
+		#if flash
+		
+		textField.text = "x,";
+		var textLineMetrics:flash.text.TextLineMetrics = textField.getLineMetrics(0);
+		fontMetrics.ascent = textLineMetrics.ascent;
+		fontMetrics.descent = textLineMetrics.descent;
+		
+		//for nme, not implemented so approximate
+		//note : seems to be implemented in SVN version 17/05/2013
+		//should be part of next release and then can use 
+		//text line metrics for better result
+		#else
+		
+		textField.text = "x";
+		fontMetrics.ascent =  textField.textHeight / 2;
+
+		textField.text = ",";
+		fontMetrics.descent = textField.textHeight / 2;s
+		#end
+	}
 	
 	/**
 	 * Return a flash TextFormat object, to be
