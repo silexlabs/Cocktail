@@ -9,47 +9,41 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSValueConverter;
+import cocktail.port.base.FontBuilderBase;
 import cocktail.port.Bindings;
 
-import flash.text.engine.ElementFormat;
-import flash.text.engine.FontDescription;
-import flash.text.engine.FontMetrics;
-import flash.text.engine.FontPosture;
-import flash.text.engine.TextBlock;
-import flash.text.engine.TextElement;
-import flash.text.engine.TextLine;
-import flash.text.engine.TypographicCase;
-import flash.text.Font;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import haxe.Log;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
+import flash.text.TextFieldAutoSize;
 import cocktail.core.layout.LayoutData;
-
+import cocktail.core.css.CSSData;
 
 /**
- * This class can measure font metrics using flash API and create native flash text elements
- * 
- * @author lexa
+ * This class measure font metrics and draw native flash text using 
+ * the flash text field
  */
-class FontBuilder extends FlashFontBuilderBase
+class FontBuilder extends FontBuilderBase
 {
 	/**
-	 * The character used to compute the x height of a font metrics
+	 * holds CSS and flash generic serif names
 	 */
-	private static inline var X_HEIGHT_CHARACTER:String =  "x";
+	private static inline var SERIF_CSS_FONT_NAME:String = "SERIF";
+	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
 	
 	/**
-	 * The character used to compute the space width of a font metrics
+	 * holds CSS and flash generig sans serif names
 	 */
-	private static inline var SPACE_WIDTH_CHARACTER:String = " ";
+	private static inline var SANS_SERIF_CSS_FONT_NAME:String = "SANS-SERIF";
+	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
 	
 	/**
-	 * An instance of the flash TextBlock which
-	 * is a factory to create flash text line
-	 * object.
+	 * holds CSS and flash generic monospace names
 	 */
-	private var _textBlock:TextBlock;
+	private static inline var MONOSPACE_CSS_FONT_NAME:String = "MONOSPACE";
+	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	/**
 	 * class constructor
@@ -57,270 +51,152 @@ class FontBuilder extends FlashFontBuilderBase
 	public function new() 
 	{
 		super();
-		_textBlock = new TextBlock();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHOD
+	// Overriden public virtual methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Returns a font metrics data object created using font metrics
-	 * provided by the flash text engine. The
-	 * font metrics are provided for a given font at a given size
+	 * Return font metrics for a given font
+	 * at a given size using a Flash text field
+	 * to measure it
 	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-		//the flash object used to access flash font metrics
-		var elementFormat:ElementFormat = new ElementFormat();
-	
-		//set font name
-		var fontDescription:FontDescription = new FontDescription();
-		fontDescription.fontName = fontFamily;
-		elementFormat.fontDescription = fontDescription;
+		var textField:TextField = new TextField();
+		textField.autoSize = TextFieldAutoSize.LEFT;
 		
-		//set font size used for the font metrics 
-		elementFormat.fontSize = fontSize;
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.size = fontSize;
+		textFormat.font = fontFamily;
 		
-		var elementFormatFontMetrics:FontMetrics = elementFormat.getFontMetrics();
+		textField.setTextFormat(textFormat);
 		
-		//get the ascent (height above the baseline) and descent (height
-		//below the baseline) from the flash font metrics
-		var emBox:flash.geom.Rectangle = elementFormatFontMetrics.emBox;
-		var ascent:Float = Math.abs(emBox.top);
-		var descent:Float = Math.abs(emBox.bottom);
+		textField.text = "x";
+		
+		var ascent:Float =  textField.height / 2;
 
-		//get the x height (roughly the height of a lower-case "x")
-		var xHeight:Float = getXHeight(elementFormat.clone());
+		textField.text = ",";
+		
+		var descent:Float = textField.height / 2;
+		
+		textField.text = "x";
+		
+		var xHeight:Float = textField.height;
 	
-		//get the width of a space character
-		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
+		textField.text = " ";
+		var spaceWidth:Float = textField.width;
 		
-		var fontMetrics:FontMetricsVO = new FontMetricsVO(fontSize, ascent, descent, xHeight, 
-		elementFormatFontMetrics.subscriptOffset, elementFormatFontMetrics.superscriptOffset,
-		elementFormatFontMetrics.underlineOffset, spaceWidth);
-		
-		return fontMetrics;
+		return new FontMetricsVO(fontSize, ascent, descent, xHeight, 1.0, 1.0, 1.0, spaceWidth);
 	}
 	
 	/**
-	 * Overriden to create flash text lines. Uses the flash text engine introduced
-	 * in flash player 10
+	 * Create and return a flash text field
 	 */
 	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeTextElement
 	{
-		//get a flash TextElement, used as the model for a flash textBlock
-		_textBlock.content = getNativeTextElement(text, style, fontFamily);
-		
-		//create a native flash text line
-		//by default, the width of the line to create is an 
-		//'infinite' value (100000). It is used because in Cocktail
-		//text is rendered word by word whereas the
-		//standard way of using the flash text engine
-		//is to create line by line. Creating text content
-		//word by word allow for more control and allows some
-		//use case that wouldn't be possible otherwise such
-		//as setting the word spacing.
-		//Setting an infinite value for the line width assures that
-		//all the text content, which is only 1 word as the text is parsed
-		//beforehand, will be created.
-		var text:TextLine = _textBlock.createTextLine();
-		
-		cleanTextBlock(_textBlock);
-		
-		return text;
+		var textField:flash.text.TextField = new flash.text.TextField();
+		textField.text = text;
+		textField.selectable = false;
+		textField.autoSize = TextFieldAutoSize.LEFT;
+		textField.setTextFormat(getTextFormat(style, fontFamily));
+
+		return textField;
 	}	
+	
+	/**
+	 * Takes the array containing every font to apply to the
+	 * text (ordered by priority, the first available font being
+	 * used) and return a comma separated list containing the ordered
+	 * font names
+	 * 
+	 * @return a comma separated list of font, generally ordered from most
+	 * specific to most generic, e.g "Universe,Arial,_sans"
+	 */
+	override public function getNativeFontFamily(value:Array<String>):String
+	{
+		var fontFamily:String = "";
+		
+		var length:Int = value.length;
+		for (i in 0...length)
+		{
+			var fontName:String = value[i];
+			
+			//check if the font name is a generic CSS font name,
+			//in which case, it needs to be replaced with the corresponding
+			//flash generic font name
+			switch (fontName.toUpperCase())
+			{
+				case SERIF_CSS_FONT_NAME:
+					fontName = SERIF_FLASH_FONT_NAME;
+					
+				case SANS_SERIF_CSS_FONT_NAME:
+					fontName = SANS_SERIF_FLASH_FONT_NAME;
+					
+				case MONOSPACE_CSS_FONT_NAME:
+					fontName = MONOSPACE_FLASH_FONT_NAME;
+			}
+			
+			fontFamily += fontName;
+			
+			if (i < value.length - 1)
+			{
+				fontFamily += ",";
+			}
+		}
+		
+		return fontFamily;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * return the x height of the font which is equal to 
-	 * the height of a lower-case 'x'.
+	 * Return a flash TextFormat object, to be
+	 * used on the created Text Field
 	 */
-	private function getXHeight(elementFormat:ElementFormat):Float
+	private function getTextFormat(style:CoreStyle, fontFamily:String):TextFormat
 	{
-		_textBlock.content = new TextElement(X_HEIGHT_CHARACTER, elementFormat);
-		var textLine:TextLine = _textBlock.createTextLine();
-		var descent:Float = textLine.descent;
-		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
-		
-		cleanTextBlock(_textBlock);
-		
-		return top - descent;
-	}
-	
-	/**
-	 * Return the width of a space character for the given font
-	 * at the given size
-	 */
-	private function getSpaceWidth(elementFormat:ElementFormat):Float
-	{
-		_textBlock.content = new TextElement(SPACE_WIDTH_CHARACTER, elementFormat);
-		
-		//note : when creating just a space, the 'fitSomethind' attribute must
-		//be set to true, else no text is rendered
-		var spaceWidth:Float = _textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width;
-		
-		cleanTextBlock(_textBlock);
-		
-		return spaceWidth;
-	}
-	
-	/**
-	 * Takes a String of text and create a flash TextElement
-	 * from it which is used as a model by a flash textBlock
-	 * to create flash textLines. The TextElement contains
-	 * both a string of text and the display properties
-	 * to apply to it when rendered. A computedStyle
-	 * is provided to render the text
-	 */
-	private function getNativeTextElement(text:String, style:CoreStyle, fontFamily:String):TextElement
-	{	
-		var textElement:TextElement = new TextElement(text);
 		
 		var usedValues:UsedValuesVO = style.usedValues;
 		
-		//create a flash element format object and set its
-		//attribute to match the styles defined in the computedStyle reference
-		var elementFormat:ElementFormat = new ElementFormat();
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.font = fontFamily;
 		
-		//set font size
-		elementFormat.fontSize = style.getAbsoluteLength(style.fontSize);
+		textFormat.letterSpacing = usedValues.letterSpacing;
+		textFormat.size = style.getAbsoluteLength(style.fontSize);
 		
-		//set font weight, style (italique or not), and family
-		var fontDescription:FontDescription = new FontDescription(); 
-		fontDescription.fontWeight = getNativeFontWeight(style.fontWeight);
-		fontDescription.fontPosture = getNativeFontPosture(style.getKeyword(style.fontStyle));
-		fontDescription.fontName = fontFamily;
-		elementFormat.fontDescription = fontDescription;
+		var bold:Bool = false;
 		
-		//color of the text
-		elementFormat.color = usedValues.color.color;
-
-		//normal or small caps
-		elementFormat.typographicCase = getNativeFontVariant(style.getKeyword(style.fontVariant));
-		
-		//space between each letter
-		elementFormat.trackingRight = style.usedValues.letterSpacing;
-		
-		//set the element format as the text element
-		//element format
-		textElement.elementFormat = elementFormat;
-		
-		return textElement;
-	}
-	
-	/**
-	 * Return a flash FontPosture object from
-	 * a FontStyle
-	 */
-	private function getNativeFontPosture(fontStyle:CSSKeywordValue):FontPosture
-	{
-		var nativeFontPosture:FontPosture;
-		
-		switch (fontStyle)
+		switch (style.fontWeight)
 		{
-			case NORMAL:
-				nativeFontPosture = FontPosture.NORMAL;
-				
-			case ITALIC, OBLIQUE:
-				nativeFontPosture = FontPosture.ITALIC;
-				
-			default:
-				nativeFontPosture = null;
-		}
-		
-		return nativeFontPosture;
-	}
-	
-	/**
-	 * Return a flash TypographicCase object from
-	 * a FontVariant
-	 */
-	private function getNativeFontVariant(fontVariant:CSSKeywordValue):TypographicCase
-	{
-		var nativeFontVariant:TypographicCase;
-		
-		switch (fontVariant)
-		{
-			case NORMAL:
-				nativeFontVariant = TypographicCase.DEFAULT;
-				
-			case SMALL_CAPS:
-				nativeFontVariant = TypographicCase.CAPS_AND_SMALL_CAPS;		
-				
-			default:
-				nativeFontVariant = null;
-		}
-		
-		return nativeFontVariant;
-	}
-	
-	/**
-	 * Return a flash FontWeight object from
-	 * a FontWeight
-	 */
-	private function getNativeFontWeight(fontWeight:CSSPropertyValue):flash.text.engine.FontWeight
-	{
-		var nativeFontWeight:flash.text.engine.FontWeight;
-		
-		switch (fontWeight)
-		{
-			case INTEGER(value):
-				if (value > 400)
-				{
-					nativeFontWeight = flash.text.engine.FontWeight.BOLD;
-				}
-				else
-				{
-					nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
-				}
-				
 			case KEYWORD(value):
 				switch(value)
 				{
 					case BOLD, BOLDER:
-						nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+						bold = true;
 						
-					case NORMAL, LIGHTER:	
-						nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
-						
-					default:
-						nativeFontWeight = null;
+					default:	
 				}
-			
-			default:
-				throw 'Illegal value for font weight style';
+				
+			case INTEGER(value):
+				if (value > 400)
+				{
+					bold = true;
+				}
+				
+			default:	
 		}
 		
-		return nativeFontWeight;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private helper methods
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Call clean up method of text block to
-	 * help garbage collection
-	 */
-	private static function cleanTextBlock(textBlock:TextBlock):Void
-	{
-		//help free memory
-		textBlock.releaseLineCreationData();
+		textFormat.bold = bold;
 		
-		//In the flash text engine,
-		//create lines are linked to the 
-		//textBlock that created them, it
-		//is useful to recreate text lines
-		//efficiently
-		//It is of no use in Cocktail
-		//so we break the bond to free memory
-		if (textBlock.firstLine != null)
-		{	
-			textBlock.releaseLines(textBlock.firstLine, textBlock.lastLine );
-		}
+		var fontStyle:CSSKeywordValue = style.getKeyword(style.fontStyle);
+		
+		textFormat.italic = fontStyle == ITALIC || fontStyle == OBLIQUE;
+		
+		textFormat.color = usedValues.color.color;
+		return textFormat;
 	}
 }
