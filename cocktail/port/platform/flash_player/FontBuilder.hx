@@ -158,8 +158,9 @@ class FontBuilder extends FontBuilderBase
 		//for flash, we can access the text line ascent and descent
 		#if flash
 		
-		textField.text = "x,";
+		textField.text = "";
 		var textLineMetrics:flash.text.TextLineMetrics = textField.getLineMetrics(0);
+		
 		fontMetrics.ascent = textLineMetrics.ascent;
 		fontMetrics.descent = textLineMetrics.descent;
 		
