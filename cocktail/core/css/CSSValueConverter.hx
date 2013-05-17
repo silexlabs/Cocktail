@@ -136,7 +136,6 @@ class CSSValueConverter
 				fontNames = [value];
 				
 			case STRING(value):
-				trace(value);
 				fontNames = [value];
 				
 			default:	
