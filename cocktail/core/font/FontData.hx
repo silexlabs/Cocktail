@@ -20,7 +20,7 @@ class FontMetricsVO {
 	 * The font size of 
 	 * the htmlElement, in pixels
 	 */
-	public var fontSize(default, null):Float;
+	public var fontSize:Float;
 	
 	/**
 	 * A characteristic height
@@ -30,7 +30,7 @@ class FontMetricsVO {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	public var ascent(default, null):Float;
+	public var ascent:Float;
 	
 	/**
 	 * A characteristic height
@@ -40,7 +40,7 @@ class FontMetricsVO {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	public var descent(default, null):Float;
+	public var descent:Float;
 	
 	/**
 	 * This is a standard metrics used 
@@ -48,33 +48,33 @@ class FontMetricsVO {
 	 * the height of a lowercase "x" glyph
 	 * at the given font size
 	 */ 
-	public var xHeight(default, null):Float;
+	public var xHeight:Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for subscript
 	 * glyphs
 	 */
-	public var subscriptOffset(default, null):Float;
+	public var subscriptOffset:Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for superscript
 	 * glyphs
 	 */
-	public var superscriptOffset(default, null):Float;
+	public var superscriptOffset:Float;
 	
 	/**
 	 * A suggested offset to apply from
 	 * the baseline when drawing underlines
 	 */
-	public var underlineOffset(default, null):Float;
+	public var underlineOffset:Float;
 	
 	/**
 	 * the width of a space character for
 	 * a given font at a given size
 	 */
-	public var spaceWidth(default, null):Float;
+	public var spaceWidth:Float;
 	
 	public function new(fontSize:Float, ascent:Float, descent:Float, xHeight:Float, subscriptOffset:Float, superscriptOffset:Float,
 	underlineOffset:Float, spaceWidth:Float)
