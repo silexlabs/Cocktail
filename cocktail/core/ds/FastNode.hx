@@ -8,6 +8,10 @@
 */
 package cocktail.core.ds;
 
+interface IFastNode<NodeClass> {
+	
+}
+
 /**
  * This is a node data structure for building 
  * data trees. This is used for all data tress in
@@ -20,7 +24,7 @@ package cocktail.core.ds;
  * 
  * @author Yannick DOMINGUEZ
  */
-class FastNode<NodeClass>
+class FastNode<NodeClass:IFastNode<NodeClass>> implements IFastNode<NodeClass>
 {
 	public var parentNode:NodeClass;
 

@@ -12,6 +12,18 @@ import cocktail.core.event.EventCallback;
 import cocktail.core.event.EventTarget;
 import haxe.Log;
 
+interface IEventTarget {
+	
+}
+
+interface INode<NodeClass> extends IEventTarget {
+	var parentNode:NodeClass;
+	var childNodes(default, null):Array<NodeClass>;
+	var firstChild(get, never):NodeClass;
+	var lastChild(get, never):NodeClass;
+	function cloneNode(deep:Bool):NodeClass;
+}
+
 /**
  * The Node interface is the primary datatype for the entire Document Object Model.
  * It represents a single node in the document tree. While all objects implementing the Node
@@ -29,7 +41,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node<NodeClass> extends EventCallback
+class Node<NodeClass:INode<NodeClass>> extends EventCallback implements INode<NodeClass>
 {	
 	/**
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,
