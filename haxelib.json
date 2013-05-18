@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["cross","js","flash","javascript","nme","html","css"],
   "description": "A Haxe HTML/CSS rendering engine library",
-  "version": "1.0beta5",
+  "version": "1.0.0-beta.5",
   "releasenote": "See changes.txt",
   "contributors": ["silexlabs"],
   "dependencies": {
