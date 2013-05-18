@@ -83,7 +83,12 @@ class FontBuilder extends FontBuilderBase
 	
 		textField.text = " ";
 		textField.setTextFormat(textFormat);
+		#if flash
 		fontMetricsVO.spaceWidth = textField.textWidth;
+		//for nme textWidth don't seem to work when only space
+		#else
+		fontMetricsVO.spaceWidth = textField.width;
+		#end
 		
 		return fontMetricsVO;
 	}
@@ -174,11 +179,11 @@ class FontBuilder extends FontBuilderBase
 		
 		textField.text = "x";
 		textField.setTextFormat(textFormat);
-		fontMetrics.ascent =  textField.textHeight / 2;
+		fontMetrics.ascent =  textField.height / 2;
 
 		textField.text = ",";
 		textField.setTextFormat(textFormat);
-		fontMetrics.descent = textField.textHeight / 2;
+		fontMetrics.descent = textField.height / 2;
 		#end
 	}
 	
