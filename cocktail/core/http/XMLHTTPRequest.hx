@@ -248,7 +248,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		//Set the request username to temp user.
 		//Set the request password to temp password.
 		
-		_authorRequestHeaders = new Hash<String>();
+		_authorRequestHeaders = new Map<String, String>();
 		_send = false;
 		response = null;
 		

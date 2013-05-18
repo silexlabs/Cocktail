@@ -100,7 +100,7 @@ class XMLHttpRequestEventTarget extends EventTarget
 	private function set_onloadstart(value:ProgressEvent->Void):ProgressEvent->Void
 	{
 		updateCallbackListener(EventConstants.LOAD_START, cast(value), cast(onloadstart));
-		return onloadStart = value;
+		return onloadstart = value;
 	}
 	
 	private function set_onprogress(value:ProgressEvent->Void):ProgressEvent->Void

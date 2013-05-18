@@ -53,7 +53,7 @@ class CSSRulesParser
 		var ruleStarted:Bool = false;
 		var rules:Array<String> = new Array<String>();
 		
-		while (!c.isEOF())
+		while (!c.isEof())
 		{
 			switch (state)
 			{
@@ -164,7 +164,7 @@ class CSSRulesParser
 		
 		var cssRule:CSSRule = null;
 		
-		while (!c.isEOF())
+		while (!c.isEof())
 		{
 			switch (state)
 			{
