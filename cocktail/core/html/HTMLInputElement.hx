@@ -837,7 +837,7 @@ class HTMLInputElement extends FormAssociatedElement
 	
 	private function get_type():String
 	{
-		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.INPUT_TYPE_VALUES, HTMLConstants.INPUT_TYPE_TEXT, null);
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.getInputTypeValues(), HTMLConstants.INPUT_TYPE_TEXT, null);
 	}
 	
 	private function set_type(value:String):String

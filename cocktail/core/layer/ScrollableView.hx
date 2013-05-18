@@ -14,6 +14,22 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.css.CSSData;
 
+interface IScrollableView<ViewClass> {
+	var rootElementRenderer(default, null):ElementRenderer;
+	function updateClipRect():Void;
+	function clipIfNeeded(parentClipRect:RectangleVO, layer:ViewClass):Bool;
+	function resetClipRect(x:Float, y:Float, width:Float, height:Float):Void;
+	function updateScrollOffset():Void;
+	function addScrollOffsetIfNeeded(layer:ViewClass, scrollLeft:Float, scrollTop:Float):Void;
+	function resetScrollOffset():Void;
+	function updateScrollableBounds():Void;
+	function isYAxisClipped():Bool;
+	function isXAxisClipped():Bool;
+	function getScrollableBoundsIfNeeded(layer:ViewClass):RectangleVO;
+	function updateClipRect():Void;
+	function updateClippedBounds():Void;
+	function updateBounds():Void;
+}
 
 /**
  * This is a base class for layers which represent the 
@@ -30,7 +46,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ScrollableView<ViewClass:FastNode<ViewClass>> extends FastNode<ViewClass>
+class ScrollableView<ViewClass:(FastNode<ViewClass>, IScrollableView<ViewClass>)> extends FastNode<ViewClass> implements IScrollableView<ViewClass>
 {	
 	/**
 	 * A reference to the ElementRenderer which

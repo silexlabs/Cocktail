@@ -9,7 +9,10 @@
 package cocktail.core.ds;
 
 interface IFastNode<NodeClass> {
-	
+	var nextSibling:NodeClass;
+	var previousSibling:NodeClass;
+	var parentNode:NodeClass;
+	function removeChild(oldChild:NodeClass):Void;
 }
 
 /**

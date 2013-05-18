@@ -12,16 +12,13 @@ import cocktail.core.event.EventCallback;
 import cocktail.core.event.EventTarget;
 import haxe.Log;
 
-interface IEventTarget {
-	
-}
-
-interface INode<NodeClass> extends IEventTarget {
+interface INode<NodeClass>{
 	var parentNode:NodeClass;
 	var childNodes(default, null):Array<NodeClass>;
 	var firstChild(get, never):NodeClass;
 	var lastChild(get, never):NodeClass;
 	function cloneNode(deep:Bool):NodeClass;
+	function removeChild(oldChild:NodeClass):NodeClass;
 }
 
 /**
@@ -41,7 +38,7 @@ interface INode<NodeClass> extends IEventTarget {
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node<NodeClass:INode<NodeClass>> extends EventCallback implements INode<NodeClass>
+class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback implements INode<NodeClass>
 {	
 	/**
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,
