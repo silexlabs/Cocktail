@@ -14,6 +14,10 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.css.CSSData;
 
+/**
+ * Had to add this when updating to Haxe3 as recursive
+ * type parameters no longer compile
+ */
 interface IScrollableView<ViewClass> {
 	var rootElementRenderer(default, null):ElementRenderer;
 	function updateClipRect():Void;

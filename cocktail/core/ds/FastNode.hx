@@ -8,6 +8,10 @@
 */
 package cocktail.core.ds;
 
+/**
+ * Had to add this when updating to Haxe3 as recursive
+ * type parameters no longer compile
+ */
 interface IFastNode<NodeClass> {
 	var nextSibling:NodeClass;
 	var previousSibling:NodeClass;

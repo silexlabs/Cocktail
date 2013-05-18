@@ -12,6 +12,10 @@ import cocktail.core.event.EventCallback;
 import cocktail.core.event.EventTarget;
 import haxe.Log;
 
+/**
+ * Had to add this when updating to Haxe3 as recursive
+ * type parameters no longer compile
+ */
 interface INode<NodeClass>{
 	var parentNode:NodeClass;
 	var childNodes(default, null):Array<NodeClass>;
