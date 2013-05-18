@@ -1,0 +1,13 @@
+{
+  "name": "cocktail",
+  "url": "http://haxe.org/com/libs/cocktail",
+  "license": "MIT",
+  "tags": ["cross","js","flash","javascript","nme","html","css"],
+  "description": "A Haxe HTML/CSS rendering engine library",
+  "version": "1.0beta5",
+  "releasenote": "See changes.txt",
+  "contributors": ["silexlabs"],
+  "dependencies": {
+
+  }
+}
