@@ -82,19 +82,19 @@ class NativeMedia
 	 * The viewport represents the position and size of the
 	 * displayed native video relative to the window
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
+	@:isVar public var viewport(get_viewport, set_viewport):RectangleVO;
 	
 	/**
 	 * Represents the 3x3 transformation matrix to 
 	 * apply to the displayed native video 
 	 */
-	public var matrix(get_matrix, set_matrix):Matrix;
+	@:isVar public var matrix(get_matrix, set_matrix):Matrix;
 	
 	/**
 	 * Represents the alpha, from 0(transparent) to 1.0
 	 * (opaque) to apply to the displayed video
 	 */
-	public var alpha(get_alpha, set_alpha):Float;
+	@:isVar public var alpha(get_alpha, set_alpha):Float;
 	
 	/**
 	 * class constructor

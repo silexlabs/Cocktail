@@ -31,17 +31,17 @@ class NativeTextInputBase extends NativeInputBase
 	
 	//getter/seter for style attributes
 	
-	public var italic(get_italic, set_italic):Bool;
+	@:isVar public var italic(get_italic, set_italic):Bool;
 	
-	public var bold(get_bold, set_bold):Bool;
+	@:isVar public var bold(get_bold, set_bold):Bool;
 	
-	public var color(get_color, set_color):Int;
+	@:isVar public var color(get_color, set_color):Int;
 	
-	public var fontFamily(get_fontFamily, set_fontFamily):String;
+	@:isVar public var fontFamily(get_fontFamily, set_fontFamily):String;
 	
-	public var letterSpacing(get_letterSpacing, set_letterSpacing):Float;
+	@:isVar public var letterSpacing(get_letterSpacing, set_letterSpacing):Float;
 	
-	public var fontSize(get_fontSize, set_fontSize):Float;
+	@:isVar public var fontSize(get_fontSize, set_fontSize):Float;
 	
 	/**
 	 * class constructor
