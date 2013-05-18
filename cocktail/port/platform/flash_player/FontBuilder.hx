@@ -66,6 +66,7 @@ class FontBuilder extends FontBuilderBase
 	{
 		var textField:TextField = new TextField();
 		textField.autoSize = TextFieldAutoSize.LEFT;
+		textField.text = "X";
 		
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.size = fontSize;
@@ -158,7 +159,6 @@ class FontBuilder extends FontBuilderBase
 		//for flash, we can access the text line ascent and descent
 		#if flash
 		
-		textField.text = "";
 		var textLineMetrics:flash.text.TextLineMetrics = textField.getLineMetrics(0);
 		
 		fontMetrics.ascent = textLineMetrics.ascent;
