@@ -30,7 +30,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ScrollableView<ViewClass> extends FastNode<ViewClass>
+class ScrollableView<ViewClass:FastNode<ViewClass>> extends FastNode<ViewClass>
 {	
 	/**
 	 * A reference to the ElementRenderer which
