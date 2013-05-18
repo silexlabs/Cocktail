@@ -32,7 +32,7 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	 * that an XML processor would recognize as markup
 	 * are instead treated as literal text.
 	 */
-	public var value(get_value, set_value):String;
+	@:isVar public var value(get_value, set_value):String;
 	
 	/**
 	 * True if this attribute was explicitly given a value in the instance document,

@@ -69,7 +69,7 @@ class HTTPConstants
 	
 	public static inline var TRACK:String = "TRACK";
 	
-	public static inline function getFormSubmitMethods() return [GET, POST];
+	public static inline function getFormSubmitMethods():Array<String> { return [GET, POST]; }
 	
 	//encodings
 	
@@ -79,7 +79,7 @@ class HTTPConstants
 	
 	public static inline var PLAIN_TEXT:String = "text/plain";
 	
-	public static inline function getFormEncodings() return [URL_ENCODING, FORM_DATA, PLAIN_TEXT];
+	public static inline function getFormEncodings():Array<String>{ return [URL_ENCODING, FORM_DATA, PLAIN_TEXT]; }
 	
 	// schemes
 	
