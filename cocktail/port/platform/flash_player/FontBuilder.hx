@@ -75,12 +75,14 @@ class FontBuilder extends FontBuilderBase
 		
 		var fontMetricsVO:FontMetricsVO = new FontMetricsVO(fontSize, 0, 0, 0, 0, 0, 0, 0);
 		
-		setAscentAndDescent(textField, fontMetricsVO);
+		setAscentAndDescent(textField, fontMetricsVO, textFormat);
 		
 		textField.text = "x";
+		textField.setTextFormat(textFormat);
 		fontMetricsVO.xHeight = textField.textHeight;
 	
 		textField.text = " ";
+		textField.setTextFormat(textFormat);
 		fontMetricsVO.spaceWidth = textField.textWidth;
 		
 		return fontMetricsVO;
@@ -154,7 +156,7 @@ class FontBuilder extends FontBuilderBase
 	 * @param	textField
 	 * @param	fontMetrics
 	 */
-	private function setAscentAndDescent(textField:TextField, fontMetrics:FontMetricsVO):Void
+	private function setAscentAndDescent(textField:TextField, fontMetrics:FontMetricsVO, textFormat:TextFormat):Void
 	{
 		//for flash, we can access the text line ascent and descent
 		#if flash
@@ -171,9 +173,11 @@ class FontBuilder extends FontBuilderBase
 		#else
 		
 		textField.text = "x";
+		textField.setTextFormat(textFormat);
 		fontMetrics.ascent =  textField.textHeight / 2;
 
 		textField.text = ",";
+		textField.setTextFormat(textFormat);
 		fontMetrics.descent = textField.textHeight / 2;
 		#end
 	}
