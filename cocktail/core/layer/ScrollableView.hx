@@ -13,7 +13,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.css.CSSData;
-import haxe.Stack;
+
 
 /**
  * This is a base class for layers which represent the 

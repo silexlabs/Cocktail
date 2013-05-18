@@ -30,7 +30,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import haxe.Log;
 import cocktail.core.layer.ScrollableView;
-import haxe.Stack;
+
 
 /**
  * Each ElementRenderer belongs to a LayerRenderer representing

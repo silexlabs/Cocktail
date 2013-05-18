@@ -28,7 +28,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.timer.Timer;
-import haxe.Stack;
+
 import haxe.xml.Parser;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
