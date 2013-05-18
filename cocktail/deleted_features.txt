@@ -31,3 +31,9 @@ Removed SWFResource == 3ff303c2c737598f5ae8aeb0add5320d683f4a7b
 Loads SWF for flash target. Now swf loaded as byte instead, this class was
 only used as fallback for very specific case related to security. If
 needed, will be trivial to put back
+
+Replaced Flash Text Engine by regular TextField == edc0086356e99839c85993bcfd099e4f6069a1be
+Flash font back-end used Flash Text Engine until now while NME used good ol' TextField.
+Turns out after a few test, TextField rendering is a bit more accurate and all the right font
+metrics are available and soon to be available in NME (18/05/2013). This reduce code complexity, the only
+drawback are some missing advanced text feature on TextField such as small caps but the tradeof seems alright.
