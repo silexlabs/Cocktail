@@ -77,10 +77,10 @@ class NativeText extends NativeTextBase
 		
 		_matrix.identity();
 		
-		//there is a documented 2px gutter in the flash text field before the
+		//there is a documented 2px gutter (horizontal and vertical) in the flash text field before the
 		//first char :
 		//http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextLineMetrics.html
-		_matrix.translate( -2, textYOffset);
+		_matrix.translate( -2, textYOffset + 2);
 		
 		_nativeBitmap.draw(_textField, _matrix);
 		
