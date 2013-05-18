@@ -51,7 +51,7 @@ class NativeHttpBase extends EventTarget
 	/**
 	 * The response headers of the http request
 	 */
-	public var responseHeaders(default, null):Hash<String>;
+	public var responseHeaders(default, null):Map<String, String>;
 	
 	/**
 	 * The response from the http request which might be
@@ -115,13 +115,13 @@ class NativeHttpBase extends EventTarget
 	 * to use with the request
 	 * @param	dataFormat wether the data is received as text or binary data
 	 */
-	public function load(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>, dataFormat:DataFormatValue):Void
+	public function load(url:String, method:String, data:Dynamic, authorRequestHeaders:Map<String, String>, dataFormat:DataFormatValue):Void
 	{
 		//reset all class attributes before loading
 		status = 0;
 		total = 0;
 		loaded = 0;
-		responseHeaders = new Hash<String>();
+		responseHeaders = new Map<String, String>();
 		responseHeadersLoaded = false;
 		response = null;
 		error = false;
@@ -151,7 +151,7 @@ class NativeHttpBase extends EventTarget
 	/**
 	 * Actually starts loading the resource, overriden by each platform 
 	 */
-	private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>, dataFormat:DataFormatValue):Void
+	private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Map<String, String>, dataFormat:DataFormatValue):Void
 	{
 		//abstract
 	}

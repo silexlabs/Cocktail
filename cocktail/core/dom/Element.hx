@@ -25,7 +25,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
+class Element<ElementClass> extends Node<ElementClass>
 {	
 	/**
 	 * The name of the element

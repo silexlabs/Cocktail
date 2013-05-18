@@ -29,7 +29,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node<NodeClass:Node<NodeClass>> extends EventCallback
+class Node<NodeClass> extends EventCallback
 {	
 	/**
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,

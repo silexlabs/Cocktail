@@ -20,7 +20,7 @@ package cocktail.core.ds;
  * 
  * @author Yannick DOMINGUEZ
  */
-class FastNode<NodeClass:FastNode<NodeClass>>
+class FastNode<NodeClass>
 {
 	public var parentNode:NodeClass;
 
