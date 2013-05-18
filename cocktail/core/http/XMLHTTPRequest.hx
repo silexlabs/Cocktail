@@ -73,7 +73,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * Called each time the status of the HTTP request
 	 * changes
 	 */
-	public var onreadystatechange(default, set_onReadyStateChange):Event->Void;
+	public var onreadystatechange(default, set_onreadystatechange):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE ATTRIBUTES
@@ -95,7 +95,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	/**
 	 * The headers returned after an http request
 	 */
-	private var _responseHeaders:Hash<String>;
+	private var _responseHeaders:Map<String, String>;
 	
 	// states flags defined here : http://www.w3.org/TR/2012/WD-XMLHttpRequest-20120117/#states
 	
@@ -141,7 +141,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	/**
 	 * A list consisting of HTTP header name/value pairs to be used in the request.
 	 */
-	private var _authorRequestHeaders:Hash<String>;
+	private var _authorRequestHeaders:Map<String, String>;
 	
 	/**
 	 * The entity body used in the request or null if there is no entity body.
@@ -774,7 +774,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		return responseType = value;
 	}
 	
-	private function set_onReadyStateChange(value:Event->Void):Event->Void
+	private function set_onreadystatechange(value:Event->Void):Event->Void
 	{
 		updateCallbackListener(EventConstants.READY_STATE_CHANGE, value, onreadystatechange);
 		return onreadystatechange = value;

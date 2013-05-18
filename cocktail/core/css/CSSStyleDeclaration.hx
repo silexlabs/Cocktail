@@ -39,7 +39,7 @@ class CSSStyleDeclaration
 	 */
 	public var display(get_display, set_display):String;
 	public var position(get_position, set_position):String;
-	public var cssFloat(get_CSSFloat, set_CSSFloat):String;
+	public var cssFloat(get_cssFloat, set_cssFloat):String;
 	public var clear(get_clear, set_clear):String;
 	public var zIndex(get_zIndex, set_zIndex):String;
 	
@@ -4328,12 +4328,12 @@ class CSSStyleDeclaration
 		return value;
 	}
 	
-	private function get_CSSFloat():String 
+	private function get_cssFloat():String 
 	{
 		return getPropertyValue(CSSConstants.FLOAT);
 	}
 	
-	private function set_CSSFloat(value:String):String 
+	private function set_cssFloat(value:String):String 
 	{
 		setProperty(CSSConstants.FLOAT, value);
 		return value;

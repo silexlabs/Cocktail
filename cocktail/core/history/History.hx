@@ -27,7 +27,7 @@ class History
 	/**
 	 * number of entries in the history
 	 */
-	public var length(getLength, null):Int;
+	public var length(get_length, null):Int;
 	/**
 	 * current state object
 	 * null if initial document state
@@ -78,7 +78,7 @@ class History
 	/**
 	 * getter for the length property
 	 */
-	public function getLength():Int 
+	public function get_length():Int 
 	{
 		return stateDataArray.length;
 	}

@@ -33,7 +33,7 @@ class NativeTextInputBase extends NativeInputBase
 	
 	public var italic(get_italic, set_italic):Bool;
 	
-	public var bold(get_italic, set_italic):Bool;
+	public var bold(get_bold, set_bold):Bool;
 	
 	public var color(get_color, set_color):Int;
 	
