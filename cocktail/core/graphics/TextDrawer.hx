@@ -83,6 +83,9 @@ class TextDrawer
 			_destPoint.x = inlineBox.bounds.x + elementRenderer.globalBounds.x - scrollOffset.x;
 			_destPoint.y = inlineBox.bounds.y + elementRenderer.globalBounds.y - scrollOffset.y;
 			
+			//add the text inline box own leaded ascent and remove the ascent of the text
+			_destPoint.y += inlineBox.leadedAscent - elementRenderer.coreStyle.fontMetrics.ascent;
+			
 			//TODO 2 : should not happen, seems to happen for spaces
 			//on empty lines
 			if (inlineBox.lineBox != null)
@@ -130,7 +133,7 @@ class TextDrawer
 				_decorationRect.width = _renderRect.width;
 				_decorationRect.height = TEXT_DECORATION_THICKNESS;
 				_decorationRect.x = _destPoint.x;
-				_decorationRect.y = _destPoint.y + elementRenderer.getLeadedAscent() - elementRenderer.getLeadedDescent();
+				_decorationRect.y = _destPoint.y + elementRenderer.coreStyle.fontMetrics.ascent / 2;
 				
 				graphicsContext.nativeLayer.graphics.fillRect(_decorationRect, elementRenderer.coreStyle.usedValues.color, clipRect);
 			}
