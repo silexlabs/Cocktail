@@ -20,14 +20,14 @@ package cocktail.core.dom;
  *  
  * @author Yannick DOMINGUEZ
  */
-class NamedNodeMap<ElementClass:Node<ElementClass>>
+class NamedNodeMap
 {
 	/**
 	 * The stored nodes. Kept as an Array
 	 * instead of an Map to allow retrieval
 	 * by ordinal index
 	 */
-	private var _nodes:Array<Attr<ElementClass>>;
+	private var _nodes:Array<Attr>;
 	
 	/**
 	 * The number of nodes in this map.
@@ -39,7 +39,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 */
 	public function new() 
 	{
-		_nodes = new Array<Attr<ElementClass>>();
+		_nodes = new Array<Attr>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 * @return A Node (of any type) with the specified nodeName,
 	 * or null if it does not identify any node in this map.
 	 */
-	public function getNamedItem(name:String):Attr<ElementClass>
+	public function getNamedItem(name:String):Attr
 	{
 		var length:Int = _nodes.length;
 		for (i in 0...length)
@@ -82,9 +82,9 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 * @return If the new Node replaces an existing node the
 	 * replaced Node is returned, otherwise null is returned.
 	 */
-	public function setNamedItem(arg:Attr<ElementClass>):Attr<ElementClass>
+	public function setNamedItem(arg:Attr):Attr
 	{
-		var replacedNode:Attr<ElementClass> = getNamedItem(arg.nodeName);
+		var replacedNode:Attr = getNamedItem(arg.nodeName);
 		
 		if (replacedNode != null)
 		{
@@ -118,9 +118,9 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 * @return The node removed from this map if a node
 	 * with such a name exists.
 	 */
-	public function removeNamedItem(name:String):Attr<ElementClass>
+	public function removeNamedItem(name:String):Attr
 	{
-		var removedNode:Attr<ElementClass> = getNamedItem(name);
+		var removedNode:Attr = getNamedItem(name);
 		
 		if (removedNode == null)
 		{
@@ -141,7 +141,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 * @return The node at the indexth position in the map,
 	 * or null if that is not a valid index.
 	 */
-	public function item(index:Int):Attr<ElementClass>
+	public function item(index:Int):Attr
 	{
 		if (index > length - 1)
 		{

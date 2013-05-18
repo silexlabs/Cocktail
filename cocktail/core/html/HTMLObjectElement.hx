@@ -259,7 +259,7 @@ class HTMLObjectElement extends EmbeddedElement
 				var elementAttributes:Map<String, String> = new Map<String, String>();
 				for (i in 0...attributes.length)
 				{
-					var attr:Attr<HTMLElement> = attributes.item(i);
+					var attr:Attr = attributes.item(i);
 					elementAttributes.set(attr.name, attr.value);
 				}
 				

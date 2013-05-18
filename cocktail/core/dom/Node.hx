@@ -100,7 +100,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
-	public var attributes(default, null):NamedNodeMap<NodeClass>;
+	public var attributes(default, null):NamedNodeMap;
 	
 	/**
 	 * The Document object associated with this node. 
