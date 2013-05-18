@@ -24,7 +24,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 {
 	/**
 	 * The stored nodes. Kept as an Array
-	 * instead of an Hash to allow retrieval
+	 * instead of an Map to allow retrieval
 	 * by ordinal index
 	 */
 	private var _nodes:Array<Attr<ElementClass>>;
