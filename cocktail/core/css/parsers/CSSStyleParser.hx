@@ -89,7 +89,7 @@ class CSSStyleParser
 		//will hold the current css property name
 		var styleName:String = null;
 			
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{	
 			switch (state)
 			{
@@ -287,7 +287,7 @@ class CSSStyleParser
 		//only 2 items else style is invalid
 		var fontNotations:Array<CSSPropertyValue> = [];
 		
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{
 			switch(state)
 			{
@@ -309,7 +309,7 @@ class CSSStyleParser
 				//another component of the style value
 				case COMPONENT_OR_END:
 					
-					if (c.isEof())
+					if (StringTools.isEof(c))
 					{
 						state = END;
 						continue;
@@ -443,7 +443,7 @@ class CSSStyleParser
 				//any charachter other than ";" or the end
 				//of the string is invalid
 				case END:	
-					if (c.isEof())
+					if (StringTools.isEof(c))
 					{
 						break;
 					}
@@ -699,7 +699,7 @@ class CSSStyleParser
 		
 		//if the end of the css string is reached and the number
 		//didn't start with ".", then it is an integer
-		if (c.isEof() && isNumber == false)
+		if (StringTools.isEof(c) && isNumber == false)
 		{
 			var integer:Int = Std.parseInt(styles.substr(start, position - start));
 			styleValues.push(CSSPropertyValue.INTEGER(integer));
@@ -720,7 +720,7 @@ class CSSStyleParser
 		}
 		
 		//store a number if end of css string
-		if (c.isEof())
+		if (StringTools.isEof(c))
 		{
 			var number:Float = Std.parseFloat(styles.substr(start, position - start));
 			styleValues.push(CSSPropertyValue.NUMBER(number));
@@ -857,7 +857,7 @@ class CSSStyleParser
 		
 		while (c != quote)
 		{
-			if (c.isEof())
+			if (StringTools.isEof(c))
 			{
 				return -1;
 			}
@@ -928,7 +928,7 @@ class CSSStyleParser
 		
 		while (c != ')'.code)
 		{
-			if (c.isEof())
+			if (StringTools.isEof(c))
 			{
 				return -1;
 			}

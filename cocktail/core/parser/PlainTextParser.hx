@@ -211,7 +211,7 @@ class PlainTextParser
 		var buffer:String = "";
 		
 		//loop in all character of the text
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{
 			switch (state)
 			{
@@ -301,7 +301,7 @@ class PlainTextParser
 		//the returned text with concatenated space
 		var outputText:String = "";
 		
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{
 			switch (state)
 			{
@@ -397,7 +397,7 @@ class PlainTextParser
 		//the returned text with capitalised words
 		var outputText:String = "";
 		
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{
 			switch (state)
 			{

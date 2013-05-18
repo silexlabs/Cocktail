@@ -54,7 +54,7 @@ class CSSSelectorParser
 		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE,
 		false, null, false, null, false, null, false, false, false);
 		
-		while (!c.isEof())
+		while (!StringTools.isEof(c))
 		{
 			switch (state)
 			{
