@@ -10,6 +10,16 @@
 Changes
 =======
 
+beta 5 
+-------------
+* many small fixes related to CSS and layout, focus, text input...
+* lots of refactoring, removing old code and simplifying existing code
+* added a doc to keep track of removed features with the corresponding commit SHA
+* flash target now uses TextField instead of Flash Text Engine for rendering font. 
+Turns out it looks better and has more accurate font metrics.
+* removed Air and NME port, moved features behind compile flags in flash port instead
+* improved CocktailView, can now be used to override default keyboard shortcuts
+
 beta 4
 -------------
 * Implemented an api to embed a cocktail instance like a webview
