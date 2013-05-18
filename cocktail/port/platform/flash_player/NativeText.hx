@@ -13,35 +13,20 @@ import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
-#if (nme && !flash && !air)
 import flash.text.TextField;
-#else
-import flash.text.engine.TextLine;
-#end
 
 /**
  * This is the flash port of the class wrapping a native text element.
- * The native text element is a TextLine object, as it uses the 
- * flash text engine introduced on flash player 10.
- * For nme, it uses a flash text field as the new flash text engine
- * is not implemented
+ * The native text element is a TextField object
  * 
  * @author Yannick DOMINGUEZ
  */
 class NativeText extends NativeTextBase
 {
-	#if (nme && !flash && !air)
 	/**
-	 * The native text element casted as a TextField
+	 * The native text element cast as a TextField
 	 */
 	private var _textField:TextField;
-	
-	#else
-	/**
-	 * The native text element casted as a TextLine
-	 */
-	private var _textLine:TextLine;
-	#end
 	
 	/**
 	 * The native bitmap data extracted from
@@ -61,12 +46,7 @@ class NativeText extends NativeTextBase
 	public function new(nativeTextElement:NativeTextElement) 
 	{
 		super(nativeTextElement);
-		
-		#if (nme && !flash && !air)
 		_textField = cast(nativeTextElement);
-		#else
-		_textLine = cast(nativeTextElement);
-		#end
 	}
 	
 	/**
@@ -74,11 +54,7 @@ class NativeText extends NativeTextBase
 	 */
 	override public function dispose():Void
 	{
-		#if (nme && !flash && !air)
 		_textField = null;
-		#else
-		_textLine = null;
-		#end
 		_nativeBitmap.dispose();
 		_nativeBitmap = null;
 	}
@@ -88,19 +64,25 @@ class NativeText extends NativeTextBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * return the TextLine or TextField bitmap data as a
+	 * return the TextField bitmap data as a
 	 * native flash BitmapData
 	 */
 	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
-		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-		#if (nme && !flash && !air)
-		_nativeBitmap.draw(_nativeTextElement);
-		#else
+		//this offset is the offset between the top most of the text and the top of the text
+		//field. We want to remove it so that text gets drawn at y=0
+		var textYOffset:Float = _textField.textHeight - _textField.height;
+		
+		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height - textYOffset), true, 0x00000000);
+		
 		_matrix.identity();
-		_matrix.translate(bounds.x, bounds.y);
-		_nativeBitmap.draw(_nativeTextElement, _matrix);
-		#end
+		
+		//there is a documented 2px gutter (horizontal and vertical) in the flash text field before the
+		//first char :
+		//http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextLineMetrics.html
+		_matrix.translate( -2, textYOffset + 2);
+		
+		_nativeBitmap.draw(_textField, _matrix);
 		
 		return _nativeBitmap;
 	}
@@ -110,17 +92,10 @@ class NativeText extends NativeTextBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the TextLine or TextField width
+	 * Return the TextField width
 	 */
 	override private function get_width():Float
 	{
-		#if (nme && !flash && !air)
-		return _textField.width;
-		#else
-		return _textLine.textWidth;
-		#end
+		return _textField.textWidth;
 	}
-	
-	
-	
 }
