@@ -26,7 +26,6 @@ interface IScrollableView<ViewClass> {
 	function isYAxisClipped():Bool;
 	function isXAxisClipped():Bool;
 	function getScrollableBoundsIfNeeded(layer:ViewClass):RectangleVO;
-	function updateClipRect():Void;
 	function updateClippedBounds():Void;
 	function updateBounds():Void;
 }
