@@ -10,7 +10,6 @@ package cocktail.core.resource;
 
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
-import cocktail.Lib;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.core.http.HTTPData;

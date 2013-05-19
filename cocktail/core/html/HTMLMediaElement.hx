@@ -11,7 +11,6 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
-import cocktail.Lib;
 import cocktail.port.base.NativeMedia;
 import cocktail.core.html.HTMLData;
 import cocktail.core.parser.ParserData;

@@ -51,7 +51,6 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
 import cocktail.core.url.URL;
 import cocktail.core.window.Window;
-import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;

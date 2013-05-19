@@ -38,7 +38,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.css.CoreStyle;
-import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.layout.LayoutData;
