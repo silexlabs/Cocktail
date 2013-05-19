@@ -1,16 +1,7 @@
-/*
- * Cocktail, HTML rendering engine
- * http://www.silexlabs.org/haxe/cocktail/
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/haxe/cocktail/licensing/
-*/
-
 Changes
 =======
 
-beta 5 
+1.0.0-beta.5 
 -------------
 * many small fixes related to CSS and layout, focus, text input...
 * lots of refactoring, removing old code and simplifying existing code
