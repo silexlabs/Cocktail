@@ -1,19 +1,10 @@
-/*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
-*/
-
-== TODO ==
-
+TODO
+==============
 High level TODO list for the project, there are also TODO in the code for smaller tasks.
 This is not an exhaustive list, only used as a remainder
 
-
-== CSS 2.1 == 
+CSS 2.1
+==============
 
 === missing styles
 
