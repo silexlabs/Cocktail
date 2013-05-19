@@ -26,7 +26,8 @@ Building
 3. Optionaly, if you also want to build for NME as well as flash/Air : 
 > haxelib install nme
 
-4. You can build now ! You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
+4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
+5. Once you're familiar with the samples, you can use the template in the template folder to start your own project. Have fun !
 
 Licence
 -------------
