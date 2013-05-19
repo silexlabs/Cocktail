@@ -1,13 +1,5 @@
-/*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
-*/
-
-== Deleted Features ==
+Deleted Features
+================
 
 This doc keep track of removed code, which might have been removed
 because it was buggy, hard to maintain or out of scope for cocktail
