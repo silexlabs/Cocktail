@@ -14,7 +14,7 @@ import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.TextInputRenderer;
-import haxe.Stack;
+
 
 /**
  * A layer used to display a native input

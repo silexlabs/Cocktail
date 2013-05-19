@@ -33,7 +33,7 @@ class FontManager
 	 * A cache of the computed font metrics where the
 	 * keys are the font name and the font sizes
 	 */
-	private var _computedFontMetrics:Hash<IntHash<FontMetricsVO>>;
+	private var _computedFontMetrics:Map<String, Map<Int, FontMetricsVO>>;
 	
 	/**
 	 * Class constructor
@@ -41,7 +41,7 @@ class FontManager
 	public function new()
 	{
 		_fontBuilder = new FontBuilder();
-		_computedFontMetrics = new Hash<IntHash<FontMetricsVO>>();
+		_computedFontMetrics = new Map<String, Map<Int, FontMetricsVO>>();
 	}
 	
 	/**
@@ -66,24 +66,24 @@ class FontManager
 		
 		//this method caches all the generated font metrics and
 		//tries first to retrieve them on subsequent calls
-		var fontSizeHash:IntHash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
-		if (fontSizeHash != null)
+		var fontSizeMap:Map<Int, FontMetricsVO> = _computedFontMetrics.get(fontFamily);
+		if (fontSizeMap != null)
 		{
-			fontMetrics = fontSizeHash.get(Math.round(fontSize));
+			fontMetrics = fontSizeMap.get(Math.round(fontSize));
 			if (fontMetrics == null)
 			{
 				fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-				fontSizeHash.set(Math.round(fontSize), fontMetrics);
-				_computedFontMetrics.set(fontFamily, fontSizeHash); 
+				fontSizeMap.set(Math.round(fontSize), fontMetrics);
+				_computedFontMetrics.set(fontFamily, fontSizeMap); 
 			}
 		}
 		else
 		{
 			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-			fontSizeHash = new IntHash<FontMetricsVO>();
-			fontSizeHash.set(Math.round(fontSize), fontMetrics);
+			fontSizeMap = new Map<Int, FontMetricsVO>();
+			fontSizeMap.set(Math.round(fontSize), fontMetrics);
 			
-			_computedFontMetrics.set(fontFamily, fontSizeHash); 
+			_computedFontMetrics.set(fontFamily, fontSizeMap); 
 		}
 		
 		return fontMetrics;

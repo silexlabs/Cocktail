@@ -1,7 +1,7 @@
 package src;
 import cocktail.api.Cocktail;
 import cocktail.api.CocktailView;
-import haxe.Firebug;
+
 import haxe.Http;
 
 /**

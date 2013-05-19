@@ -13,6 +13,20 @@ import cocktail.core.event.EventTarget;
 import haxe.Log;
 
 /**
+ * Had to add this when updating to Haxe3 as recursive
+ * type parameters no longer compile
+ */
+interface INode<NodeClass>{
+	var parentNode:NodeClass;
+	var childNodes(default, null):Array<NodeClass>;
+	var firstChild(get, never):NodeClass;
+	var lastChild(get, never):NodeClass;
+	function cloneNode(deep:Bool):NodeClass;
+	function removeChild(oldChild:NodeClass):NodeClass;
+	function appendChild(newChild:NodeClass):NodeClass;
+}
+
+/**
  * The Node interface is the primary datatype for the entire Document Object Model.
  * It represents a single node in the document tree. While all objects implementing the Node
  * interface expose methods for dealing with children, not all objects implementing the Node
@@ -29,7 +43,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node<NodeClass:Node<NodeClass>> extends EventCallback
+class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback implements INode<NodeClass>
 {	
 	/**
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,
@@ -90,7 +104,7 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
-	public var attributes(default, null):NamedNodeMap<NodeClass>;
+	public var attributes(default, null):NamedNodeMap;
 	
 	/**
 	 * The Document object associated with this node. 
@@ -232,7 +246,7 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	 */
 	public function isSameNode(other:NodeClass):Bool
 	{
-		return other == this;
+		return other == cast(this);
 	}
 	
 	/**
@@ -296,7 +310,7 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	 */
 	public function cloneNode(deep:Bool):NodeClass
 	{
-		var clonedNode:Node<NodeClass> = doCloneNode();
+		var clonedNode:NodeClass = doCloneNode();
 		if (deep == true)
 		{
 			var childLength:Int = childNodes.length;
@@ -396,6 +410,7 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	
 	private function get_nextSibling():NodeClass
 	{
+		
 		//if the node is not attached, it
 		//has no siblings
 		if (parentNode == null)
@@ -403,7 +418,8 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 			return null;
 		}
 		
-		else if (parentNode.lastChild != this)
+		var thisAsNodeClass:NodeClass = cast(this);
+		if (parentNode.lastChild != thisAsNodeClass)
 		{
 			//loop in all child to find this node and return
 			//the next one
@@ -416,9 +432,9 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 				//equality ("===") and cause infinite loop. It seems simpler
 				//to correct here than to subclass for php target
 				#if php
-				if (untyped __physeq__(parentChildNodes[i], this))
+				if (untyped __physeq__(parentChildNodes[i], thisAsNodeClass))
 				#else
-				if (parentChildNodes[i] == this)
+				if (parentChildNodes[i] == thisAsNodeClass)
 				#end
 				{
 					return parentChildNodes[i + 1];
@@ -440,12 +456,14 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 		{
 			return null;
 		}
-		else if (parentNode.firstChild != this)
+		
+		var thisAsNodeClass:NodeClass = cast(this);
+		if (parentNode.firstChild != thisAsNodeClass)
 		{
 			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (parentNode.childNodes[i] == this)
+				if (parentNode.childNodes[i] == thisAsNodeClass)
 				{
 					return parentNode.childNodes[i - 1];
 				}

@@ -81,7 +81,7 @@ class CSSStyleRule extends CSSRule
 		var position:Int = 0;
 		var c:Int = css.fastCodeAt(position);
 		
-		while (!c.isEOF())
+		while (!StringTools.isEof(c))
 		{
 			switch (state)
 			{

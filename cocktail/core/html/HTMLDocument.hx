@@ -57,7 +57,7 @@ import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
-import haxe.Stack;
+
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.

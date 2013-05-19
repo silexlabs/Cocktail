@@ -11,7 +11,7 @@ package cocktail.core.timer;
 import cocktail.core.timer.TimerData;
 import cocktail.port.Bindings;
 import haxe.Log;
-import haxe.Stack;
+
 
 /**
  * Manages the event loop of the document.

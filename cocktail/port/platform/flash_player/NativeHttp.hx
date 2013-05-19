@@ -68,7 +68,7 @@ class NativeHttp extends NativeHttpBase
 	 * 
 	 * TODO 2 : implement custom request header
 	 */
-	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>, dataFormat:DataFormatValue):Void
+	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Map<String, String>, dataFormat:DataFormatValue):Void
 	{
 		super.doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		

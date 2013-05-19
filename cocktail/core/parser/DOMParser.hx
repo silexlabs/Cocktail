@@ -57,7 +57,7 @@ class DOMParser
 		// serialize node's attributes
 		for (i in 0...node.attributes.length)
 		{
-			var attribute:Attr<HTMLElement> = cast(node.attributes.item(i));
+			var attribute:Attr = cast(node.attributes.item(i));
 
 			if (attribute.specified == true)
 			{
@@ -159,11 +159,11 @@ class DOMParser
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
 					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap<HTMLElement> = child.attributes;
+					var childAttributes:NamedNodeMap = child.attributes;
 					var childAttributesLength:Int = childAttributes.length;
 					for (j in 0...childAttributesLength)
 					{
-						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
+						var attribute:Attr = cast(childAttributes.item(j));
 
 						if (attribute.specified == true)
 						{

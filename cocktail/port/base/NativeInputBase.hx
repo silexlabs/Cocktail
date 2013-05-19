@@ -25,12 +25,12 @@ class NativeInputBase
 	/**
 	 * get/set the value of the input
 	 */
-	public var value(get_value, set_value):String;
+	@:isVar public var value(get_value, set_value):String;
 	
 	/**
 	 * get/set the checkedness of the input
 	 */
-	public var checked(get_checked, set_checked):Bool;
+	@:isVar public var checked(get_checked, set_checked):Bool;
 	
 	/**
 	 * get/set the maxLength of the input, used only
@@ -64,14 +64,14 @@ class NativeInputBase
 	 * get/set the position of the input relative to
 	 * the viewport
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
+	@:isVar public var viewport(get_viewport, set_viewport):RectangleVO;
 	
 	/**
 	 * get/set the cliprect of the input which is the rectangle,
 	 * relative to the viewport where the input can be displayed 
 	 * without being masked
 	 */
-	public var clipRect(get_clipRect, set_clipRect):RectangleVO;
+	@:isVar public var clipRect(get_clipRect, set_clipRect):RectangleVO;
 	
 	/**
 	 * Callback, called when the native input is

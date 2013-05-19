@@ -1,0 +1,13 @@
+{
+  "name": "cocktail",
+  "url": "http://www.silexlabs.org/haxe/cocktail/",
+  "license": "MIT",
+  "tags": ["cross","js","flash","javascript","nme","html","css"],
+  "description": "HTML/CSS rendering engine",
+  "version": "1.0.0-beta.5",
+  "releasenote": "See changes.txt",
+  "contributors": ["silexlabs"],
+  "dependencies": {
+
+  }
+}

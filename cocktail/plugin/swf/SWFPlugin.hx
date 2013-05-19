@@ -138,7 +138,7 @@ class SWFPlugin extends Plugin
 	/**
 	 * class constructor, get a reference to the loaded swf
 	 */
-	public function new(node:HTMLElement, elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
+	public function new(node:HTMLElement, elementAttributes:Map<String, String>, params:Map<String, String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(node, elementAttributes, params, loadComplete, loadError);
 		_swfBounds = new RectangleVO();
