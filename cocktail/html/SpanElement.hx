@@ -6,3 +6,5 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
+
+typedef SpanElement = cocktail.core.html.HTMLElement;
