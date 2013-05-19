@@ -8,26 +8,26 @@
 */
 package cocktail;
 
-import cocktail.core.html.HTMLDocument;
-import cocktail.core.window.Window;
+import cocktail.html.Document;
+import cocktail.html.DOMWindow;
 
 /**
  * Entry point of the Cocktail library
- * mimicking js.Lib
+ * mimicking js.Browser
  * 
  * @author Yannick DOMINGUEZ
  */
-class Lib 
+class Browser 
 {
 	/**
 	 * Return the html document
 	 */
-	public static var document(default, null):HTMLDocument;
+	public static var document(default, null):Document;
 	
 	/**
 	 * return the window
 	 */
-	public static var window(default, null):Window;
+	public static var window(default, null):DOMWindow;
 	
 	/**
 	 * class constructor. private as this
@@ -46,7 +46,7 @@ class Lib
 	 * instantiate Docuement and Window, called
 	 * the first time either of them is requested
 	 */
-	public static function init(htmlDocument:HTMLDocument):Void
+	public static function init(htmlDocument:Document):Void
 	{
 		document = htmlDocument;
 		window = document.window;
