@@ -44,7 +44,7 @@ import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 import cocktail.core.parser.ParserData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
