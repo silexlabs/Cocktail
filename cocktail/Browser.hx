@@ -8,8 +8,8 @@
 */
 package cocktail;
 
-import cocktail.html.Document;
-import cocktail.html.DOMWindow;
+import cocktail.core.html.HTMLDocument;
+import cocktail.core.window.Window;
 
 /**
  * Entry point of the Cocktail library
@@ -22,12 +22,12 @@ class Browser
 	/**
 	 * Return the html document
 	 */
-	public static var document(default, null):Document;
+	public static var document(default, null):HTMLDocument;
 	
 	/**
 	 * return the window
 	 */
-	public static var window(default, null):DOMWindow;
+	public static var window(default, null):Window;
 	
 	/**
 	 * class constructor. private as this
@@ -46,7 +46,7 @@ class Browser
 	 * instantiate Docuement and Window, called
 	 * the first time either of them is requested
 	 */
-	public static function init(htmlDocument:Document):Void
+	public static function init(htmlDocument:HTMLDocument):Void
 	{
 		document = htmlDocument;
 		window = document.window;
