@@ -12,7 +12,7 @@
 	<haxelib name="nme" />
 	<haxelib name="cocktail" />
 
-	<assets path="../bin/index.html" rename="index.html"></assets>
+	<assets path="../bin" rename="" include="index.html"></assets>
 	<assets path="../bin/assets" rename="assets"></assets>
 	
 	<ndll name="std" />
