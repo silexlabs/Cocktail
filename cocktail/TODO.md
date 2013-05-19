@@ -6,14 +6,15 @@ This is not an exhaustive list, only used as a remainder
 CSS 2.1
 ==============
 
-=== missing styles
+missing styles
+---------------
 
-==== IMPORTANT
+### Important
 
 - list styles (list-style, list-style-image...)
 - tables styles, table layout
 
-==== LESS IMPORTANT
+### Less important
 
 - content (with :after and :before pseudo-styles)
 - direction, unicode-bidi (useful for right to left languages)
@@ -21,7 +22,7 @@ CSS 2.1
 - counter
 - paged media styles
 
-=== incomplete styles
+### incomplete styles
 
 - display, misses list and tables related values
 - border/outline, only support for solid lines
@@ -31,7 +32,7 @@ CSS 2.1
 - for selectors, lang pseudoClass not implemented
 - background-attachment implemented as CSS style but not implemented at rendering
 
-=== buggy/incomplete implementations
+### buggy/incomplete implementations
 
 - "clear" style implementation should be improved
 - vertical-align, other than baseline, not tested enough
@@ -40,54 +41,58 @@ CSS 2.1
 - text parser in PlainTextParser needs to be rewritten
 - anonymous block box property inheritance is buggy
 
-=== refactoring/re-packaging
+### refactoring/re-packaging
 
 - anonymous text element should be wrapped in anonymous inline box
 - graphics context tree should be more isolated when compositing disabled, add a ComposableLayerRenderer for when compositing enabled ?
 
-== CSS 3 ==
+CSS 3
+=========
 
-=== missing styles (not all CSS 3 styles here, only those that we plan to implement in the year)
+missing styles (not all CSS 3 styles here, only those that we plan to implement in the year)
+--------------
 
 - border-radius
 - box-shadow / text-shadow
 - gradient
 
-=== nice to have
+### nice to have
 
 - media queries
 - font-face
 
-=== incomplete styles
+### incomplete styles
 
 - background shorthand is at level 2.1 and not 3 of CSS
 
-=== buggy implementations
+### buggy implementations
 
 - CSS transition, only style with 1 float value works now (like width, height...), no color or matrix transitions for instance.
 - CSS transform (2d), mostly implemented but currently broken.
 
-== HTML 4 == 
+HTML 4
+============
 
-=== features
+### features
 
 - managing html entities
 - implement text selection
 
-=== missing tags
+### missing tags
 
 - select
 - button
 - embed
 
-=== nice to have
+### nice to have
 
 - plugin system for object and embed tag
 - true html parser (instead of haxe xml parser)
 - iframe
 
-== HTML 5 ==
+HTML 5 
+==============
 
-=== nice to have
+### nice to have
 
 - canvas 2d
