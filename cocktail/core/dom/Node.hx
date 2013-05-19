@@ -427,15 +427,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 			var length:Int = parentChildNodes.length;
 			for (i in 0...length)
 			{
-				//TODO IMPORTANT : big hack for php target. Without
-				//this specific method, comparaison does'nt use strict
-				//equality ("===") and cause infinite loop. It seems simpler
-				//to correct here than to subclass for php target
-				#if php
-				if (untyped __physeq__(parentChildNodes[i], thisAsNodeClass))
-				#else
 				if (parentChildNodes[i] == thisAsNodeClass)
-				#end
 				{
 					return parentChildNodes[i + 1];
 				}
