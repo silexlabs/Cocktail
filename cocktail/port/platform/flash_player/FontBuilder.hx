@@ -163,28 +163,9 @@ class FontBuilder extends FontBuilderBase
 	 */
 	private function setAscentAndDescent(textField:TextField, fontMetrics:FontMetricsVO, textFormat:TextFormat):Void
 	{
-		//for flash, we can access the text line ascent and descent
-		#if flash
-		
 		var textLineMetrics:flash.text.TextLineMetrics = textField.getLineMetrics(0);
-		
 		fontMetrics.ascent = textLineMetrics.ascent;
 		fontMetrics.descent = textLineMetrics.descent;
-		
-		//for nme, not implemented so approximate
-		//note : seems to be implemented in SVN version 17/05/2013
-		//should be part of next release and then can use 
-		//text line metrics for better result
-		#else
-		
-		textField.text = "x";
-		textField.setTextFormat(textFormat);
-		fontMetrics.ascent =  textField.height / 2;
-
-		textField.text = ",";
-		textField.setTextFormat(textFormat);
-		fontMetrics.descent = textField.height / 2;
-		#end
 	}
 	
 	/**
