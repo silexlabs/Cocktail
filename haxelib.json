@@ -5,7 +5,7 @@
   "tags": ["cross","js","flash","javascript","nme","html","css"],
   "description": "HTML/CSS rendering engine",
   "version": "1.0.0-beta.5",
-  "releasenote": "See changes.txt",
+  "releasenote": "See changes.md",
   "contributors": ["silexlabs"],
   "dependencies": {
 
