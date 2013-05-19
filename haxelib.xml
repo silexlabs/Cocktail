@@ -8,5 +8,5 @@
     <tag v="html"/>
 	<tag v="css"/>
     <description>A Haxe HTML/CSS rendering engine library</description>
-    <version name="1.0beta5">See changes.txt</version>
+    <version name="1.0.0-beta.5">See changes.txt</version>
 </project>
