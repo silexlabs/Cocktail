@@ -1,16 +1,14 @@
-/**
-	put the css for your project here
-*/
-
-/**
-	example
-*/
-
 body {
 	background-color:rgba(125,125,125,0.0);
 	color:white;
 	font-family:sans-serif;
 	border-left:black solid thin;
+	margin:0;
+}
+
+h5 {
+	color:black;
+	margin:0;
 }
 
 h3:hover {
