@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
+import js.Browser;
 
 class Main
 {
@@ -19,10 +19,10 @@ class Main
 		#end
 		
 		//document and window now accessible
-		Lib.window.onload = function(e) {
+		Browser.window.onload = function(e) {
 			 
 			//document is now loaded
-			var document = Lib.document;
+			var document = Browser.document;
 		};
 	}
 }
