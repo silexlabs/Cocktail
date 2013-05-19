@@ -19,7 +19,7 @@ class CocktailBrowser
 		var cocktailView = new CocktailView();
 		cocktailView.loadHTML("<html><head></head><body></body></html>");
 		flash.Lib.current.addChild(cocktailView.root);
-		cocktail.Lib.init(cocktailView.document);
+		cocktail.Browser.init(cocktailView.document);
 		
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 		
@@ -28,6 +28,6 @@ class CocktailBrowser
 	
 	public function new() 
 	{
-		js.Lib.document.innerHTML = flash.Lib.current.loaderInfo.parameters.html;
+		js.Browser.document.innerHTML = flash.Lib.current.loaderInfo.parameters.html;
 	}
 }

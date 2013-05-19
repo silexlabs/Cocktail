@@ -1,10 +1,12 @@
 package src;
 
 import haxe.Http;
-import js.Dom;
-import js.Lib;
+import js.Browser;
 import haxe.Resource;
 import js.JQuery;
+import js.html.Event;
+import js.html.FrameElement;
+import js.html.AnchorElement;
 
 /**
  * Allow to display html/css tests in both the native js of the browser
@@ -40,7 +42,7 @@ class CSSTester
 	
 	public function new() 
 	{
-		js.Lib.window.onload = function(e) {	
+		Browser.window.onload = function(e) {	
 			init();
 		}
 	}
@@ -53,18 +55,18 @@ class CSSTester
 	{
 		//when this button is clicked, the display is updated with the content
 		//of the code editor
-		var updateButton = Lib.document.getElementById(UPDATE_BUTTON_ID);
+		var updateButton = Browser.document.getElementById(UPDATE_BUTTON_ID);
 		untyped updateButton.addEventListener("click", onUpdate);
 		
 		//listen to window scroll to place some elements if needed
-		untyped Lib.window.addEventListener("scroll", onWindowScroll);
+		untyped Browser.window.addEventListener("scroll", onWindowScroll);
 		
 		
 		//tests url either use a default, or can use an alternate
 		//file provided by query string parameter
 		var testUrl = DEFAULT_TESTS_LIST_URL;
 		
-		var prmstr = Lib.window.location.search.substr(1);
+		var prmstr = Browser.window.location.search.substr(1);
 		var prmarr = prmstr.split("&");
 		for (i in 0...prmarr.length) {
 			var tmparr = prmarr[i].split("=");
@@ -124,7 +126,7 @@ class CSSTester
 			}
 		}
 		
-		var testsBrowser = js.Lib.document.getElementById(TEST_DIV_ID);
+		var testsBrowser = js.Browser.document.getElementById(TEST_DIV_ID);
 		testsBrowser.innerHTML = htmlTests;
 		
 		//activate all tooltips
@@ -147,7 +149,7 @@ class CSSTester
 	 */
 	function onWindowScroll(e:Event)
 	{
-		if (new JQuery(Lib.window).scrollTop() > new JQuery("header").innerHeight())
+		if (new JQuery(Browser.window).scrollTop() > new JQuery("header").innerHeight())
 		{
 			new JQuery("#main-container").addClass('fixed');
 		}
@@ -176,7 +178,7 @@ class CSSTester
 	function onTestClick(e:Event)
 	{
 		untyped e.preventDefault();
-		var anchor:Anchor = cast(e.target);
+		var anchor:AnchorElement = cast(e.target);
 		
 		//always use proxy to prevent cross-domain security error
 		var http = new Http("proxy.php?url="+anchor.href);
@@ -195,7 +197,7 @@ class CSSTester
 	{
 		var urlEncodedHtml = StringTools.urlEncode(html);
 		
-		var jsFrame:Frame = cast(Lib.document.getElementById(JS_FRAME_ID));
+		var jsFrame:FrameElement = cast(Browser.document.getElementById(JS_FRAME_ID));
 		
 		//use data uri scheme to prevent loading the html multiple times, might 
 		//not work in older browser
@@ -206,7 +208,7 @@ class CSSTester
 		swfObject.addParam("wmode", "transparent");
 		swfObject.write(FLASH_OBJECT_ID);
 		
-		//var flashObject = Lib.document.getElementById(FLASH_OBJECT_ID);
+		//var flashObject = Browser.document.getElementById(FLASH_OBJECT_ID);
 		//untyped flashObject.data = COCKTAIL_SWF_URL + urlEncodedHtml;
 		
 		//refresh code editor content
