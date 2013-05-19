@@ -41,3 +41,10 @@ Flash font back-end used Flash Text Engine until now while NME used good ol' Tex
 Turns out after a few test, TextField rendering is a bit more accurate and all the right font
 metrics are available and soon to be available in NME (18/05/2013). This reduce code complexity, the only
 drawback are some missing advanced text feature on TextField such as small caps but the tradeof seems alright.
+
+PHP strict equality
+--------------------------
+aca5ee9123be5b284310c6775cfd192d87f485f6
+_________________________________________
+By default haxe/PHP doesn't use strict equality, without this hack, php build might crash at runtimes. 
+Easy to put back if someone uses PHP target
