@@ -10,10 +10,10 @@ package cocktail.api;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.KeyboardEvent;
-import cocktail.core.html.HTMLDocument;
+import cocktail.html.Document;
 import cocktail.core.http.HTTPConstants;
 import cocktail.core.timer.Timer;
-import cocktail.core.window.Window;
+import cocktail.html.DOMWindow;
 import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import cocktail.core.http.HTTPData;
@@ -65,12 +65,12 @@ class CocktailView
 	/**
 	 * the wrapped html document
 	 */
-	public var document(default, null):HTMLDocument;
+	public var document(default, null):Document;
 	
 	/**
 	 * the wrapped window of the document
 	 */
-	public var window(default, null):Window;
+	public var window(default, null):DOMWindow;
 	
 	/**
 	 * The root of the native display list used
@@ -209,8 +209,8 @@ class CocktailView
 	{
 		var platform:Platform = initPlatform();
 		
-		document = new HTMLDocument();
-		window = new Window(document, platform);
+		document = new Document();
+		window = new DOMWindow(document, platform);
 		document.window = window;
 		updateViewport(viewport);
 	}
@@ -232,7 +232,7 @@ class CocktailView
 	/**
 	 * init the document with the provided html, url and viewport
 	 */
-	private function initDocument(htmlDocument:HTMLDocument, html:String, url:String):Void
+	private function initDocument(htmlDocument:Document, html:String, url:String):Void
 	{
 		if (url != null)
 		{
@@ -257,7 +257,7 @@ class CocktailView
 	 * Can be customised for instance to disable mouse event or touch
 	 * event based on the targeted platform
 	 */
-	private function setPlatformBindings(platform:Platform, htmlDocument:HTMLDocument):Void
+	private function setPlatformBindings(platform:Platform, htmlDocument:Document):Void
 	{
 		setMouseBindings(platform, htmlDocument);
 		setKeyboardBindings(platform, htmlDocument);
@@ -305,7 +305,7 @@ class CocktailView
 	/**
 	 * Binds the platform mouse events to the document
 	 */
-	private function setMouseBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setMouseBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		platform.mouseListener.onMouseDown = htmlDocument.onPlatformMouseEvent;
 		platform.mouseListener.onMouseUp = htmlDocument.onPlatformMouseEvent;
@@ -317,7 +317,7 @@ class CocktailView
 	/**
 	 * Binds the mouse cursor events to the document
 	 */
-	private function setMouseCursorBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setMouseCursorBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		document.onSetMouseCursor = platform.mouseListener.setMouseCursor;
 	}
@@ -325,7 +325,7 @@ class CocktailView
 	/**
 	 * Binds the keyboard events to the document
 	 */
-	private function setKeyboardBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setKeyboardBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		platform.keyboardListener.onKeyDown = onPlatformKeyDown;
 		platform.keyboardListener.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
@@ -334,7 +334,7 @@ class CocktailView
 	/**
 	 * Binds the touch events to the document
 	 */
-	private function setTouchBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setTouchBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
@@ -344,7 +344,7 @@ class CocktailView
 	/**
 	 * Binds the fullscreen events and API to the document
 	 */
-	private function setFullscreenBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setFullscreenBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		platform.onFullScreenChange = document.onPlatformFullScreenChange;
 		document.onEnterFullscreen = platform.enterFullscreen;
@@ -354,7 +354,7 @@ class CocktailView
 	/**
 	 * Binds the viewport events to the document
 	 */
-	private function setViewportBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setViewportBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		platform.onResize = document.onPlatformResizeEvent;
 		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
@@ -363,7 +363,7 @@ class CocktailView
 	/**
 	 * Binds the navigation events to the document
 	 */
-	private function setNavigationBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
+	private function setNavigationBindings(platform:Platform, htmlDocument:Document):Void 
 	{
 		document.onNavigateToURL = platform.open;
 	}
@@ -387,7 +387,7 @@ class CocktailView
 	 * simulate a click on the currently focused element
 	 * if the right key are pressed
 	 */
-	private function onAfterKeyDownEvent(keyboardEvent:KeyboardEvent, htmlDocument:HTMLDocument):Void
+	private function onAfterKeyDownEvent(keyboardEvent:KeyboardEvent, htmlDocument:Document):Void
 	{
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
