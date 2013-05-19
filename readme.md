@@ -23,7 +23,7 @@ Building
 2. Cocktail is available on [haxelib](http://haxe.org/haxelib), once Haxe is installed, open you command prompt and type:
 > haxelib install cocktail
 
-3. Optionaly, if you also want to build for NME as well as flash/Air : 
+3. Optionnaly, if you also want to build for NME as well as flash/Air : 
 > haxelib install nme
 
 4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
