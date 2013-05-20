@@ -33,6 +33,10 @@ Building
 4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
 5. Once you're familiar with the samples, you can use the template in the template folder to start your own project. Have fun !
 
+Maturity
+-------------
+This project has been used in production by core members of the project which could easily debug it. So it's getting stable but expect quirks, especially when using some tricky CSS layout. The API however, as it is based on the W3C standards is very stable.
+
 Licence
 -------------
 
