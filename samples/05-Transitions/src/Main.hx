@@ -118,13 +118,13 @@ class Main
 		//transition
 		transitionBox.addEventListener("transitionend",
 		function(e) {
-			transition(transitionBox);
+			transition(cast transitionBox);
 		},
 		false);
 		
 		transitionBox.addEventListener("webkitTransitionEnd",
 		function(e) {
-			transition(transitionBox);
+			transition(cast transitionBox);
 		},
 		false);
 		
@@ -135,6 +135,6 @@ class Main
 		
 		Browser.document.getElementById("container").appendChild(transitionBox);
 		
-		Timer.delay(function() {transition(transitionBox);}, 1000);
+		Timer.delay(function() {transition(cast transitionBox);}, 1000);
 	}
 }
