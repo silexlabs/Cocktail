@@ -15,6 +15,10 @@ http://www.silexlabs.org/haxe/cocktail/
 
 See you there !
 
+Requirements
+-------------
+Cocktail is a library for the Haxe programming language, you should be familiar with it to use Cocktail. Being familiar with NME (another Haxe library) can also help but is not required to use Cocktail.
+
 Building
 -------------
 
