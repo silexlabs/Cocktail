@@ -30,7 +30,8 @@ Building
 3. Optionnaly, if you also want to build for NME as well as flash/Air : 
 > haxelib install nme
 
-4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
+4. **You can build now !** Haxe uses .hxml files to build projects. You should start with the samples provided in the folder of the cocktail haxelib. Haxelibs are installed in the folder of your Haxe installation. Each sample has a build folder containing .hxml files. To build, open you command prompt and type : 
+> haxe mybuildfile.hxml
 5. Once you're familiar with the samples, you can use the template in the template folder to start your own project. Have fun !
 
 Maturity
