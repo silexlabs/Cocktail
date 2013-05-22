@@ -34,7 +34,7 @@ Building
 > haxe mybuildfile.hxml
 
  If you're on windows, you can just double-click the .hxml file instead.
-5. If you've made it this far, you should check [the getting started tutorial !](http://www.silexlabs.org/haxe/cocktail/tutorials/getting-started-with-cocktail/). 
+5. If you've made it this far, you should check [the getting started tutorial !](http://www.silexlabs.org/haxe/cocktail/tutorials/getting-started-with-cocktail/) 
 
 Maturity
 -------------
