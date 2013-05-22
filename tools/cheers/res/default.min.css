@@ -1,0 +1,7 @@
+*{margin:0;font-family:sans-serif;text-decoration:none;}
+:link,:visited{color:#3a87ad;}
+:link:hover,:visited:hover{background:#3a87ad;color:white;}
+.logo{display:block;text-align:center;margin:2em;}
+.subtitle{color:orange;}
+header{display:block;border-bottom:solid grey thin;padding-bottom:10px;}
+p{margin-top:1em;}
