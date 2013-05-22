@@ -36,7 +36,7 @@ class Cheers
 	/**
 	 * interval between updates in milliseconds
 	 */
-	static inline var UPDATE_DELAY:Int = 1000;
+	static inline var UPDATE_DELAY:Int = 300;
 	
 	/**
 	 * html editor
