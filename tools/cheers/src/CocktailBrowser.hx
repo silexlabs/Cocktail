@@ -56,14 +56,15 @@ class CocktailBrowser
 		try {
 			cv.document.documentElement.innerHTML = html;
 			var header = cv.document.getElementsByTagName("header")[0];
-			var style = cv.document.createElement("style");
-			style.appendChild(cv.document.createTextNode(css));
-			cv.document.body.appendChild(style);
 			
 			//set base url for iframe so it can load local resource
 			var base = cv.document.createElement("base");
 			base.setAttribute("href", baseUrl);
 			header.appendChild(base);
+			
+			var style = cv.document.createElement("style");
+			style.appendChild(cv.document.createTextNode(css));
+			header.appendChild(style);
 			
 		}
 		//html could not be parsed

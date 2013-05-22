@@ -129,6 +129,6 @@ class Cheers
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content
 		var iframe:Dynamic = Lib.document.getElementById("browser");
-		iframe.src = "data:text/html;charset=utf-8," + object.getContent();
+		iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(object.getContent());
 	}
 }
