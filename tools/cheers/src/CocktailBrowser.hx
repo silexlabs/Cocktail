@@ -11,10 +11,14 @@ import js.Lib;
  */
 class CocktailBrowser 
 {
+	/**
+	 * cocktail view ref
+	 */
 	static var cv:CocktailView;
 	
 	static function main()
 	{
+		//init cocktail view with minimal html
 		cv = new CocktailView();
 		cv.loadHTML("<!doctype html><html><head></head><body></body></html>");
 
@@ -22,12 +26,17 @@ class CocktailBrowser
 		new CocktailBrowser();
 	}
 	
+	/**
+	 * constructor, set external interface callbacks
+	 */
 	public function new() 
 	{
 		if (ExternalInterface.available)
 		{
 			ExternalInterface.addCallback("updateDocument", updateDocument);
 			ExternalInterface.addCallback("getContent", getContent);
+			
+			//signals to the app that ready
 			ExternalInterface.call("window.cheers.cocktailBrowserReady");
 		}
 		else {
@@ -35,8 +44,15 @@ class CocktailBrowser
 		}
 	}
 	
+	/**
+	 * update the document's html with the html and
+	 * css provided by the user
+	 */
 	function updateDocument(html, css)
 	{
+		//save html before change
+		var currentHTML = getContent();
+		
 		try {
 			cv.document.documentElement.innerHTML = html;
 			var style = cv.document.createElement("style");
@@ -47,11 +63,15 @@ class CocktailBrowser
 		//html could not be parsed
 		catch(e:Dynamic)
 		{
-			
+			//restore previous html
+			cv.document.documentElement.innerHTML = currentHTML;
 		}
 		
 	}
 	
+	/**
+	 * return the serialised content of the document
+	 */
 	function getContent()
 	{
 		try {
