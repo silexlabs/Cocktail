@@ -77,7 +77,7 @@ class Cheers
 	 */
 	function init()
 	{
-		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'html'})");
+		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'xml'})");
 		cssCodeMirror = untyped __js__("CodeMirror(document.getElementById('css-editor'), {mode:'css'})");
 		
 		htmlCodeMirror.setValue(Resource.getString("html"));
