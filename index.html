@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html> 
+<html lang="en"> 
 	<head>
 		<link href="css/style.css" type="text/css" rel="stylesheet" />
 		<link rel="stylesheet" href="lib/codemirror.css">
+		
+		<link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+		<link href="css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script type="text/javascript" src="js/bootstrap.min.js" ></script>
 		
 		<script type="text/javascript" src="cheers.js" ></script>
 		<script src="lib/codemirror.js"></script>
@@ -10,24 +15,26 @@
 		<script src="lib/mode/css.js"></script>
 	</head>
 	<body>
-		<div class="column left">
-			<div class="box html">
+		<div class="row-fluid">
+		<div class="span4 well">
+			<div class="html">
 				<div class="title">HTML</div>
 				<div id="html-editor"></div>
 			</div>
-			<div class="box css">
+			<div class="css">
 				<div class="title">CSS</div>
 				<div id="css-editor"></div>
 			</div>
 		</div>
-		<div class="column center">
+		<div class="span4 well">
 			<iframe id="browser"  height="100%" width="100%" ></iframe>
 		</div>
-		<div class="column right">
+		<div class="span4 well">
 			<object id="cocktail" height="100%" width="100%" data="cocktail.swf" >
 				<param name="allowScriptAccess" value="sameDomain" />
 				<param name="scale" value="noscale" />
 			</object> 
+		</div>
 		</div>
 	</body>
 </html>
