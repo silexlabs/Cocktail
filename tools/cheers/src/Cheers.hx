@@ -1,5 +1,6 @@
 package src;
 
+import haxe.Resource;
 import haxe.Timer;
 import js.Lib;
 
@@ -72,8 +73,8 @@ class Cheers
 		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'html'})");
 		cssCodeMirror = untyped __js__("CodeMirror(document.getElementById('css-editor'), {mode:'css'})");
 		
-		htmlCodeMirror.setValue("<!doctype html><html><head></head><body>ssssssssssssss</body></html>");
-		cssCodeMirror.setValue("body {margin:0;}");
+		htmlCodeMirror.setValue(Resource.getString("html"));
+		cssCodeMirror.setValue(Resource.getString("css"));
 	
 		htmlCodeMirror.on("change", onInput);
 		cssCodeMirror.on("change", onInput);
