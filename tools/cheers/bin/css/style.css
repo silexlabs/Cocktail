@@ -1,5 +1,8 @@
 object, iframe, embed {
-	min-height:400px;
+	min-height:600px;
 	border:none;
-	background:white;
+}
+
+.renderers .well, .editor .well {
+	background-color:white;
 }
