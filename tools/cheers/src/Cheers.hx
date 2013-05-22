@@ -124,7 +124,7 @@ class Cheers
 	function update() 
 	{
 		var object:Dynamic = Lib.document.getElementById("cocktail");	
-		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue());
+		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Lib.window.location.href);
 		
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content

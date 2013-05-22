@@ -48,16 +48,22 @@ class CocktailBrowser
 	 * update the document's html with the html and
 	 * css provided by the user
 	 */
-	function updateDocument(html, css)
+	function updateDocument(html, css, baseUrl)
 	{
 		//save html before change
 		var currentHTML = getContent();
 		
 		try {
 			cv.document.documentElement.innerHTML = html;
+			var header = cv.document.getElementsByTagName("header")[0];
 			var style = cv.document.createElement("style");
 			style.appendChild(cv.document.createTextNode(css));
 			cv.document.body.appendChild(style);
+			
+			//set base url for iframe so it can load local resource
+			var base = cv.document.createElement("base");
+			base.setAttribute("href", baseUrl);
+			header.appendChild(base);
 			
 		}
 		//html could not be parsed
