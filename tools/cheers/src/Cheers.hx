@@ -11,11 +11,18 @@ import js.Lib;
  * 
  * Input use codeMirror text editor : http://codemirror.net/
  * 
+ * class is exposed to javascript, so that flash can call method
+ * through external interface to signal it is ready
+ * 
  * @author Yannick DOMINGUEZ
  */
 @:expose("cheers")
 class Cheers 
 {
+	/**
+	 * ref to this for static method (a bit
+	 * messy, I know)
+	 */
 	static var self:Cheers;
 	
 	/**
