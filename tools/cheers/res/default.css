@@ -2,6 +2,7 @@
 	margin:0;
 	font-family:sans-serif;
 	text-decoration:none;
+	color:#333;
 }
 
 :link, :visited {
@@ -31,4 +32,11 @@ header {
 
 p {
 	margin-top:1em;
+}
+
+.project-link {
+	font:32px sans-serif;
+	display:block;
+	margin-top:30px;
+	text-align:center;
 }
