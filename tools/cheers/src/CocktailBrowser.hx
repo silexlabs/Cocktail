@@ -28,6 +28,10 @@ class CocktailBrowser
 		{
 			ExternalInterface.addCallback("updateDocument", updateDocument);
 			ExternalInterface.addCallback("getContent", getContent);
+			ExternalInterface.call("window.cheers.cocktailBrowserReady");
+		}
+		else {
+			
 		}
 	}
 	

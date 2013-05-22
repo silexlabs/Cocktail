@@ -6,26 +6,29 @@ import js.Lib;
 /**
  * Webapp demoing Cocktail, allow
  * inputing html and css and test rendering
- * in browser and cocktail.
+ * in browser and cocktail in flash.
  * 
  * Input use codeMirror text editor : http://codemirror.net/
  * 
  * @author Yannick DOMINGUEZ
  */
+@:expose("cheers")
 class Cheers 
 {
+	static var self:Cheers;
+	
 	/**
 	 * entry point
 	 */
 	static function main()
 	{
-		new Cheers();
+		self = new Cheers();
 	}
 	
 	/**
 	 * interval between updates in milliseconds
 	 */
-	static inline var UPDATE_DELAY:Int = 3000;
+	static inline var UPDATE_DELAY:Int = 1000;
 	
 	/**
 	 * html editor
@@ -41,15 +44,23 @@ class Cheers
 	 * wether browser and cocktail 
 	 * content is already set to be updated
 	 */
-	var updateScheduled:Bool;
+	var updateScheduled:Bool = false;
 	
+	/**
+	 * constructor
+	 */ 
 	public function new() 
 	{
-		updateScheduled = false;
 		
-		js.Lib.window.onload = function(e) {	
-			init();
-		}
+	}
+	
+	/**
+	 * called by flash CocktailBrowser through 
+	 * External interface when flash ready
+	 */
+	static function cocktailBrowserReady()
+	{
+		self.init();
 	}
 	
 	/**
@@ -63,18 +74,19 @@ class Cheers
 		
 		htmlCodeMirror.setValue("<!doctype html><html><head></head><body>ssssssssssssss</body></html>");
 		cssCodeMirror.setValue("body {margin:0;}");
-		
-		update();
-		
+	
 		htmlCodeMirror.on("change", onInput);
 		cssCodeMirror.on("change", onInput);
+		
+		scheduleUpdate();
 	}
 	
 	/**
-	 * when user input html or css,
-	 * shedule update of document content
+	 * schedhule an update of html and css
+	 * content. Asynchronous to prevent
+	 * too much update
 	 */
-	function onInput(e)
+	function scheduleUpdate()
 	{
 		if (updateScheduled)
 			return;
@@ -85,6 +97,15 @@ class Cheers
 			}, UPDATE_DELAY);
 			
 		updateScheduled = true;	
+	}
+	
+	/**
+	 * when user input html or css,
+	 * shedule update of document content
+	 */
+	function onInput(e)
+	{
+		scheduleUpdate();
 	}
 	
 	/**
