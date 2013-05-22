@@ -41,8 +41,8 @@ class Cocktail
 		#end
 		
 		//set static reference to the document and window,
-		//so that they can be accessed with cocktail.Lib.document
-		//and cocktail.Lib.window
-		cocktail.Lib.init(cocktailView.document);
+		//so that they can be accessed with cocktail.Browser.document
+		//and cocktail.Browser.window
+		cocktail.Browser.init(cocktailView.document);
 	}
 }

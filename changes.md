@@ -3,6 +3,7 @@ Changes
 
 1.0.0-beta.5 
 -------------
+* switched to haxe 3
 * many small fixes related to CSS and layout, focus, text input...
 * lots of refactoring, removing old code and simplifying existing code
 * added a doc to keep track of removed features with the corresponding commit SHA

@@ -44,20 +44,19 @@ import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 import cocktail.core.parser.ParserData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
 import cocktail.core.url.URL;
 import cocktail.core.window.Window;
-import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
-import haxe.Stack;
+
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.

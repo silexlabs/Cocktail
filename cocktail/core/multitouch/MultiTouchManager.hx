@@ -9,7 +9,7 @@
 package cocktail.core.multitouch;
 
 import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
 import cocktail.core.html.HTMLElement;

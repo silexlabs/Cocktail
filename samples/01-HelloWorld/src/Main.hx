@@ -6,7 +6,6 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
 
 /**
  * Hello world ! Loads the "index.html" file in the bin folder

@@ -28,7 +28,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.timer.Timer;
-import haxe.Stack;
+
 import haxe.xml.Parser;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
@@ -38,7 +38,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.css.CoreStyle;
-import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.layout.LayoutData;

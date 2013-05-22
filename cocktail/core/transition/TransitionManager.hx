@@ -17,7 +17,6 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.parser.ParserData;
 import cocktail.core.transition.TransitionData;
 import cocktail.core.css.CSSData;
-import cocktail.Lib;
 
 /**
  * The transition manager is in charge of starting

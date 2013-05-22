@@ -12,7 +12,7 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
 import cocktail.port.base.TouchListenerBase;
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 import flash.Lib;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
@@ -93,16 +93,14 @@ class TouchListener extends TouchListenerBase
 		var localPoint = new flash.geom.Point(typedEvent.localX, typedEvent.localY);
 		localPoint = _platform.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
 		
-		var touch:Touch = {
-			identifier:typedEvent.touchPointID,
-			target:null,
-			screenX:Math.round(localPoint.x),
-			screenY:Math.round(localPoint.y),
-			clientX:Math.round(localPoint.x),
-			clientY:Math.round(localPoint.y),
-			pageX:0,
-			pageY:0
-		}
+		var touch:Touch = new Touch();
+		touch.identifier = typedEvent.touchPointID;
+		touch.screenX = Math.round(localPoint.x);
+		touch.screenY = Math.round(localPoint.y);
+		touch.clientX = Math.round(localPoint.x);
+		touch.clientY = Math.round(localPoint.y);
+		touch.pageX = 0;
+		touch.pageY = 0;
 		
 		//only init event type and the touch object at this
 		//point, the event data will be completed later before

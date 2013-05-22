@@ -9,7 +9,6 @@
 import cocktail.api.CocktailView;
 import flash.display.Sprite;
 import flash.text.TextField;
-import js.Lib;
 
 /**
  * This sample show how to use cocktail as a

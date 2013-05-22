@@ -11,7 +11,6 @@ package cocktail.core.linebox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.Bindings;
