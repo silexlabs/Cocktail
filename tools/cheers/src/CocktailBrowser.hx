@@ -10,10 +10,14 @@ import cocktail.api.CocktailView;
  */
 class CocktailBrowser 
 {
+	/**
+	 * cocktail view ref
+	 */
 	static var cv:CocktailView;
 	
 	static function main()
 	{
+		//init cocktail view with minimal html
 		cv = new CocktailView();
 		cv.loadHTML("<!doctype html><html><head></head><body></body></html>");
 
@@ -21,32 +25,59 @@ class CocktailBrowser
 		new CocktailBrowser();
 	}
 	
+	/**
+	 * constructor, set external interface callbacks
+	 */
 	public function new() 
 	{
 		if (ExternalInterface.available)
 		{
 			ExternalInterface.addCallback("updateDocument", updateDocument);
 			ExternalInterface.addCallback("getContent", getContent);
+			
+			//signals to the app that ready
+			ExternalInterface.call("window.cheers.cocktailBrowserReady");
+		}
+		else {
+			
 		}
 	}
 	
-	function updateDocument(html, css)
+	/**
+	 * update the document's html with the html and
+	 * css provided by the user
+	 */
+	function updateDocument(html, css, baseUrl)
 	{
+		//save html before change
+		var currentHTML = getContent();
+		
 		try {
 			cv.document.documentElement.innerHTML = html;
+			var header = cv.document.getElementsByTagName("header")[0];
+			
+			//set base url for iframe so it can load local resource
+			var base = cv.document.createElement("base");
+			base.setAttribute("href", baseUrl);
+			header.appendChild(base);
+			
 			var style = cv.document.createElement("style");
 			style.appendChild(cv.document.createTextNode(css));
-			cv.document.body.appendChild(style);
+			header.appendChild(style);
 			
 		}
 		//html could not be parsed
 		catch(e:Dynamic)
 		{
-			
+			//restore previous html
+			cv.document.documentElement.innerHTML = currentHTML;
 		}
 		
 	}
 	
+	/**
+	 * return the serialised content of the document
+	 */
 	function getContent()
 	{
 		try {

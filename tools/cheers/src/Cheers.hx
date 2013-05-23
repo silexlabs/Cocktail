@@ -1,31 +1,42 @@
 package src;
 
+import haxe.Resource;
 import haxe.Timer;
-import js.Browser;
+import js.Lib;
 
 /**
  * Webapp demoing Cocktail, allow
  * inputing html and css and test rendering
- * in browser and cocktail.
+ * in browser and cocktail in flash.
  * 
  * Input use codeMirror text editor : http://codemirror.net/
  * 
+ * class is exposed to javascript, so that flash can call method
+ * through external interface to signal it is ready
+ * 
  * @author Yannick DOMINGUEZ
  */
+@:expose("cheers")
 class Cheers 
 {
+	/**
+	 * ref to this for static method (a bit
+	 * messy, I know)
+	 */
+	static var self:Cheers;
+	
 	/**
 	 * entry point
 	 */
 	static function main()
 	{
-		new Cheers();
+		self = new Cheers();
 	}
 	
 	/**
 	 * interval between updates in milliseconds
 	 */
-	static inline var UPDATE_DELAY:Int = 3000;
+	static inline var UPDATE_DELAY:Int = 50;
 	
 	/**
 	 * html editor
@@ -41,15 +52,23 @@ class Cheers
 	 * wether browser and cocktail 
 	 * content is already set to be updated
 	 */
-	var updateScheduled:Bool;
+	var updateScheduled:Bool = false;
 	
+	/**
+	 * constructor
+	 */ 
 	public function new() 
 	{
-		updateScheduled = false;
 		
-		Browser.window.onload = function(e) {	
-			init();
-		}
+	}
+	
+	/**
+	 * called by flash CocktailBrowser through 
+	 * External interface when flash ready
+	 */
+	static function cocktailBrowserReady()
+	{
+		self.init();
 	}
 	
 	/**
@@ -58,23 +77,24 @@ class Cheers
 	 */
 	function init()
 	{
-		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'html'})");
+		htmlCodeMirror = untyped __js__("CodeMirror(document.getElementById('html-editor'), {mode:'xml'})");
 		cssCodeMirror = untyped __js__("CodeMirror(document.getElementById('css-editor'), {mode:'css'})");
 		
-		htmlCodeMirror.setValue("<!doctype html><html><head></head><body>ssssssssssssss</body></html>");
-		cssCodeMirror.setValue("body {margin:0;}");
-		
-		update();
-		
+		htmlCodeMirror.setValue(Resource.getString("html"));
+		cssCodeMirror.setValue(Resource.getString("css"));
+	
 		htmlCodeMirror.on("change", onInput);
 		cssCodeMirror.on("change", onInput);
+		
+		scheduleUpdate();
 	}
 	
 	/**
-	 * when user input html or css,
-	 * shedule update of document content
+	 * schedhule an update of html and css
+	 * content. Asynchronous to prevent
+	 * too much update
 	 */
-	function onInput(e)
+	function scheduleUpdate()
 	{
 		if (updateScheduled)
 			return;
@@ -88,18 +108,27 @@ class Cheers
 	}
 	
 	/**
+	 * when user input html or css,
+	 * shedule update of document content
+	 */
+	function onInput(e)
+	{
+		scheduleUpdate();
+	}
+	
+	/**
 	 * get content of html and css 
 	 * and update browser and cocktail
 	 * rendering with it
 	 */
 	function update() 
 	{
-		var object:Dynamic = Browser.document.getElementById("cocktail");	
-		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue());
+		var object:Dynamic = Lib.document.getElementById("cocktail");	
+		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Lib.window.location.href);
 		
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content
-		var iframe:Dynamic = Browser.document.getElementById("browser");
-		iframe.src = "data:text/html;charset=utf-8," + object.getContent();
+		var iframe:Dynamic = Lib.document.getElementById("browser");
+		iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(object.getContent());
 	}
 }

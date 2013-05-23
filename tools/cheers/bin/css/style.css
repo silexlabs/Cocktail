@@ -1,33 +1,8 @@
-* {
-	margin:0;
-	padding:0;
-	box-sizing:border-box;
-	-moz-box-sizing:border-box;
+.renderers object, .renderers iframe {
+	min-height:794px;
+	border:none;
 }
 
-object, iframe, embed {
-	border:solid thick black;
-}
-
-.column {
-	width:40%;
-	height:100%;
-	position:fixed;
-	top:0;
-}
-
-.column.center {
-	left:20%;
-}
-
-.column.right {
-	left:60%;
-}
-
-.column.left {
-	width:20%;
-}
-
-.box {
-	background: -moz-linear-gradient(45deg, #1D1F20, #2F3031);
+.renderers .well, .editor .well {
+	background-color:white;
 }

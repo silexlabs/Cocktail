@@ -15,6 +15,12 @@ http://www.silexlabs.org/haxe/cocktail/
 
 See you there !
 
+Interactive demo
+-------------
+
+If you want to try cocktail in your browser :
+http://demos.silexlabs.org/trycocktail/
+
 Requirements
 -------------
 Cocktail is a library for the Haxe programming language, you should be familiar with it to use Cocktail. Being familiar with NME (another Haxe library) can also help but is not required to use Cocktail.
@@ -30,8 +36,11 @@ Building
 3. Optionnaly, if you also want to build for NME as well as flash/Air : 
 > haxelib install nme
 
-4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
-5. Once you're familiar with the samples, you can use the template in the template folder to start your own project. Have fun !
+4. **You can build now !** Haxe uses .hxml files to build projects. You should start with the samples provided in the folder of the cocktail haxelib. Haxelibs are installed in the folder of your Haxe installation. Each sample has a build folder containing .hxml files. To build, open you command prompt and type : 
+> haxe mybuildfile.hxml
+
+ If you're on windows, you can just double-click the .hxml file instead.
+5. If you've made it this far, you should check [the getting started tutorial !](http://www.silexlabs.org/haxe/cocktail/tutorials/getting-started-with-cocktail/) 
 
 Maturity
 -------------
