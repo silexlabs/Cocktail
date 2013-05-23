@@ -3,7 +3,7 @@ ROADMAP
 This is a roadmap of the new features planned for each release. Each release also includes bug fixes and refactorings.
 
 
-1.0.0
+1.0.0 Sunrise
 ------------------
 - switch to Haxe 3
 
@@ -23,3 +23,5 @@ with CSS and can be customised for desktop and mobile scrollbar.
 - finish CSS transition implementation, for now only works with 1 float values (width, height...). Make it work also with matrix, color and other transitionable data types.
 - finish CSS transform 2d implementation, for now deactivated as incomplete.
 
+###1.5.0 Hangover
+- list styles (list-style, list-style-image...)
