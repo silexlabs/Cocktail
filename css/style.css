@@ -1,4 +1,4 @@
-object, iframe, embed {
+.renderers object, .renderers iframe {
 	min-height:794px;
 	border:none;
 }
