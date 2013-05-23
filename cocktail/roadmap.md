@@ -25,3 +25,20 @@ with CSS and can be customised for desktop and mobile scrollbar.
 
 ###1.5.0 Hangover
 - list styles (list-style, list-style-image...)
+
+#####1.6.0
+- border-radius
+
+#####1.7.0
+- box-shadow, text-shadow
+
+#####1.8.0
+- CSS gradient
+
+#####1.9.0
+- @font-face (embedded fonts)
+
+2.0.0 White-russian
+-----------
+- media-queries
+
