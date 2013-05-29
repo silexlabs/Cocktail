@@ -75,7 +75,7 @@ class SelectorManager
 					//apply to it instead of the current node
 					if (value == CHILD)
 					{
-						node = node.parentNode;
+						node = cast(node.parentNode);
 					}
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
@@ -163,7 +163,7 @@ class SelectorManager
 	 */
 	private function matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		var previousElementSibling:HTMLElement = node.previousElementSibling;
+		var previousElementSibling:HTMLElement = cast(node.previousElementSibling);
 		
 		while (previousElementSibling != null)
 		{
@@ -172,7 +172,7 @@ class SelectorManager
 				return true;
 			}
 			
-			previousElementSibling = previousElementSibling.previousElementSibling;
+			previousElementSibling = cast(previousElementSibling.previousElementSibling);
 		}
 		
 		return false;
@@ -186,7 +186,7 @@ class SelectorManager
 	 */
 	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		var previousElementSibling:HTMLElement = node.previousElementSibling;
+		var previousElementSibling:HTMLElement = cast(node.previousElementSibling);
 		
 		if (previousElementSibling == null)
 		{
@@ -203,7 +203,7 @@ class SelectorManager
 	 */
 	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		var parentNode:HTMLElement = node.parentNode;
+		var parentNode:HTMLElement = cast(node.parentNode);
 		
 		//check that at least one ancestor matches
 		//the parent selector
@@ -214,7 +214,7 @@ class SelectorManager
 				return true;
 			}
 			
-			parentNode = parentNode.parentNode;
+			parentNode = cast(parentNode.parentNode);
 		}
 		
 		//here no parent matched, so the
@@ -229,7 +229,7 @@ class SelectorManager
 	 */
 	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence, matchedPseudoClasses);
+		return matchSimpleSelectorSequence(cast(node.parentNode), nextSelectorSequence, matchedPseudoClasses);
 	}
 	
 		// SIMPLE SELECTORS
@@ -621,7 +621,7 @@ class SelectorManager
 	{
 		var type:String = node.tagName;
 		
-		var previousElementSibling:HTMLElement = node.previousElementSibling;
+		var previousElementSibling:HTMLElement = cast(node.previousElementSibling);
 		
 		while (previousElementSibling != null)
 		{
@@ -630,7 +630,7 @@ class SelectorManager
 				return false;
 			}
 			
-			previousElementSibling = previousElementSibling.previousElementSibling;
+			previousElementSibling = cast(previousElementSibling.previousElementSibling);
 		}
 		
 		return true;
@@ -643,7 +643,7 @@ class SelectorManager
 	{
 		var type:String = node.tagName;
 		
-		var nextElementSibling:HTMLElement = node.nextElementSibling;
+		var nextElementSibling:HTMLElement = cast(node.nextElementSibling);
 		
 		while (nextElementSibling != null)
 		{
@@ -652,7 +652,7 @@ class SelectorManager
 				return false;
 			}
 			
-			nextElementSibling = nextElementSibling.nextElementSibling;
+			nextElementSibling = cast(nextElementSibling.nextElementSibling);
 		}
 		
 		return true;

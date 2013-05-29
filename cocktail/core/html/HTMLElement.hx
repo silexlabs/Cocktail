@@ -652,7 +652,8 @@ class HTMLElement extends Element
 				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					childNodes[i].invalidateStyleDeclaration(true);
+					var child:HTMLElement = cast(childNodes[i]);
+					child.invalidateStyleDeclaration(true);
 				}
 			}
 		}
@@ -1002,7 +1003,8 @@ class HTMLElement extends Element
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						childNodes[i].detach(true);
+						var child:HTMLElement = cast(childNodes[i]);
+						child.detach(true);
 					}
 				}
 			}
@@ -1070,11 +1072,10 @@ class HTMLElement extends Element
 		
 		//cascade all the children, to cascade all the DOM tree
 		//recursively
-		var childNodes:Array<HTMLElement> = this.childNodes;
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			var childNode:HTMLElement = childNodes[i];
+			var childNode:HTMLElement = cast(childNodes[i]);
 			childNode.cascade(cascadeManager, programmaticChange);
 		}
 	}
@@ -1113,7 +1114,8 @@ class HTMLElement extends Element
 	{
 		if (parentNode != null)
 		{
-			if (parentNode.styleManagerCSSDeclaration != null)
+			var parent:HTMLElement = cast(parentNode);
+			if (parent.styleManagerCSSDeclaration != null)
 			{
 				if (_needsStyleDeclarationUpdate == true || styleManagerCSSDeclaration == null)
 				{
@@ -1121,8 +1123,9 @@ class HTMLElement extends Element
 					_needsStyleDeclarationUpdate = false;
 				}
 				
-				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
-				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
+				
+				var parentStyleDeclaration:CSSStyleDeclaration = parent.coreStyle.computedValues;
+				var parentFontMetrics:FontMetricsVO = parent.coreStyle.fontMetrics;
 			
 				if (_shouldCascadeAllProperties == true)
 				{
@@ -1240,7 +1243,8 @@ class HTMLElement extends Element
 	 */
 	private function attachToParentElementRenderer():Void
 	{
-		parentNode.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
+		var parent:HTMLElement = cast(parentNode);
+		parent.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
 	}
 	
 	/**
@@ -1304,7 +1308,8 @@ class HTMLElement extends Element
 		{
 			return false;
 		}
-		return parentNode.elementRenderer != null;
+		var parent:HTMLElement = cast(parentNode);
+		return parent.elementRenderer != null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
