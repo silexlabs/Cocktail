@@ -1571,10 +1571,11 @@ class HTMLElement extends Element
 		var htmlElement:HTMLElement = this;
 		while (htmlElement.hasActivationBehaviour() == false)
 		{
-			if (htmlElement.parentNode == null)
+			if (htmlElement.parentNode == null || htmlElement.parentNode.nodeType == DOMConstants.DOCUMENT_NODE)
 			{
 				return null;
 			}
+			
 			htmlElement = cast(htmlElement.parentNode);
 		}
 		
