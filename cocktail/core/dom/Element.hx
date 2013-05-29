@@ -307,7 +307,7 @@ class Element extends Node
 		var length:Int = attributes.length;
 		for (i in 0...length)
 		{
-			var clonedAttr:Attr = attributes.item(i).cloneNode(false);
+			var clonedAttr:Attr = cast(attributes.item(i).cloneNode(false));
 			clonedElement.setAttributeNode(clonedAttr);
 		}
 		
@@ -329,7 +329,7 @@ class Element extends Node
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -358,7 +358,7 @@ class Element extends Node
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.ELEMENT_NODE:
@@ -387,7 +387,7 @@ class Element extends Node
 	 * return the concatenation of the text of all
 	 * descendant elements of node
 	 */
-	private function doGetTextContent(node:HTMLElement):String
+	private function doGetTextContent(node:Node):String
 	{
 		var text:String = "";
 		
@@ -396,7 +396,7 @@ class Element extends Node
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:Node = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.TEXT_NODE:
@@ -454,7 +454,7 @@ class Element extends Node
 		
 		if (firstChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			return firstChild;
+			return cast(firstChild);
 		}
 		else
 		{
@@ -463,7 +463,7 @@ class Element extends Node
 			{
 				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					return childNodes[i];
+					return cast(childNodes[i]);
 				}
 			}
 		}
@@ -480,7 +480,7 @@ class Element extends Node
 		
 		if (lastChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			return lastChild;
+			return cast(lastChild);
 		}
 		else
 		{
@@ -489,7 +489,7 @@ class Element extends Node
 			{
 				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					return childNodes[i];
+					return cast(childNodes[i]);
 				}
 			}
 		}
@@ -504,11 +504,11 @@ class Element extends Node
 			return null;
 		}
 		
-		var nextElementSibling:Element = nextSibling;
+		var nextElementSibling:Element = cast(nextSibling);
 		
 		while (nextElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
-			nextElementSibling = nextElementSibling.nextSibling;
+			nextElementSibling = cast(nextElementSibling.nextSibling);
 			
 			if (nextElementSibling == null)
 			{
@@ -526,11 +526,11 @@ class Element extends Node
 			return null;
 		}
 		
-		var previousElementSibling:Element = previousSibling;
+		var previousElementSibling:Element = cast(previousSibling);
 		
 		while (previousElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
-			previousElementSibling = previousElementSibling.previousSibling;
+			previousElementSibling = cast(previousElementSibling.previousSibling);
 			
 			if (previousElementSibling == null)
 			{

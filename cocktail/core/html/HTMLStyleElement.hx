@@ -12,6 +12,7 @@ import cocktail.core.css.CSSStyleSheet;
 import cocktail.core.css.StyleSheet;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.css.CSSData;
+import cocktail.core.dom.Node;
 
 /**
  * The style element allows authors to embed style information in their documents.
@@ -52,7 +53,7 @@ class HTMLStyleElement extends HTMLElement
 	 * Overriden to refresh the style sheet if a
 	 * text node child is added to this style node
 	 */
-	override public function appendChild(newChild:HTMLElement):HTMLElement
+	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
 		
@@ -68,7 +69,7 @@ class HTMLStyleElement extends HTMLElement
 	 * update the style sheet from the document when
 	 * a text node child is removed
 	 */
-	override public function removeChild(oldChild:HTMLElement):HTMLElement
+	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
 		
@@ -84,7 +85,7 @@ class HTMLStyleElement extends HTMLElement
 	 * Overriden to try to refresh the style sheet to the document if a
 	 * text node child is added to this style node
 	 */
-	override public function insertBefore(newChild:HTMLElement, refChild:HTMLElement):HTMLElement
+	override public function insertBefore(newChild:Node, refChild:Node):Node
 	{
 		super.insertBefore(newChild, refChild);
 		if (refChild != null)

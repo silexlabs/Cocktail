@@ -417,10 +417,11 @@ class HTMLElement extends Element
 	 * When a child is added to the DOM, an init
 	 * method is called on it
 	 */
-	override public function appendChild(newChild:HTMLElement):HTMLElement
+	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		newChild.appended();
+		var child:HTMLElement = cast(newChild);
+		child.appended();
 		
 		//when a new child is added, refreh the style of this html element
 		//TODO 2 : don't seem necessary, but tried to remove it and add
@@ -435,10 +436,12 @@ class HTMLElement extends Element
 	 * called on it so that it
 	 * can be cleaned-up
 	 */
-	override public function removeChild(oldChild:HTMLElement):HTMLElement
+	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		oldChild.removed();
+		var child:HTMLElement = cast(oldChild);
+		
+		child.removed();
 		return oldChild;
 	}
 	
@@ -446,7 +449,7 @@ class HTMLElement extends Element
 	 * When a child is added to the DOM, an init
 	 * method is called on it
 	 */
-	override public function insertBefore(newChild:HTMLElement, refChild:HTMLElement):HTMLElement
+	override public function insertBefore(newChild:Node, refChild:Node):Node
 	{
 		super.insertBefore(newChild, refChild);
 		
@@ -455,7 +458,8 @@ class HTMLElement extends Element
 		//of calling the init method
 		if (refChild != null)
 		{
-			newChild.appended();
+			var child:HTMLElement = cast(newChild);
+			child.appended();
 			invalidateCascade();
 		}
 	
@@ -722,11 +726,11 @@ class HTMLElement extends Element
 				
 				//all the child of this htmlelement are
 				//now attached to the DOM as well
-				var child:HTMLElement = firstChild;
+				var child:HTMLElement = cast(firstChild);
 				while (child != null)
 				{
 					child.appended();
-					child = child.nextSibling;
+					child = cast(child.nextSibling);
 				}
 			}
 		}
@@ -744,11 +748,11 @@ class HTMLElement extends Element
 		
 		//all child are now detached from DOM
 		//as well
-		var child:HTMLElement = firstChild;
+		var child:HTMLElement = cast(firstChild);
 		while (child != null)
 		{
 			child.removed();
-			child = child.nextSibling;
+			child = cast(child.nextSibling);
 		}
 	}
 	
@@ -810,14 +814,14 @@ class HTMLElement extends Element
 	 */
 	private function isAttachedToDOM():Bool
 	{
-		var parent:HTMLElement = parentNode;
+		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
 			if (parent.nodeName == HTMLConstants.HTML_HTML_TAG_NAME)
 			{
 				return true;
 			}
-			parent = parent.parentNode;
+			parent = cast(parent.parentNode);
 		}
 		
 		return false;
@@ -911,7 +915,8 @@ class HTMLElement extends Element
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				childNodes[i].updateElementRenderer();
+				var child:HTMLElement = cast(childNodes[i]);
+				child.updateElementRenderer();
 			}
 		}
 		
@@ -963,7 +968,8 @@ class HTMLElement extends Element
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						childNodes[i].attach(true);
+						var child:HTMLElement = cast(childNodes[i]);
+						child.attach(true);
 					}
 				}
 				
@@ -1195,7 +1201,7 @@ class HTMLElement extends Element
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = this.nextSibling;
+		var nextSibling:HTMLElement = cast(this.nextSibling);
 					
 		if (nextSibling == null)
 		{
@@ -1219,7 +1225,7 @@ class HTMLElement extends Element
 					return nextSibling.elementRenderer;
 				}
 				
-				nextSibling = nextSibling.nextSibling;
+				nextSibling = cast(nextSibling.nextSibling);
 			}
 		}
 		
@@ -1324,7 +1330,8 @@ class HTMLElement extends Element
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var transitionStarted:Bool = childNodes[i].startPendingTransitions();
+			var child:HTMLElement = cast(childNodes[i]);
+			var transitionStarted:Bool = child.startPendingTransitions();
 			
 			if (transitionStarted == true)
 			{
@@ -1346,7 +1353,8 @@ class HTMLElement extends Element
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			childNodes[i].endPendingTransitions();
+			var child:HTMLElement = cast(childNodes[i]);
+			child.endPendingTransitions();
 		}
 	}
 	
@@ -1587,7 +1595,7 @@ class HTMLElement extends Element
 			{
 				return null;
 			}
-			htmlElement = htmlElement.parentNode;
+			htmlElement = cast(htmlElement.parentNode);
 		}
 		
 		return htmlElement;
@@ -1974,7 +1982,7 @@ class HTMLElement extends Element
 		//parse the html string into a node object
 		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
 
-		var oldNextSibling:HTMLElement = this.nextSibling;
+		var oldNextSibling:HTMLElement = cast(this.nextSibling);
 		parentNode.removeChild(cast(this));
 
 		if (node == null)
@@ -2056,14 +2064,14 @@ class HTMLElement extends Element
 		}
 		
 		//find the first non-static parent or return the body
-		var parent:HTMLElement = parentNode;
+		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
 			if (parent.elementRenderer.isPositioned() == true || parent.tagName == HTMLConstants.HTML_BODY_TAG_NAME)
 			{
 				return parent;
 			}
-			parent = parent.parentNode;
+			parent = cast(parent.parentNode);
 		}
 		
 		return null;

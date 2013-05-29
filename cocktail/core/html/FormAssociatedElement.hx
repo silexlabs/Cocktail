@@ -107,14 +107,14 @@ class FormAssociatedElement extends EmbeddedElement
 	 */
 	private function getFirstFormAncestor():HTMLFormElement
 	{
-		var parent:HTMLElement = parentNode;
+		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
 			if (parent.tagName == HTMLConstants.HTML_FORM_TAG_NAME)
 			{
 				return cast(parent);
 			}
-			parent = parent.parentNode;
+			parent = cast(parent.parentNode);
 		}
 		
 		return null;

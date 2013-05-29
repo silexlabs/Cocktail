@@ -148,7 +148,7 @@ class DOMParser
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = node.childNodes[i];
+			var child:HTMLElement = cast(node.childNodes[i]);
 			
 			switch(child.nodeType)
 			{

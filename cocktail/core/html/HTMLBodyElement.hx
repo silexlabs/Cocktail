@@ -58,7 +58,8 @@ class HTMLBodyElement extends HTMLElement
 	{
 		super.cascadeSelf(cascadeManager, programmaticChange);
 		
-		var parentCoreStyle:CoreStyle = parentNode.coreStyle;
+		var parent:HTMLElement = cast(parentNode);
+		var parentCoreStyle:CoreStyle = parent.coreStyle;
 		
 		//if the parent (the HTML root element) has a value of visible
 		//for overflow-x, it takes the value of the body element

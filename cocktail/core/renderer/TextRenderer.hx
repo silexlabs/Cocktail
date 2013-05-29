@@ -113,7 +113,8 @@ class TextRenderer extends InvalidatingElementRenderer
 	 */
 	override private function initCoreStyle():Void
 	{
-		coreStyle = domNode.parentNode.coreStyle;
+		var parent:HTMLElement = cast(domNode.parentNode);
+		coreStyle = parent.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
