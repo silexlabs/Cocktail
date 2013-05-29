@@ -40,7 +40,7 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	override private function createElementRenderer():Void
 	{ 
-		elementRenderer = new BodyBoxRenderer(this);
+		elementRenderer = new BodyBoxRenderer(this, coreStyle);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 		
 		if (graphicsContext != null)
 		{
-			var htmlInputElement:HTMLElement = rootElementRenderer.domNode;
+			var htmlInputElement:HTMLElement = cast(rootElementRenderer.domNode);
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
@@ -55,7 +55,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 		//TODO 3 : is graphics context supposed to be null at some point ?
 		if (graphicsContext != null)
 		{
-			var htmlInputElement:HTMLElement = rootElementRenderer.domNode;
+			var htmlInputElement:HTMLElement = cast(rootElementRenderer.domNode);
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);

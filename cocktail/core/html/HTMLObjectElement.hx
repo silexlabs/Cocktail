@@ -313,7 +313,7 @@ class HTMLObjectElement extends EmbeddedElement
 	{
 		if (_pluginReady == true)
 		{
-			elementRenderer = new ObjectRenderer(this);
+			elementRenderer = new ObjectRenderer(this, coreStyle);
 		}
 	}
 	

@@ -1241,10 +1241,10 @@ class HTMLElement extends Element
 		switch (coreStyle.getKeyword(coreStyle.display))
 		{
 			case BLOCK, INLINE_BLOCK:
-				elementRenderer = new BlockBoxRenderer(this);
+				elementRenderer = new BlockBoxRenderer(this, coreStyle);
 				
 			case INLINE:
-				elementRenderer = new InlineBoxRenderer(this);
+				elementRenderer = new InlineBoxRenderer(this, coreStyle);
 				
 			case NONE:
 				

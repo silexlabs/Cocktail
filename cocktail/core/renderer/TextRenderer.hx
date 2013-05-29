@@ -92,10 +92,10 @@ class TextRenderer extends InvalidatingElementRenderer
 	/**
 	 * Class constructor.
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
-		_text = cast(node);
+		super(domNode, coreStyle);
+		_text = cast(domNode);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
 		
@@ -105,16 +105,6 @@ class TextRenderer extends InvalidatingElementRenderer
 		_hasBlink = false;
 		
 		isText = true;
-	}
-		
-	/**
-	 * Overriden, as text use the style of 
-	 * its parent in the DOM tree
-	 */
-	override private function initCoreStyle():Void
-	{
-		var parent:HTMLElement = cast(domNode.parentNode);
-		coreStyle = parent.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

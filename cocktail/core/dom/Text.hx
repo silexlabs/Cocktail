@@ -68,7 +68,8 @@ class Text extends CharacterData
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new TextRenderer(this);
+		var parent:HTMLElement = cast(parentNode);
+		elementRenderer = new TextRenderer(this, parent.coreStyle);
 	}
 	
 	/**

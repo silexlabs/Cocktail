@@ -84,9 +84,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domNode:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(domNode);
+		super(domNode, coreStyle);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_backgroundAndBorderBounds = new RectangleVO();

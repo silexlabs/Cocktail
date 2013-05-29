@@ -78,7 +78,7 @@ class HTMLHtmlElement extends HTMLElement
 	 */
 	override private function createElementRenderer():Void
 	{ 
-		elementRenderer = new InitialBlockRenderer(this);
+		elementRenderer = new InitialBlockRenderer(this, coreStyle);
 	}
 	
 	/**

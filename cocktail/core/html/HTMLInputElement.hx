@@ -273,21 +273,21 @@ class HTMLInputElement extends FormAssociatedElement
 		switch(type)
 		{
 			case HTMLConstants.INPUT_TYPE_TEXT:
-				elementRenderer = new TextInputRenderer(this);
+				elementRenderer = new TextInputRenderer(this, coreStyle);
 				
 			case HTMLConstants.INPUT_TYPE_PASSWORD:
-				elementRenderer = new PasswordInputRenderer(this);
+				elementRenderer = new PasswordInputRenderer(this, coreStyle);
 				
 			case HTMLConstants.INPUT_TYPE_CHECKBOX:
-				elementRenderer = new CheckboxRenderer(this);
+				elementRenderer = new CheckboxRenderer(this, coreStyle);
 				
 			case HTMLConstants.INPUT_TYPE_RADIO:
-				elementRenderer = new RadioRenderer(this);
+				elementRenderer = new RadioRenderer(this, coreStyle);
 				
 			case HTMLConstants.INPUT_TYPE_BUTTON,
 			HTMLConstants.INPUT_TYPE_RESET,
 			HTMLConstants.INPUT_TYPE_SUBMIT:
-				elementRenderer = new InputButtonRenderer(this);
+				elementRenderer = new InputButtonRenderer(this, coreStyle);
 				
 			default:	
 		}
