@@ -2,7 +2,7 @@ package src;
 
 import haxe.Resource;
 import haxe.Timer;
-import js.Lib;
+import js.Browser;
 
 /**
  * Webapp demoing Cocktail, allow
@@ -123,12 +123,12 @@ class Cheers
 	 */
 	function update() 
 	{
-		var object:Dynamic = Lib.document.getElementById("cocktail");	
-		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Lib.window.location.href);
+		var object:Dynamic = Browser.document.getElementById("cocktail");	
+		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Browser.window.location.href);
 		
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content
-		var iframe:Dynamic = Lib.document.getElementById("browser");
+		var iframe:Dynamic = Browser.document.getElementById("browser");
 		iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(object.getContent());
 	}
 }

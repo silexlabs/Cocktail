@@ -1,6 +1,5 @@
 -js bin/cheers.js
 -main src.Cheers
 -cp src
---js-modern
 -resource res/default.html@html
 -resource res/default.css@css
