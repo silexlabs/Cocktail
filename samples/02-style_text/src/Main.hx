@@ -6,7 +6,6 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
 
 /**
  * Style text, shows some CSS text styling

@@ -62,16 +62,16 @@ class Plugin
 	 * object or embed node, as key/value pair where
 	 * key is the name of the attribute
 	 */
-	private var _elementAttributes:Hash<String>;
+	private var _elementAttributes:Map<String, String>;
 	
 	/**
 	 * When the instantiating node is an object tag,
 	 * contain all the key/value par of the param
 	 * tag which are its direct children
 	 */
-	private var _params:Hash<String>;
+	private var _params:Map<String, String>;
 	
-	public function new(node:HTMLElement, elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
+	public function new(node:HTMLElement, elementAttributes:Map<String, String>, params:Map<String, String>,loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		viewport = new RectangleVO();
 		_node = node;

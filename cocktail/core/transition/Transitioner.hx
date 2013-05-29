@@ -415,8 +415,6 @@ class Transitioner
 						
 					case SECONDS(value):
 						return value * 1000;
-						
-					default:	
 				}
 				
 			default:

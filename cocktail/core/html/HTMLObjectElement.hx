@@ -236,7 +236,7 @@ class HTMLObjectElement extends EmbeddedElement
 					return;
 				}
 				
-				var params:Hash<String> = new Hash<String>();
+				var params:Map<String, String> = new Map<String, String>();
 				
 				//retrive all the name/value of the child param tags
 				var length:Int = childNodes.length;
@@ -256,10 +256,10 @@ class HTMLObjectElement extends EmbeddedElement
 				}
 				
 				//retrive all the attributes of this HTMLElement
-				var elementAttributes:Hash<String> = new Hash<String>();
+				var elementAttributes:Map<String, String> = new Map<String, String>();
 				for (i in 0...attributes.length)
 				{
-					var attr:Attr<HTMLElement> = attributes.item(i);
+					var attr:Attr = attributes.item(i);
 					elementAttributes.set(attr.name, attr.value);
 				}
 				

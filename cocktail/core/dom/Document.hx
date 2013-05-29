@@ -119,9 +119,9 @@ class Document extends Node<Document>
 	 * and namespaceURI set to null. The value 
 	 * of the attribute is the empty string.
 	 */
-	public function createAttribute(name:String):Attr<HTMLElement>
+	public function createAttribute(name:String):Attr
 	{
-		var attribute:Attr<HTMLElement> = new Attr<HTMLElement>(name);
+		var attribute:Attr = new Attr(name);
 		return attribute;
 	}
 	

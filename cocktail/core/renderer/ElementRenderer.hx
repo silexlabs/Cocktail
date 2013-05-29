@@ -23,7 +23,7 @@ import cocktail.core.transition.Transitioner;
 import cocktail.core.transition.Transition;
 import cocktail.core.geom.GeomData;
 import cocktail.core.ds.FastNode;
-import haxe.Stack;
+
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;

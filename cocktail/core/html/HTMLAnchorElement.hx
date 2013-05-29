@@ -10,7 +10,6 @@ package cocktail.core.html;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
-import cocktail.Lib;
 import haxe.Log;
 
 /**

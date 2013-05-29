@@ -23,7 +23,7 @@ class EventTarget
 	 * for this type of event, in the order where
 	 * they were registered
 	 */
-	private var _registeredEventListeners:Hash<Array<EventListener>>;
+	private var _registeredEventListeners:Map<String, Array<EventListener>>;
 	
 	/**
 	 * When dispatching an event, 
@@ -185,7 +185,7 @@ class EventTarget
 	{
 		if (_registeredEventListeners == null)
 		{
-			_registeredEventListeners = new Hash<Array<EventListener>>();
+			_registeredEventListeners = new Map<String, Array<EventListener>>();
 		}
 		
 		if (_registeredEventListeners.exists(type) == false)

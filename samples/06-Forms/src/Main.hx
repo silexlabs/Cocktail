@@ -6,7 +6,6 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
 
 /**
  * an HTML form sample

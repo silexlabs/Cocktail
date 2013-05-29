@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
+import js.Browser;
 
 /**
  * Use innerHTML to set html content of the body
@@ -22,7 +22,7 @@ class Main
 		#end
 		
 		//when document is loaded, set the content of the body
-		Lib.window.onload = function(e) Lib.document.body.innerHTML = "<h1 id='title' style='color:blue'>Inner HTML</h1><p>My page is built from HTML</p>";
+		Browser.window.onload = function(e) Browser.document.body.innerHTML = "<h1 id='title' style='color:blue'>Inner HTML</h1><p>My page is built from HTML</p>";
 	}
 }
 

@@ -6,8 +6,9 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Lib;
-import js.Dom;
+import js.Browser;
+import js.html.HtmlElement;
+import js.html.Image;
 
 /**
  * an example of using the DOM api to build an html document
@@ -21,7 +22,7 @@ class Main
 		cocktail.api.Cocktail.boot();
 		#end
 		
-		Lib.window.onload = function(e) new Main();
+		Browser.window.onload = function(e) new Main();
 	}
 
 	
@@ -38,31 +39,31 @@ class Main
 	 */
 	function buildDom()
 	{
-		var title = Lib.document.createElement("h1");
-		title.appendChild(Lib.document.createTextNode("Hello Cocktail"));
-		Lib.document.body.appendChild(title);
+		var title = Browser.document.createElement("h1");
+		title.appendChild(Browser.document.createTextNode("Hello Cocktail"));
+		Browser.document.body.appendChild(title);
 		
-		var paragraph = Lib.document.createElement("p");
-		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a HTML rendering engine."));
-		Lib.document.body.appendChild(paragraph);
+		var paragraph = Browser.document.createElement("p");
+		paragraph.appendChild(Browser.document.createTextNode("Cocktail is a HTML rendering engine."));
+		Browser.document.body.appendChild(paragraph);
 	
 		title.style.wordSpacing = "10px";
 		title.style.color = "orange";
 		title.style.fontFamily = "arial";
 					
-		var img:Image = cast(Lib.document.createElement("img"));
+		var img:Image = cast(Browser.document.createElement("img"));
 		img.id = "pic";
 		img.src = "assets/cocktail.png";
 		paragraph.appendChild(img);
 		
-		var site = Lib.document.createElement("div");
+		var site = Browser.document.createElement("div");
 		site.appendChild(title);
 		site.appendChild(paragraph);
 		
 		site.style.width = "50%";
 		site.style.marginLeft = site.style.marginRight = "auto";
 		
-		Lib.document.body.appendChild(site);
+		Browser.document.body.appendChild(site);
 		
 		site.style.backgroundColor = "rgba(255,255,255,0.5)";
 	}
@@ -72,9 +73,9 @@ class Main
 	 */
 	function addInteractivity()
 	{
-		var pic:HtmlDom = cast(Lib.document.getElementById("pic"));
+		var pic:HtmlElement = cast(Browser.document.getElementById("pic"));
 		pic.onclick = function(e) {
-			Lib.document.body.style.backgroundImage = "url(assets/bg.png)";
+			Browser.document.body.style.backgroundImage = "url(assets/bg.png)";
 		}
 		
 	}

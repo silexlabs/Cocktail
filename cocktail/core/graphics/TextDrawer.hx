@@ -83,16 +83,8 @@ class TextDrawer
 			_destPoint.x = inlineBox.bounds.x + elementRenderer.globalBounds.x - scrollOffset.x;
 			_destPoint.y = inlineBox.bounds.y + elementRenderer.globalBounds.y - scrollOffset.y;
 			
-			
-			//TODO IMPORTANT : this is sa big HACK ! the core package should not 
-			//have conditional compilation. This is here to circumvent the lack of
-			//TextLineMetrics in NME preventing from getting the right ascent and descent.
-			//This should be removed as soon as swithing to Haxe3 as latest NME release 
-			//(3.5.6) has TextLineMetrics
-			#if flash
 			//add the text inline box own leaded ascent and remove the ascent of the text
 			_destPoint.y += inlineBox.leadedAscent - elementRenderer.coreStyle.fontMetrics.ascent;
-			#end
 			
 			//TODO 2 : should not happen, seems to happen for spaces
 			//on empty lines

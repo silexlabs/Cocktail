@@ -27,11 +27,10 @@ import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.Lib;
-import haxe.Firebug;
+
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
-import haxe.Stack;
+
 
 /**
  * A block box renderer is an element which participate

@@ -26,7 +26,6 @@ import cocktail.core.boxmodel.EmbeddedInlineBlockBoxStylesComputer;
 import cocktail.core.boxmodel.EmbeddedInlineBoxStylesComputer;
 import cocktail.core.boxmodel.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.window.Window;
-import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.graphics.BackgroundDrawer;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
