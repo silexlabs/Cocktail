@@ -15,6 +15,12 @@ http://www.silexlabs.org/haxe/cocktail/
 
 See you there !
 
+Interactive demo
+-------------
+
+If you want to try cocktail in your browser :
+http://demos.silexlabs.org/trycocktail/
+
 Requirements
 -------------
 Cocktail is a library for the Haxe programming language, you should be familiar with it to use Cocktail. Being familiar with NME (another Haxe library) can also help but is not required to use Cocktail.
@@ -30,8 +36,19 @@ Building
 3. Optionnaly, if you also want to build for NME as well as flash/Air : 
 > haxelib install nme
 
-4. **You can build now !** You should start with the samples provided in the folder of the cocktail haxelib. Haxelib are installed in the folder of your Haxe installation.
-5. Once you're familiar with the samples, you can use the template in the template folder to start your own project. Have fun !
+4. **You can build now !** Haxe uses .hxml files to build projects. You should start with the samples provided in the folder of the cocktail haxelib. Haxelibs are installed in the folder of your Haxe installation. Each sample has a build folder containing .hxml files. To build, open you command prompt and type : 
+> haxe mybuildfile.hxml
+
+ If you're on windows, you can just double-click the .hxml file instead.
+5. If you've made it this far, you should check [the getting started tutorial !](http://www.silexlabs.org/haxe/cocktail/tutorials/getting-started-with-cocktail/) 
+
+Maturity
+-------------
+This project has been used in production by core members of the project which could easily debug it. So it's getting stable but expect quirks, especially when using some tricky CSS layout. The API however, as it is based on the W3C standards is very stable.
+
+Haxe 3
+-------------
+For Haxe 3 users, there is an Haxe 3 branch which builds. The samples work when built for flash, however, with latest NME (3.5.6), the sample crash (tested on Windows). The samples work when using Haxe 2 and NME. This bug needs to be fixed before the Haxe 3 version can become the official one.
 
 Licence
 -------------
