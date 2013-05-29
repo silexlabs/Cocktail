@@ -56,7 +56,7 @@ import cocktail.core.font.FontData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element<HTMLElement>
+class HTMLElement extends Element
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes

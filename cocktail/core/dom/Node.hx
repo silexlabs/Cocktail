@@ -13,20 +13,6 @@ import cocktail.core.event.EventTarget;
 import haxe.Log;
 
 /**
- * Had to add this when updating to Haxe3 as recursive
- * type parameters no longer compile
- */
-interface INode<NodeClass>{
-	var parentNode:NodeClass;
-	var childNodes(default, null):Array<NodeClass>;
-	var firstChild(get, never):NodeClass;
-	var lastChild(get, never):NodeClass;
-	function cloneNode(deep:Bool):NodeClass;
-	function removeChild(oldChild:NodeClass):NodeClass;
-	function appendChild(newChild:NodeClass):NodeClass;
-}
-
-/**
  * The Node interface is the primary datatype for the entire Document Object Model.
  * It represents a single node in the document tree. While all objects implementing the Node
  * interface expose methods for dealing with children, not all objects implementing the Node
@@ -43,7 +29,7 @@ interface INode<NodeClass>{
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback implements INode<NodeClass>
+class Node extends EventCallback
 {	
 	/**
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,
@@ -51,37 +37,37 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * if a node has just been created and not yet added
 	 * to the tree, or if it has been removed from the tree, this is null.
 	 */
-	public var parentNode:NodeClass;
+	public var parentNode:Node;
 	
 	/**
 	 * A NodeList that contains all children of this node. 
 	 * If there are no children, this is a NodeList containing no nodes.
 	 */
-	public var childNodes(default, null):Array<NodeClass>;
+	public var childNodes(default, null):Array<Node>;
 	
 	/**
 	 * The first child of this node. If there is no such node,
 	 * this returns null.
 	 */
-	public var firstChild(get_firstChild, never):NodeClass;
+	public var firstChild(get_firstChild, never):Node;
 	
 	/**
 	 * The last child of this node. If there is no such node,
 	 * this returns null.
 	 */
-	public var lastChild(get_lastChild, never):NodeClass;
+	public var lastChild(get_lastChild, never):Node;
 	
 	/**
 	 * The node immediately following this node. 
 	 * If there is no such node, this returns null.
 	 */
-	public var nextSibling(get_nextSibling, never):NodeClass;
+	public var nextSibling(get_nextSibling, never):Node;
 	
 	/**
 	 * The node immediately preceding this node. 
 	 * If there is no such node, this returns null.
 	 */
-	public var previousSibling(get_previousSibling, never):NodeClass;
+	public var previousSibling(get_previousSibling, never):Node;
 	
 	/**
 	 * A value representing the underlying object
@@ -148,7 +134,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 */
 	private function initChildNodes():Void
 	{
-		childNodes = new Array<NodeClass>();
+		childNodes = new Array<Node>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +148,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * @param The node being removed.
 	 * @return The node removed.
 	 */
-	public function removeChild(oldChild:NodeClass):NodeClass
+	public function removeChild(oldChild:Node):Node
 	{
 		oldChild.parentNode = null;
 		childNodes.remove(oldChild);
@@ -179,7 +165,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * 
 	 * @return The node added.
 	 */
-	public function appendChild(newChild:NodeClass):NodeClass
+	public function appendChild(newChild:Node):Node
 	{
 		removeFromParentIfNecessary(newChild);
 		
@@ -201,7 +187,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * which the new node must be inserted.
 	 * @return	The node being inserted
 	 */
-	public function insertBefore(newChild:NodeClass, refChild:NodeClass):NodeClass
+	public function insertBefore(newChild:Node, refChild:Node):Node
 	{
 		if (refChild == null)
 		{
@@ -244,7 +230,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * @param	other The node to test against.
 	 * @return Returns true if the nodes are the same, false otherwise.
 	 */
-	public function isSameNode(other:NodeClass):Bool
+	public function isSameNode(other:Node):Bool
 	{
 		return other == cast(this);
 	}
@@ -260,7 +246,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * @param	oldChild The node being replaced in the list.
 	 * @return	The node replaced.
 	 */
-	public function replaceChild(newChild:NodeClass, oldChild:NodeClass):NodeClass
+	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
 		var length:Int = childNodes.length;
 		for (i in 0...length)
@@ -308,9 +294,9 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * if false, clone only the node itself (and its attributes, if it is an Element).
 	 * @return The duplicate node
 	 */
-	public function cloneNode(deep:Bool):NodeClass
+	public function cloneNode(deep:Bool):Node
 	{
-		var clonedNode:NodeClass = doCloneNode();
+		var clonedNode:Node = doCloneNode();
 		if (deep == true)
 		{
 			var childLength:Int = childNodes.length;
@@ -341,7 +327,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 */
 	override private function getTargetAncestors():Array<EventTarget>
 	{
-		var parent:NodeClass = parentNode;
+		var parent:Node = parentNode;
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		
 		while (parent != null)
@@ -362,20 +348,20 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	 * What gets clone varies for each
 	 * node type
 	 */
-	private function doCloneNode():NodeClass
+	private function doCloneNode():Node
 	{
-		return cast(new Node<NodeClass>());
+		return cast(new Node());
 	}
 		
 	/**
 	 * When a node is about to be added to another, 
 	 * first detach it if it was already attached to the tree
 	 */
-	private function removeFromParentIfNecessary(newChild:NodeClass):Void
+	private function removeFromParentIfNecessary(newChild:Node):Void
 	{
 		if (newChild.parentNode != null)
 		{
-			var parentNode:NodeClass = newChild.parentNode;
+			var parentNode:Node = newChild.parentNode;
 			parentNode.removeChild(newChild);
 		}
 	}
@@ -384,7 +370,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_firstChild():NodeClass
+	private function get_firstChild():Node
 	{
 		if (hasChildNodes() == true)
 		{
@@ -396,7 +382,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 		}
 	}
 	
-	private function get_lastChild():NodeClass
+	private function get_lastChild():Node
 	{
 		if (hasChildNodes() == true)
 		{
@@ -408,7 +394,7 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 		}
 	}
 	
-	private function get_nextSibling():NodeClass
+	private function get_nextSibling():Node
 	{
 		
 		//if the node is not attached, it
@@ -418,16 +404,15 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 			return null;
 		}
 		
-		var thisAsNodeClass:NodeClass = cast(this);
-		if (parentNode.lastChild != thisAsNodeClass)
+		if (parentNode.lastChild != this)
 		{
 			//loop in all child to find this node and return
 			//the next one
-			var parentChildNodes:Array<NodeClass> = parentNode.childNodes;
+			var parentChildNodes:Array<Node> = parentNode.childNodes;
 			var length:Int = parentChildNodes.length;
 			for (i in 0...length)
 			{
-				if (parentChildNodes[i] == thisAsNodeClass)
+				if (parentChildNodes[i] == this)
 				{
 					return parentChildNodes[i + 1];
 				}
@@ -442,20 +427,19 @@ class Node<NodeClass:(EventCallback, INode<NodeClass>)> extends EventCallback im
 	/**
 	 * same as get_nextSibling
 	 */
-	private function get_previousSibling():NodeClass
+	private function get_previousSibling():Node
 	{
 		if (parentNode == null)
 		{
 			return null;
 		}
 		
-		var thisAsNodeClass:NodeClass = cast(this);
-		if (parentNode.firstChild != thisAsNodeClass)
+		if (parentNode.firstChild != this)
 		{
 			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (parentNode.childNodes[i] == thisAsNodeClass)
+				if (parentNode.childNodes[i] == this)
 				{
 					return parentNode.childNodes[i - 1];
 				}

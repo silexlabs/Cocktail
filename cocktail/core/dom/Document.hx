@@ -32,7 +32,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node<Document>
+class Document extends Node
 {	
 	/**
 	 * This is a convenience attribute that allows direct access
