@@ -27,7 +27,7 @@ class EventListener
 	/**
 	 * The callback to call when this event listener is triggered
 	 */
-	public var listener(default, null):Event->Void;
+	public var listener(default, null):Dynamic->Void;
 	
 	/**
 	 * The type of event this listener listens for
@@ -38,7 +38,7 @@ class EventListener
 	 * class constructor. Init
 	 * class attributes
 	 */
-	public function new(eventType:String, listener:Event->Void, useCapture:Bool)
+	public function new(eventType:String, listener:Dynamic->Void, useCapture:Bool)
 	{
 		this.listener = listener;
 		this.useCapture = useCapture;

@@ -313,7 +313,7 @@ class EventCallback extends EventTarget
 	/**
 	 * Utils method to update the listener used by a callback
 	 */
-	private function updateCallbackListener(eventType:String, newListener:Event->Void, oldListener:Event->Void):Void
+	private function updateCallbackListener(eventType:String, newListener:Dynamic->Void, oldListener:Dynamic->Void):Void
 	{
 		//if the callback is alreay linked to an EventListener
 		//remove the event listener
@@ -338,49 +338,49 @@ class EventCallback extends EventTarget
 	
 	private function set_onclick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.CLICK, cast(value), cast(onclick));
+		updateCallbackListener(EventConstants.CLICK, value, onclick);
 		return onclick = value;
 	}
 	
 	private function set_ondblclick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.DOUBLE_CLICK, cast(value), cast(ondblclick));
+		updateCallbackListener(EventConstants.DOUBLE_CLICK, value, ondblclick);
 		return ondblclick = value;
 	}
 	
 	private function set_onmousedown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_DOWN, cast(value), cast(onmousedown));
+		updateCallbackListener(EventConstants.MOUSE_DOWN, value, onmousedown);
 		return onmousedown = value;
 	}
 	
 	private function set_onmouseup(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_UP, cast(value), cast(onmouseup));
+		updateCallbackListener(EventConstants.MOUSE_UP, value, onmouseup);
 		return onmouseup = value;
 	}
 	
 	private function set_onmouseover(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_OVER, cast(value), cast(onmouseover));
+		updateCallbackListener(EventConstants.MOUSE_OVER, value, onmouseover);
 		return onmouseover = value;
 	}
 	
 	private function set_onmouseout(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_OUT, cast(value), cast(onmouseout));
+		updateCallbackListener(EventConstants.MOUSE_OUT, value, onmouseout);
 		return onmouseout = value;
 	}
 	
 	private function set_onmousemove(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_MOVE, cast(value), cast(onmousemove));
+		updateCallbackListener(EventConstants.MOUSE_MOVE, value, onmousemove);
 		return onmousemove = value;
 	}
 	
 	private function set_onmousewheel(value:WheelEvent->Void):WheelEvent->Void
 	{
-		updateCallbackListener(EventConstants.MOUSE_WHEEL, cast(value), cast(onmousewheel));
+		updateCallbackListener(EventConstants.MOUSE_WHEEL, value, onmousewheel);
 		return onmousewheel = value;
 	}
 	
@@ -389,13 +389,13 @@ class EventCallback extends EventTarget
 	
 	private function set_onkeydown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(EventConstants.KEY_DOWN, cast(value), cast(onkeydown));
+		updateCallbackListener(EventConstants.KEY_DOWN, value, onkeydown);
 		return onkeydown = value;
 	}
 	
 	private function set_onkeyup(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(EventConstants.KEY_UP, cast(value), cast(onkeyup));
+		updateCallbackListener(EventConstants.KEY_UP, value, onkeyup);
 		return onkeyup = value;
 	}
 	
@@ -404,13 +404,13 @@ class EventCallback extends EventTarget
 	
 	private function set_onfocus(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(EventConstants.FOCUS, cast(value), cast(onfocus));
+		updateCallbackListener(EventConstants.FOCUS, value, onfocus);
 		return onfocus = value;
 	}
 	
 	private function set_onblur(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(EventConstants.BLUR, cast(value), cast(onblur));
+		updateCallbackListener(EventConstants.BLUR, value, onblur);
 		return onblur = value;
 	}
 
@@ -419,7 +419,7 @@ class EventCallback extends EventTarget
 	
 	private function set_onresize(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(EventConstants.RESIZE, cast(value), cast(onresize));
+		updateCallbackListener(EventConstants.RESIZE, value, onresize);
 		return onresize = value;
 	}
 	
@@ -431,31 +431,31 @@ class EventCallback extends EventTarget
 	
 	private function set_onscroll(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(EventConstants.SCROLL, cast(value), cast(onscroll));
+		updateCallbackListener(EventConstants.SCROLL, value, onscroll);
 		return onscroll = value;
 	}
 	
 	private function set_onload(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(EventConstants.LOAD, cast(value), cast(onload));
+		updateCallbackListener(EventConstants.LOAD, value, onload);
 		return onload = value;
 	}
 		
 	private function set_onerror(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(EventConstants.ERROR, cast(value), cast(onerror));
+		updateCallbackListener(EventConstants.ERROR, value, onerror);
 		return onerror = value;
 	}
 	
 	private function set_onchange(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(EventConstants.CHANGE, cast(value), cast(onchange));
+		updateCallbackListener(EventConstants.CHANGE, value, onchange);
 		return onchange = value;
 	}
 	
 	private function set_oninput(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(EventConstants.INPUT, cast(value), cast(oninput));
+		updateCallbackListener(EventConstants.INPUT, value, oninput);
 		return oninput = value;
 	}
 	
@@ -464,13 +464,13 @@ class EventCallback extends EventTarget
 	
 	private function set_onreset(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(EventConstants.RESET, cast(value), cast(onreset));
+		updateCallbackListener(EventConstants.RESET, value, onreset);
 		return onreset = value;
 	}
 	
 	private function set_onsubmit(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(EventConstants.SUBMIT, cast(value), cast(onsubmit));
+		updateCallbackListener(EventConstants.SUBMIT, value, onsubmit);
 		return onsubmit = value;
 	}
 	
@@ -596,7 +596,7 @@ class EventCallback extends EventTarget
 	
 	private function set_ontransitionend(value:TransitionEvent->Void):TransitionEvent->Void
 	{
-		updateCallbackListener(EventConstants.TRANSITION_END, cast(value), cast(ontransitionend));
+		updateCallbackListener(EventConstants.TRANSITION_END, value, ontransitionend);
 		return ontransitionend = value;
 	}
 
@@ -605,7 +605,7 @@ class EventCallback extends EventTarget
 	
 	private function set_onpopstate(value:PopStateEvent->Void):PopStateEvent->Void
 	{
-		updateCallbackListener(EventConstants.POP_STATE, cast(value), cast(onpopstate));
+		updateCallbackListener(EventConstants.POP_STATE, value, onpopstate);
 		return onpopstate = value;
 	}
 }

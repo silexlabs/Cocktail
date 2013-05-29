@@ -169,7 +169,7 @@ class Node extends EventCallback
 	{
 		removeFromParentIfNecessary(newChild);
 		
-		newChild.parentNode = cast(this);
+		newChild.parentNode = this;
 		childNodes.push(newChild);
 	
 		return newChild;
@@ -204,7 +204,7 @@ class Node extends EventCallback
 					
 					//set the parent of the new child
 					removeFromParentIfNecessary(newChild);
-					newChild.parentNode = cast(this);
+					newChild.parentNode = this;
 					return newChild;
 				}
 			}
@@ -232,7 +232,7 @@ class Node extends EventCallback
 	 */
 	public function isSameNode(other:Node):Bool
 	{
-		return other == cast(this);
+		return other == this;
 	}
 	
 	/**
@@ -305,7 +305,7 @@ class Node extends EventCallback
 				clonedNode.appendChild(childNodes[i].cloneNode(deep));
 			}
 		}
-		return cast(clonedNode);
+		return clonedNode;
 	}
 	
 	/**
@@ -350,7 +350,7 @@ class Node extends EventCallback
 	 */
 	private function doCloneNode():Node
 	{
-		return cast(new Node());
+		return new Node();
 	}
 		
 	/**
