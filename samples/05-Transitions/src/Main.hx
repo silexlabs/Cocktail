@@ -6,9 +6,9 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
+import js.html.HtmlElement;
 import haxe.Timer;
-import js.Lib;
-import js.Dom;
+import js.Browser;
 
 /**
  * Add divs to the document and 
@@ -24,7 +24,7 @@ class Main
 		cocktail.api.Cocktail.boot();
 		#end
 		
-		Lib.window.onload = function(e) new Main();
+		Browser.window.onload = function(e) new Main();
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class Main
 		#end
 		
 		//helps on mobile to know wether app uses nme or air
-		var target = Lib.document.getElementById("target");
+		var target = Browser.document.getElementById("target");
 		#if air
 		target.innerHTML = "AIR";
 		#elseif flash
@@ -61,14 +61,14 @@ class Main
 		boxWidth = 50;
 		boxHeight = 50;
 		
-		containerHeight = Lib.window.innerHeight;
-		containerWidth = Lib.window.innerWidth;
+		containerHeight = Browser.window.innerHeight;
+		containerWidth = Browser.window.innerWidth;
 		
 		//add a stylesheet and wait for it to be loaded before start
 		//
 		//note : added here instead of html because in NME, loading is synchronous
 		//because it is local, so we need to add load listener before starting loading
-		var link = Lib.document.createElement("link");
+		var link = Browser.document.createElement("link");
 		link.addEventListener("load",
 		function(e) {
 			start();
@@ -79,7 +79,7 @@ class Main
 		link.setAttribute("type", "text/css");
 		link.setAttribute("rel", "stylesheet");
 		
-		Lib.document.getElementsByTagName("head")[0].appendChild(link);
+		Browser.document.getElementsByTagName("head")[0].appendChild(link);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class Main
 	/**
 	 * Moves a box randomly
 	 */
-	function transition(transitionBox:HtmlDom)
+	function transition(transitionBox:HtmlElement)
 	{
 		transitionBox.style.left = Std.string(Math.round(Math.random() * (containerWidth - boxWidth))) + "px";
 		transitionBox.style.top = Std.string(Math.round(Math.random() * (containerHeight - boxHeight))) + "px";
@@ -107,7 +107,7 @@ class Main
 	 */
 	function addTransitionBox()
 	{
-		var transitionBox = Lib.document.createElement("div");
+		var transitionBox = Browser.document.createElement("div");
 		transitionBox.className = "trans";
 		
 		//random background color
@@ -118,13 +118,13 @@ class Main
 		//transition
 		transitionBox.addEventListener("transitionend",
 		function(e) {
-			transition(transitionBox);
+			transition(cast transitionBox);
 		},
 		false);
 		
 		transitionBox.addEventListener("webkitTransitionEnd",
 		function(e) {
-			transition(transitionBox);
+			transition(cast transitionBox);
 		},
 		false);
 		
@@ -133,8 +133,8 @@ class Main
 			addTransitionBox();
 		}
 		
-		Lib.document.getElementById("container").appendChild(transitionBox);
+		Browser.document.getElementById("container").appendChild(transitionBox);
 		
-		Timer.delay(function() {transition(transitionBox);}, 1000);
+		Timer.delay(function() {transition(cast transitionBox);}, 1000);
 	}
 }

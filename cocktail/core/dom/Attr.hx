@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.dom;
-
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -15,7 +14,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
+class Attr extends Node<Attr>
 {
 	/**
 	 * Returns the name of this attribute.
@@ -32,7 +31,7 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	 * that an XML processor would recognize as markup
 	 * are instead treated as literal text.
 	 */
-	public var value(get_value, set_value):String;
+	@:isVar public var value(get_value, set_value):String;
 	
 	/**
 	 * True if this attribute was explicitly given a value in the instance document,
@@ -55,7 +54,7 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	 * The Element node this attribute is attached 
 	 * to or null if this attribute is not in use.
 	 */
-	public var ownerElement:ElementClass;
+	public var ownerElement:HTMLElement;
 	
 	/**
 	 * class constructor
@@ -82,9 +81,9 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	/**
 	 * Overriden as attr node clone its own attributes
 	 */
-	override private function doCloneNode():Attr<ElementClass>
+	override private function doCloneNode():Attr
 	{
-		var clonedAttr:Attr<ElementClass> = new Attr<ElementClass>(this.name);
+		var clonedAttr:Attr = new Attr(this.name);
 		clonedAttr.specified = this.specified;
 		clonedAttr.isId = this.isId;
 		clonedAttr.value = this.value;

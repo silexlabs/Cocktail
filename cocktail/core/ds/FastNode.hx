@@ -9,6 +9,17 @@
 package cocktail.core.ds;
 
 /**
+ * Had to add this when updating to Haxe3 as recursive
+ * type parameters no longer compile
+ */
+interface IFastNode<NodeClass> {
+	var nextSibling:NodeClass;
+	var previousSibling:NodeClass;
+	var parentNode:NodeClass;
+	function removeChild(oldChild:NodeClass):Void;
+}
+
+/**
  * This is a node data structure for building 
  * data trees. This is used for all data tress in
  * cocktail (element render tree, layer tree...)
@@ -20,7 +31,7 @@ package cocktail.core.ds;
  * 
  * @author Yannick DOMINGUEZ
  */
-class FastNode<NodeClass:FastNode<NodeClass>>
+class FastNode<NodeClass:IFastNode<NodeClass>> implements IFastNode<NodeClass>
 {
 	public var parentNode:NodeClass;
 

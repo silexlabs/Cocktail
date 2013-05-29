@@ -565,7 +565,7 @@ class HTMLFormElement extends HTMLElement
 	
 	private function get_method():String
 	{
-		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_METHOD_ATTRIBUTE_NAME, HTTPConstants.FORM_SUBMIT_METHODS, 
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_METHOD_ATTRIBUTE_NAME, HTTPConstants.getFormSubmitMethods(), 
 		null, HTTPConstants.GET);
 	}
 	
@@ -577,7 +577,7 @@ class HTMLFormElement extends HTMLElement
 	
 	private function get_enctype():String
 	{
-		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_ENCTYPE_ATTRIBUTE_NAME, HTTPConstants.FORM_ENCODINGS, 
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_ENCTYPE_ATTRIBUTE_NAME, HTTPConstants.getFormEncodings(), 
 		null, HTTPConstants.URL_ENCODING);
 	}
 	

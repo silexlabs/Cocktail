@@ -57,7 +57,7 @@ class CSSRule
 	 * a CSS serialisation of the rule, on setting
 	 * parse the CSS rule into object
 	 */
-	public var cssText(get_cssText, set_cssText):String;
+	@:isVar public var cssText(get_cssText, set_cssText):String;
 	
 	/**
 	 * The parentRule attribute must return the nearest

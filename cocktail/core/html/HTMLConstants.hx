@@ -227,9 +227,9 @@ class HTMLConstants
 	
 	public static inline var INPUT_TYPE_IMAGE:String = "image";
 	
-	public static inline var INPUT_TYPE_VALUES:Array<String> = [INPUT_TYPE_HIDDEN, INPUT_TYPE_TEXT,
+	public static inline function getInputTypeValues():Array<String> {return [INPUT_TYPE_HIDDEN, INPUT_TYPE_TEXT,
 	INPUT_TYPE_PASSWORD, INPUT_TYPE_CHECKBOX, INPUT_TYPE_RADIO, INPUT_TYPE_SUBMIT, INPUT_TYPE_RESET, INPUT_TYPE_BUTTON,
-	INPUT_TYPE_FILE, INPUT_TYPE_IMAGE];
+	INPUT_TYPE_FILE, INPUT_TYPE_IMAGE];}
 	
 	//input labels
 	

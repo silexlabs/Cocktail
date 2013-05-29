@@ -10,7 +10,6 @@ package cocktail.core.resource;
 
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
-import cocktail.Lib;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.core.http.HTTPData;
@@ -27,16 +26,16 @@ import cocktail.core.http.HTTPData;
 class ResourceManager 
 {
 	/**
-	 * Stores each requested asset in a hash where the
+	 * Stores each requested asset in a map where the
 	 * key is the url of the asset
 	 */
-	private var _resources:Hash<ResourceBase>;
+	private var _resources:Map<String, ResourceBase>;
 	
 	/**
 	 * Store requested binary resources, where the 
 	 * key is the url of the binary
 	 */
-	private var _binaryResources:Hash<NativeHttp>;
+	private var _binaryResources:Map<String, NativeHttp>;
 	
 	/**
 	 * a reference to the document owning this
@@ -50,8 +49,8 @@ class ResourceManager
 	public function new(document:HTMLDocument) 
 	{
 		_document = document;
-		_resources = new Hash<ResourceBase>();
-		_binaryResources = new Hash<NativeHttp>();
+		_resources = new Map<String, ResourceBase>();
+		_binaryResources = new Map<String, NativeHttp>();
 	}
 	
 	/**

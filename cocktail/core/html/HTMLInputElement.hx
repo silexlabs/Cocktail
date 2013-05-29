@@ -107,7 +107,7 @@ class HTMLInputElement extends FormAssociatedElement
 	 * The readonly attribute is a boolean attribute that controls
 	 * whether or not the user can edit the form control.
 	 */
-	public var readOnly(get_readonly, set_readonly):Bool;
+	public var readOnly(get_readOnly, set_readOnly):Bool;
 	
 	/**
 	 * A form control that is disabled must prevent any click events
@@ -812,12 +812,12 @@ class HTMLInputElement extends FormAssociatedElement
 		return value;
 	}
 	
-	private function get_readonly():Bool
+	private function get_readOnly():Bool
 	{
 		return getAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME);
 	}
 	
-	private function set_readonly(value:Bool):Bool
+	private function set_readOnly(value:Bool):Bool
 	{
 		setAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME, value);
 		return value;
@@ -837,7 +837,7 @@ class HTMLInputElement extends FormAssociatedElement
 	
 	private function get_type():String
 	{
-		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.INPUT_TYPE_VALUES, HTMLConstants.INPUT_TYPE_TEXT, null);
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.getInputTypeValues(), HTMLConstants.INPUT_TYPE_TEXT, null);
 	}
 	
 	private function set_type(value:String):String

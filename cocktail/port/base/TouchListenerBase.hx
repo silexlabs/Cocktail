@@ -9,7 +9,7 @@
 package cocktail.port.base;
 
 import cocktail.core.event.TouchEvent;
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 import cocktail.port.Bindings;
 
 /**

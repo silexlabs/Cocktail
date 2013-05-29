@@ -18,7 +18,7 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
-import haxe.Stack;
+
 
 /**
  * An Inline Box renderer is an element which participates

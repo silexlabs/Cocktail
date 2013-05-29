@@ -25,7 +25,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
+class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 {	
 	/**
 	 * The name of the element
@@ -80,7 +80,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	private function initAttributes():Void
 	{
-		attributes = new NamedNodeMap<ElementClass>();
+		attributes = new NamedNodeMap();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function getAttribute(name:String):String
 	{
-		var attribute:Attr<ElementClass> = getAttributeNode(name);
+		var attribute:Attr = getAttributeNode(name);
 		if (attribute != null)
 		{
 			return attribute.value;
@@ -131,10 +131,10 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function setAttribute(name:String, value:String):Void
 	{
-		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
+		var attribute:Attr = attributes.getNamedItem(name);
 		if (attribute == null)
 		{
-			attribute = new Attr<ElementClass>(name);
+			attribute = new Attr(name);
 			attributes.setNamedItem(attribute);
 			attribute.ownerElement = cast(this);
 		}
@@ -150,9 +150,9 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 * @return The Attr node with the specified name 
 	 * (nodeName) or null if there is no such attribute.
 	 */
-	public function getAttributeNode(name:String):Attr<ElementClass>
+	public function getAttributeNode(name:String):Attr
 	{
-		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
+		var attribute:Attr = attributes.getNamedItem(name);
 		
 		if (attribute != null)
 		{
@@ -172,7 +172,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 * @return If the newAttr attribute replaces an existing attribute,
 	 * the replaced Attr node is returned, otherwise null is returned.
 	 */
-	public function setAttributeNode(newAttr:Attr<ElementClass>):Attr<ElementClass>
+	public function setAttributeNode(newAttr:Attr):Attr
 	{
 		newAttr.ownerElement = cast(this);
 		return attributes.setNamedItem(newAttr);
@@ -190,7 +190,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		var removedAttribute:Attr<ElementClass> = attributes.removeNamedItem(name);
+		var removedAttribute:Attr = attributes.removeNamedItem(name);
 		
 		if (removedAttribute != null)
 		{
@@ -215,10 +215,10 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function setIdAttribute(name:String, isId:Bool):Void
 	{
-		var idAttribute:Attr<ElementClass> = attributes.getNamedItem(name);
+		var idAttribute:Attr = attributes.getNamedItem(name);
 		if (idAttribute == null)
 		{
-			idAttribute = new Attr<ElementClass>(name);
+			idAttribute = new Attr(name);
 			attributes.setNamedItem(idAttribute);
 			idAttribute.ownerElement = cast(this);
 		}
@@ -240,7 +240,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 * @param	idAttr The attribute node.
 	 * @param	isId Whether the attribute is a of type ID.
 	 */
-	public function setIdAttributeNode(idAttr:Attr<ElementClass>, isId:Bool):Void
+	public function setIdAttributeNode(idAttr:Attr, isId:Bool):Void
 	{
 		idAttr.isId = isId;
 		attributes.setNamedItem(idAttr);
@@ -307,7 +307,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		var length:Int = attributes.length;
 		for (i in 0...length)
 		{
-			var clonedAttr:Attr<ElementClass> = attributes.item(i).cloneNode(false);
+			var clonedAttr:Attr = attributes.item(i).cloneNode(false);
 			clonedElement.setAttributeNode(clonedAttr);
 		}
 		

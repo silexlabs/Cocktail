@@ -27,7 +27,6 @@ import cocktail.core.css.CSSValueConverter;
 import cocktail.core.parser.ParserData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.resource.ResourceManager;
-import cocktail.Lib;
 
 /**
  * This class has 3 main purposes :

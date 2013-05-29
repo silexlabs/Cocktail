@@ -8,7 +8,7 @@
 */
 package cocktail.core.event;
 
-import cocktail.core.event.EventData;
+import cocktail.core.event.Touch;
 
 /**
  * This interface defines a list of individual points of contact for a 

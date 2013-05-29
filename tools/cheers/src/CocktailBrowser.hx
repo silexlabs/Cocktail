@@ -1,7 +1,6 @@
 package src;
 import flash.external.ExternalInterface;
 import cocktail.api.CocktailView;
-import js.Lib;
 
 /**
  * display html and css with cocktail.

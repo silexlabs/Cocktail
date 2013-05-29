@@ -13,11 +13,11 @@ import cocktail.core.window.Window;
 
 /**
  * Entry point of the Cocktail library
- * mimicking js.Lib
+ * mimicking js.Browser
  * 
  * @author Yannick DOMINGUEZ
  */
-class Lib 
+class Browser 
 {
 	/**
 	 * Return the html document
