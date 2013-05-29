@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMException;
@@ -96,6 +97,40 @@ class HTMLHtmlElement extends HTMLElement
 	override private function detachFromParentElementRenderer():Void
 	{
 		elementRenderer.removedFromRenderingTree();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE CASCADING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as the HTMLHTMLElement has no HTMLElement parent
+	 */
+	override private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
+	{
+		if (_needsStyleDeclarationUpdate == true || styleManagerCSSDeclaration == null)
+		{
+			getStyleDeclaration();
+			_needsStyleDeclarationUpdate = false;
+		}
+		
+		if (_shouldCascadeAllProperties == true)
+		{
+			cascadeManager.shouldCascadeAll();
+		}
+		else
+		{
+			var length:Int = _pendingChangedProperties.length;
+			for (i in 0...length)
+			{
+				cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
+			}
+		}
+		
+		coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, 12, 12, programmaticChange);
+		
+		_shouldCascadeAllProperties = false;
+		_pendingChangedProperties = [];
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

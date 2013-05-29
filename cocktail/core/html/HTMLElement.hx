@@ -1107,8 +1107,6 @@ class HTMLElement extends Element
 	 * cascade
 	 * @param	programmaticChange wether the change is programmatic. If it is,
 	 * animations may be started
-	 * 
-	 * TODO 1 : should subclass in HTMLHTMLElement
 	 */
 	private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
@@ -1142,29 +1140,6 @@ class HTMLElement extends Element
 	
 				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
-		}
-		else
-		{
-			if (_needsStyleDeclarationUpdate == true || styleManagerCSSDeclaration == null)
-			{
-				getStyleDeclaration();
-				_needsStyleDeclarationUpdate = false;
-			}
-			
-			if (_shouldCascadeAllProperties == true)
-			{
-				cascadeManager.shouldCascadeAll();
-			}
-			else
-			{
-				var length:Int = _pendingChangedProperties.length;
-				for (i in 0...length)
-				{
-					cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
-				}
-			}
-			
-			coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, 12, 12, programmaticChange);
 		}
 		
 		_shouldCascadeAllProperties = false;

@@ -755,6 +755,9 @@ class HTMLDocument extends Document
 		documentElement = node;
 		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		
+		//the document element must be a child of the document
+		appendChild(documentElement);
+		
 		//check if document can dispatch load event instantly,
 		//if no element is delaying the load of the document
 		checkifDocumentLoaded();
