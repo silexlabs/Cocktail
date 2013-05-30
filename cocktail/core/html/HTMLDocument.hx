@@ -751,8 +751,8 @@ class HTMLDocument extends Document
 	private function set_innerHTML(value:String):String
 	{
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, this);
-		documentElement = node;
+		var node:Node = DOMParser.parse(value, this);
+		documentElement = cast(node);
 		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		
 		//the document element must be a child of the document

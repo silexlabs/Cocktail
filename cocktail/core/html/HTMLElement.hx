@@ -420,8 +420,12 @@ class HTMLElement extends Element
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		var child:HTMLElement = cast(newChild);
-		child.appended();
+		
+		if (newChild.nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			var child:HTMLElement = cast(newChild);
+			child.appended();
+		}
 		
 		//when a new child is added, refreh the style of this html element
 		//TODO 2 : don't seem necessary, but tried to remove it and add
@@ -439,9 +443,13 @@ class HTMLElement extends Element
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		var child:HTMLElement = cast(oldChild);
 		
-		child.removed();
+		if(oldChild.nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			var child:HTMLElement = cast(oldChild);
+			child.removed();
+		}
+		
 		return oldChild;
 	}
 	
@@ -458,9 +466,13 @@ class HTMLElement extends Element
 		//of calling the init method
 		if (refChild != null)
 		{
-			var child:HTMLElement = cast(newChild);
-			child.appended();
-			invalidateCascade();
+			if(newChild.nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var child:HTMLElement = cast(newChild);
+				child.appended();
+				invalidateCascade();
+			}
+			
 		}
 	
 		return newChild;
@@ -652,8 +664,11 @@ class HTMLElement extends Element
 				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					var child:HTMLElement = cast(childNodes[i]);
-					child.invalidateStyleDeclaration(true);
+					if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+					{
+						var child:HTMLElement = cast(childNodes[i]);
+						child.invalidateStyleDeclaration(true);
+					}
 				}
 			}
 		}
@@ -727,11 +742,15 @@ class HTMLElement extends Element
 				
 				//all the child of this htmlelement are
 				//now attached to the DOM as well
-				var child:HTMLElement = cast(firstChild);
+				var child:Node = firstChild;
 				while (child != null)
 				{
-					child.appended();
-					child = cast(child.nextSibling);
+					if (child.nodeType == DOMConstants.ELEMENT_NODE)
+					{
+						var htmlChild:HTMLElement = cast(child);
+						htmlChild.appended();
+					}
+					child = child.nextSibling;
 				}
 			}
 		}
@@ -749,11 +768,15 @@ class HTMLElement extends Element
 		
 		//all child are now detached from DOM
 		//as well
-		var child:HTMLElement = cast(firstChild);
+		var child:Node = firstChild;
 		while (child != null)
 		{
-			child.removed();
-			child = cast(child.nextSibling);
+			if (child.nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var htmlChild:HTMLElement = cast(child);
+				htmlChild.removed();
+			}
+			child = child.nextSibling;
 		}
 	}
 	
@@ -969,8 +992,11 @@ class HTMLElement extends Element
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						var child:HTMLElement = cast(childNodes[i]);
-						child.attach(true);
+						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+						{
+							var child:HTMLElement = cast(childNodes[i]);
+							child.attach(true);
+						}
 					}
 				}
 				
@@ -1075,8 +1101,11 @@ class HTMLElement extends Element
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			var childNode:HTMLElement = cast(childNodes[i]);
-			childNode.cascade(cascadeManager, programmaticChange);
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var htmlChild:HTMLElement = cast(childNodes[i]);
+				htmlChild.cascade(cascadeManager, programmaticChange);
+			}
 		}
 	}
 	
@@ -1179,7 +1208,7 @@ class HTMLElement extends Element
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = cast(this.nextSibling);
+		var nextSibling:Node = this.nextSibling;
 					
 		if (nextSibling == null)
 		{
@@ -1189,21 +1218,26 @@ class HTMLElement extends Element
 		{
 			while (nextSibling != null)
 			{
-				if (nextSibling.elementRenderer != null)
+				if (nextSibling.nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
-					
-					//in the case where the parent of the next sibling's elementRenderer is an 
-					//anonymous block, the anonymous block should be return as sibling
-					if (elementRenderParent.isAnonymousBlockBox() == true)
+					var htmlNextSibling:HTMLElement = cast(nextSibling);
+					if (htmlNextSibling.elementRenderer != null)
 					{
-						return elementRenderParent;
+						var elementRenderParent:ElementRenderer = htmlNextSibling.elementRenderer.parentNode;
+						
+						//in the case where the parent of the next sibling's elementRenderer is an 
+						//anonymous block, the anonymous block should be return as sibling
+						if (elementRenderParent.isAnonymousBlockBox() == true)
+						{
+							return elementRenderParent;
+						}
+						
+						return htmlNextSibling.elementRenderer;
 					}
-					
-					return nextSibling.elementRenderer;
 				}
 				
-				nextSibling = cast(nextSibling.nextSibling);
+				
+				nextSibling = nextSibling.nextSibling;
 			}
 		}
 		
@@ -1310,13 +1344,17 @@ class HTMLElement extends Element
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = cast(childNodes[i]);
-			var transitionStarted:Bool = child.startPendingTransitions();
-			
-			if (transitionStarted == true)
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 			{
-				atLeastOneTransitionStarted = true;
+				var child:HTMLElement = cast(childNodes[i]);
+				var transitionStarted:Bool = child.startPendingTransitions();
+				
+				if (transitionStarted == true)
+				{
+					atLeastOneTransitionStarted = true;
+				}
 			}
+			
 		}
 		
 		return atLeastOneTransitionStarted;
@@ -1333,8 +1371,11 @@ class HTMLElement extends Element
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = cast(childNodes[i]);
-			child.endPendingTransitions();
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var child:HTMLElement = cast(childNodes[i]);
+				child.endPendingTransitions();
+			}
 		}
 	}
 	
@@ -1932,7 +1973,7 @@ class HTMLElement extends Element
 		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(wrappedHTML, ownerDocument);
+		var node:Node = DOMParser.parse(wrappedHTML, ownerDocument);
 
 		//the returned node might be null for instance, if 
 		//only an empty string was provided
@@ -1961,7 +2002,7 @@ class HTMLElement extends Element
 	private function set_outerHTML(value:String):String
 	{
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+		var node:Node = DOMParser.parse(value, ownerDocument);
 
 		var oldNextSibling:HTMLElement = cast(this.nextSibling);
 		parentNode.removeChild(cast(this));

@@ -22,7 +22,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class CharacterData extends HTMLElement
+class CharacterData extends Node
 {
 	/**
 	 * The character data of the node that implements this interface. The DOM implementation 
@@ -38,98 +38,13 @@ class CharacterData extends HTMLElement
 	 */
 	public function new() 
 	{
-		super("");
+		super();
 	}
 	
 	/**
 	 * text nodes can't have children
 	 */
 	override private function initChildNodes():Void
-	{
-		
-	}
-	
-	/**
-	 * text nodes can't have attributes
-	 */
-	override private function initAttributes():Void
-	{
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Cascading doesn't apply to text, only to 
-	 * actual HTMLElement
-	 */
-	override public function cascade(cascadeManager:CascadeManager, programmaticChange:Bool):Void
-	{
-		
-	}
-	
-	/**
-	 * Overriden as cascade doesn't apply
-	 * to text
-	 */
-	override public function invalidateCascade():Void
-	{
-		
-	}
-	
-	/**
-	 * text nodes can't have children
-	 */
-	override public function hasChildNodes():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * text nodes have no attributes
-	 */
-	override public function hasAttributes():Bool
-	{
-		return false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as a text as no style declaration
-	 */
-	override private function getStyleDeclaration():Void
-	{
-		
-	}
-	
-	/**
-	 * Overriden as Text is not supposed to instantiate
-	 * any of the attribute used by atual HTMLElement
-	 */
-	override private function init():Void
-	{	
-		
-	}
-	
-	/**
-	 * Overriden as Text is not responsible for
-	 * starting transitions, only actual HTMLElement
-	 */
-	override public function startPendingTransitions():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Overriden as Text is not responsible for
-	 * ending transitions, only actual HTMLElement
-	 */
-	override public function endPendingTransitions():Void
 	{
 		
 	}

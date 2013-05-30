@@ -329,20 +329,23 @@ class Element extends Node
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:Node = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
 				else if (tagName == DOMConstants.MATCH_ALL_TAG_NAME && childNode.nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				
-				doGetElementsByTagName(childNode, tagName, elements);
+				if (childNode.nodeType == DOMConstants.ELEMENT_NODE)
+				{
+					doGetElementsByTagName(cast(childNode), tagName, elements);
+				}
 			}
 		}
 	}
