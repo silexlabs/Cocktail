@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
@@ -48,9 +49,9 @@ class VideoRenderer extends ImageRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domNode:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(domNode);
+		super(domNode, coreStyle);
 		_posterBounds = new RectangleVO();
 		_videoBounds = new RectangleVO();
 	}
@@ -139,7 +140,8 @@ class VideoRenderer extends ImageRenderer
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		var resource:ResourceBase = htmlDocument.resourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var htmlElement:HTMLElement = cast(domNode);
+		var resource:ResourceBase = htmlDocument.resourceManager.getImageResource(htmlElement.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		//the poster frame is not loaded or there was an error while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)

@@ -7,6 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.Bindings;
 
@@ -23,9 +25,9 @@ class PasswordInputRenderer extends TextInputRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 	}
 	
 	/**
@@ -33,7 +35,7 @@ class PasswordInputRenderer extends TextInputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeTextInput = new NativePasswordInput(domNode);
+		nativeTextInput = new NativePasswordInput(cast(domNode));
 		nativeInput = nativeTextInput;
 	} 
 }

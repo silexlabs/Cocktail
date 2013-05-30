@@ -58,9 +58,9 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		_absolutelyPositionedChildren = new Array<ElementRenderer>();
 		_childStaticOrigin = new PointVO(0, 0);
 	}

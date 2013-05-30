@@ -116,7 +116,7 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new TextAreaRenderer(this);
+		elementRenderer = new TextAreaRenderer(this, coreStyle);
 		
 		if (_valueIsDirty == false)
 		{

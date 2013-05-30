@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLConstants;
@@ -35,9 +36,9 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

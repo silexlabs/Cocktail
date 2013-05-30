@@ -14,7 +14,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr extends Node<Attr>
+class Attr extends Node
 {
 	/**
 	 * Returns the name of this attribute.

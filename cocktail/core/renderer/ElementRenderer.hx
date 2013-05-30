@@ -130,12 +130,8 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * A reference to the Node in the DOM tree
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
-	 * 
-	 * TODO IMPORTANT : for now HTMLElement as even
-	 * Text inherits from HTMLElement in haxe JS API,
-	 * shouldn't be so
 	 */
-	public var domNode(default, null):HTMLElement;
+	public var domNode(default, null):Node;
 	
 	/**
 	 * A reference to the coreStyle from which
@@ -272,13 +268,13 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * class constructor. init class attribute
 	 */
-	public function new(domNode:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
 		super();
 
 		this.domNode = domNode;
+		this.coreStyle = coreStyle;
 		
-		initCoreStyle();
 		_hasOwnLayer = false;
 		_wasAbsolutelyPositioned = false;
 		_needsLayerRendererUpdate = true;
@@ -320,15 +316,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		}
 		
 		inlineBoxes = null;
-	}
-	
-	/**
-	 * Retrieve a reference to the dom 
-	 * node style object
-	 */
-	private function initCoreStyle():Void
-	{
-		coreStyle = domNode.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.boxmodel.BoxStylesComputer;
@@ -29,9 +31,9 @@ import cocktail.core.css.CSSData;
  */
 class EmbeddedBoxRenderer extends BoxRenderer
 {
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		isReplaced = true;
 	}
 	

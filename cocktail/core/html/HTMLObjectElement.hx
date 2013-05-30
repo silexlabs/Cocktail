@@ -242,7 +242,7 @@ class HTMLObjectElement extends EmbeddedElement
 				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					var child:HTMLElement = childNodes[i];
+					var child:HTMLElement = cast(childNodes[i]);
 					if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
 					{
 						var name:String = child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
@@ -313,7 +313,7 @@ class HTMLObjectElement extends EmbeddedElement
 	{
 		if (_pluginReady == true)
 		{
-			elementRenderer = new ObjectRenderer(this);
+			elementRenderer = new ObjectRenderer(this, coreStyle);
 		}
 	}
 	

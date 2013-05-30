@@ -114,9 +114,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * class constructor.
 	 * Init class attributes
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		
 		_lineBoxPosition = new PointVO(0, 0);
 		_childPosition = new PointVO(0, 0);
@@ -278,7 +278,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(domNode.ownerDocument);
 		anonymousBlock.appendChild(child);
 		
-		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
+		var htmlElement:HTMLElement = cast(anonymousBlock.domNode);
+		anonymousBlock.coreStyle = htmlElement.coreStyle;
 		
 		//TODO 3 : all of this is very messy but before that styles of anonymous blocks
 		//were cascaded which was very expensive and useless

@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
@@ -43,9 +44,9 @@ class TextInputRenderer extends InputRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 	}
 	
 	/**
@@ -53,7 +54,7 @@ class TextInputRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeTextInput = new NativeTextInput(domNode);
+		nativeTextInput = new NativeTextInput(cast(domNode));
 		nativeInput = nativeTextInput;
 	}
 	

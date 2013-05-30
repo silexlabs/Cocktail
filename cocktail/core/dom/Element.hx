@@ -25,7 +25,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
+class Element extends Node
 {	
 	/**
 	 * The name of the element
@@ -36,25 +36,25 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 	 * returns a reference to the first child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var firstElementChild(get_firstElementChild, never):ElementClass;
+	public var firstElementChild(get_firstElementChild, never):Element;
 	
 	/**
 	 * returns a reference to the first last child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var lastElementChild(get_lastElementChild, never):ElementClass;
+	public var lastElementChild(get_lastElementChild, never):Element;
 	
 	/**
 	 * returns a reference to the first previous sibling element which is of nodeType Element.
 	 * returns, null if this Element has no previous siblings or none of them are Element
 	 */
-	public var previousElementSibling(get_previousElementSibling, never):ElementClass;
+	public var previousElementSibling(get_previousElementSibling, never):Element;
 	
 	/**
 	 * returns a reference to the first next sibling element which is of nodeType Element.
 	 * returns, null if this Element has no next siblings or none of them are Element
 	 */
-	public var nextElementSibling(get_nextElementSibling, never):ElementClass;
+	public var nextElementSibling(get_nextElementSibling, never):Element;
 	
 	/**
 	 * Returns the number of children of this Element which are 
@@ -300,14 +300,14 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 	 * Overriden as for element node, attributes
 	 * are cloned as well
 	 */
-	override private function doCloneNode():ElementClass
+	override private function doCloneNode():Element
 	{
-		var clonedElement:Element<ElementClass> = new Element<ElementClass>(this.tagName);
+		var clonedElement:Element = new Element(tagName);
 		
 		var length:Int = attributes.length;
 		for (i in 0...length)
 		{
-			var clonedAttr:Attr = attributes.item(i).cloneNode(false);
+			var clonedAttr:Attr = cast(attributes.item(i).cloneNode(false));
 			clonedElement.setAttributeNode(clonedAttr);
 		}
 		
@@ -329,20 +329,23 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:Node = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
 				else if (tagName == DOMConstants.MATCH_ALL_TAG_NAME && childNode.nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				
-				doGetElementsByTagName(childNode, tagName, elements);
+				if (childNode.nodeType == DOMConstants.ELEMENT_NODE)
+				{
+					doGetElementsByTagName(cast(childNode), tagName, elements);
+				}
 			}
 		}
 	}
@@ -358,7 +361,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.ELEMENT_NODE:
@@ -387,7 +390,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 	 * return the concatenation of the text of all
 	 * descendant elements of node
 	 */
-	private function doGetTextContent(node:HTMLElement):String
+	private function doGetTextContent(node:Node):String
 	{
 		var text:String = "";
 		
@@ -396,7 +399,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = node.childNodes[i];
+				var childNode:Node = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.TEXT_NODE:
@@ -445,7 +448,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 	// ELEMENT TRAVERSAL GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_firstElementChild():ElementClass
+	private function get_firstElementChild():Element
 	{
 		if (hasChildNodes() == false)
 		{
@@ -454,7 +457,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 		
 		if (firstChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			return firstChild;
+			return cast(firstChild);
 		}
 		else
 		{
@@ -463,7 +466,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 			{
 				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					return childNodes[i];
+					return cast(childNodes[i]);
 				}
 			}
 		}
@@ -471,7 +474,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 		return null;
 	}
 	
-	private function get_lastElementChild():ElementClass
+	private function get_lastElementChild():Element
 	{
 		if (hasChildNodes() == false)
 		{
@@ -480,7 +483,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 		
 		if (lastChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			return lastChild;
+			return cast(lastChild);
 		}
 		else
 		{
@@ -489,7 +492,7 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 			{
 				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					return childNodes[i];
+					return cast(childNodes[i]);
 				}
 			}
 		}
@@ -497,18 +500,18 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 		return null;
 	}
 	
-	private function get_nextElementSibling():ElementClass
+	private function get_nextElementSibling():Element
 	{
 		if (nextSibling == null)
 		{
 			return null;
 		}
 		
-		var nextElementSibling:ElementClass = nextSibling;
+		var nextElementSibling:Element = cast(nextSibling);
 		
 		while (nextElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
-			nextElementSibling = nextElementSibling.nextSibling;
+			nextElementSibling = cast(nextElementSibling.nextSibling);
 			
 			if (nextElementSibling == null)
 			{
@@ -519,18 +522,18 @@ class Element<ElementClass:Node<ElementClass>> extends Node<ElementClass>
 		return nextElementSibling;
 	}
 	
-	private function get_previousElementSibling():ElementClass
+	private function get_previousElementSibling():Element
 	{
 		if (previousSibling == null)
 		{
 			return null;
 		}
 		
-		var previousElementSibling:ElementClass = previousSibling;
+		var previousElementSibling:Element = cast(previousSibling);
 		
 		while (previousElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
-			previousElementSibling = previousElementSibling.previousSibling;
+			previousElementSibling = cast(previousElementSibling.previousSibling);
 			
 			if (previousElementSibling == null)
 			{

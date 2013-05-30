@@ -36,18 +36,22 @@ class FormAssociatedElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE DOM METHODS
+	// OVERRIDEN PUBLIC DOM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Should update form owner when appended
 	 * to a node
 	 */
-	override private function appended():Void
+	override public function appended():Void
 	{
 		super.appended();
 		resetFormOwner();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Should update the form owner when
@@ -107,14 +111,14 @@ class FormAssociatedElement extends EmbeddedElement
 	 */
 	private function getFirstFormAncestor():HTMLFormElement
 	{
-		var parent:HTMLElement = parentNode;
+		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
 			if (parent.tagName == HTMLConstants.HTML_FORM_TAG_NAME)
 			{
 				return cast(parent);
 			}
-			parent = parent.parentNode;
+			parent = cast(parent.parentNode);
 		}
 		
 		return null;

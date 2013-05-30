@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.EmbeddedElement;
@@ -44,9 +45,9 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domNode:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(domNode);
+		super(domNode, coreStyle);
 		
 		_paintBounds = new RectangleVO();
 		_destinationPoint = new PointVO(0.0, 0.0);
@@ -63,7 +64,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//get source of picture
-		var src:String = domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
+		var htmlElement:HTMLElement = cast(domNode);
+		var src:String = htmlElement.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 		
 		//early return if image has no picture yet
 		if (src == null)

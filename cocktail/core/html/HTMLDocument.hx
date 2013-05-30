@@ -397,6 +397,18 @@ class HTMLDocument extends Document
 			activeElement = body;
 		}
 	}
+	
+	/**
+	 * Init the document element by attaching it to the document
+	 */
+	private function initDocumentElement(documentElement:HTMLHtmlElement):Void
+	{
+		this.documentElement = documentElement;
+		
+		//document element is attached as first child of document
+		appendChild(documentElement);
+		documentElement.appended();
+	}
 
 	/**
 	 * Instantaite the style manager and add a default
@@ -751,9 +763,10 @@ class HTMLDocument extends Document
 	private function set_innerHTML(value:String):String
 	{
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, this);
-		documentElement = node;
-		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		var node:HTMLElement = cast(DOMParser.parse(value, this));
+		
+		initDocumentElement(cast(node));
+		initBody(cast(node.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		
 		//check if document can dispatch load event instantly,
 		//if no element is delaying the load of the document
@@ -810,7 +823,8 @@ class HTMLDocument extends Document
 				//store the currently moused down element
 				_mousedDownedElementRenderer = elementRendererAtPoint;
 				//refresh its style, as now the :active pseudo-class applies to it
-				elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
+				var htmlElement:HTMLElement = cast(elementRendererAtPoint.domNode);
+				htmlElement.invalidateStyleDeclaration(false);
 			
 				
 			case EventConstants.MOUSE_UP:
@@ -826,7 +840,8 @@ class HTMLDocument extends Document
 				//no longer applies
 				if (_mousedDownedElementRenderer != null)
 				{
-					_mousedDownedElementRenderer.domNode.invalidateStyleDeclaration(false);
+					var htmlElement:HTMLElement = cast(_mousedDownedElementRenderer.domNode);
+					htmlElement.invalidateStyleDeclaration(false);
 					_mousedDownedElementRenderer = null;
 				}
 				
@@ -854,7 +869,8 @@ class HTMLDocument extends Document
 			0, false, false,false, false, 0, null);
 			
 			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
-			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+			var htmlElement:HTMLElement = cast(oldHoveredElementRenderer.domNode);
+			htmlElement.invalidateStyleDeclaration(false);
 			_hoveredElementRenderer = null;
 			
 			//when mouse leave, reset mouse cursor to let OS manage it
@@ -1032,7 +1048,7 @@ class HTMLDocument extends Document
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
-		var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
+		var htmlElement:HTMLElement = cast(elementRendererAtPoint.domNode);
 		
 		//create a mouse click event from the mouse up event
 		var clickEvent:MouseEvent = new MouseEvent();
@@ -1086,8 +1102,9 @@ class HTMLDocument extends Document
 				mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
 				
 				_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
-			
-				oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+				
+				var htmlElement:HTMLElement = cast(oldHoveredElementRenderer.domNode);
+				htmlElement.invalidateStyleDeclaration(false);
 			}
 			
 			_hoveredElementRenderer = elementRendererAtPoint;
@@ -1096,7 +1113,7 @@ class HTMLDocument extends Document
 			var relatedTarget:HTMLElement = null;
 			if (_hoveredElementRenderer != null)
 			{
-				relatedTarget = _hoveredElementRenderer.domNode;
+				relatedTarget = cast(_hoveredElementRenderer.domNode);
 			}
 			
 			//dispatch mouse over on the newly hovered HTML element
@@ -1108,7 +1125,8 @@ class HTMLDocument extends Document
 			
 			//refresh the style of the newly hovered html element as a :hover
 			//pseudo-class might apply to it
-			elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
+			var htmlElement:HTMLElement = cast(elementRendererAtPoint.domNode);
+			htmlElement.invalidateStyleDeclaration(false);
 			
 			//when the hovered element changes, if a mouse up event is dispatched
 			//on the new hovered element, no click should be dispatched on it, as 
@@ -1117,7 +1135,7 @@ class HTMLDocument extends Document
 			
 			//update the mouse cursor with the cursor style of the newly hovered 
 			//element
-			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
+			setMouseCursor(htmlElement.coreStyle.cursor);
 		}
 	}
 	

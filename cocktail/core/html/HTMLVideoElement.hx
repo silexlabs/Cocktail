@@ -128,7 +128,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new VideoRenderer(this);
+		elementRenderer = new VideoRenderer(this, coreStyle);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

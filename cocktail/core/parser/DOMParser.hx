@@ -12,6 +12,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.NamedNodeMap;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import haxe.xml.Parser;
@@ -40,17 +41,16 @@ class DOMParser
 	 * @param	ownerDocument used as a factory to create the HTML objects
 	 * @return	the top node of the created DOM tree
 	 */
-	public static function parse(html:String, ownerDocument:Document):HTMLElement
+	public static function parse(html:String, ownerDocument:Document):Node
 	{
-		var node:HTMLElement = doSetInnerHTML(Parser.parse(html).firstElement(), ownerDocument);
-		return node;
+		return doSetInnerHTML(Parser.parse(html).firstElement(), ownerDocument);
 	}
 	
 	/**
 	 * Take an HTML DOM element and serialize it
 	 * and its children into an HTML string
 	 */
-	public static function serialize(node:HTMLElement):String
+	public static function serialize(node:Node):String
 	{
 		// serialize node's children
 		var xml:Xml = doGetInnerHTML(node, Xml.createElement(node.nodeName));
@@ -78,7 +78,7 @@ class DOMParser
 	 * @param xml the HTML string, deserialized as an
 	 * Haxe xml object
 	 */
-	private static function doSetInnerHTML(xml : Xml, ownerDocument:Document):HTMLElement
+	private static function doSetInnerHTML(xml : Xml, ownerDocument:Document):Node
 	{
 		switch( xml.nodeType ) {
 		
@@ -116,7 +116,7 @@ class DOMParser
 			
 				//desrialize the child, thus deserializing
 				//the whole DOM tree recursively
-				var childNode:HTMLElement = doSetInnerHTML(child, ownerDocument);
+				var childNode:Node = doSetInnerHTML(child, ownerDocument);
 				htmlElement.appendChild(childNode);
 			} 
 			
@@ -143,12 +143,12 @@ class DOMParser
 	 * TODO 5 : should serialize other type of nodes, such as
 	 * doctype...
 	 */
-	private static function doGetInnerHTML(node:HTMLElement, xml:Xml):Xml
+	private static function doGetInnerHTML(node:Node, xml:Xml):Xml
 	{
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = node.childNodes[i];
+			var child:HTMLElement = cast(node.childNodes[i]);
 			
 			switch(child.nodeType)
 			{

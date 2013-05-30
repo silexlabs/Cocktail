@@ -32,7 +32,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node<Document>
+class Document extends Node
 {	
 	/**
 	 * This is a convenience attribute that allows direct access
@@ -211,11 +211,14 @@ class Document extends Node<Document>
 				var length:Int = node.childNodes.length;
 				for (i in 0...length)
 				{
-					var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
-					//if a matching element is found, return it
-					if (matchingElement != null)
+					if (node.childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 					{
-						return matchingElement;
+						var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
+						//if a matching element is found, return it
+						if (matchingElement != null)
+						{
+							return matchingElement;
+						}
 					}
 				}
 			}
