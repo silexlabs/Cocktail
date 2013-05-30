@@ -493,6 +493,9 @@ class HTMLElement extends Element
 	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
+		//attributes name are case-insensitive
+		name = name.toLowerCase();
+		
 		//when the value of the "style" attribute changes, the whole
 		//inline style declaration is refreshed
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
