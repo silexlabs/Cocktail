@@ -43,7 +43,7 @@ class Node extends EventCallback
 	 * A NodeList that contains all children of this node. 
 	 * If there are no children, this is a NodeList containing no nodes.
 	 */
-	public var childNodes(default, null):Array<Node>;
+	public var childNodes(default, null):NodeList;
 	
 	/**
 	 * The first child of this node. If there is no such node,
@@ -134,7 +134,7 @@ class Node extends EventCallback
 	 */
 	private function initChildNodes():Void
 	{
-		childNodes = new Array<Node>();
+		childNodes = new NodeList();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -408,7 +408,7 @@ class Node extends EventCallback
 		{
 			//loop in all child to find this node and return
 			//the next one
-			var parentChildNodes:Array<Node> = parentNode.childNodes;
+			var parentChildNodes:NodeList = parentNode.childNodes;
 			var length:Int = parentChildNodes.length;
 			for (i in 0...length)
 			{
