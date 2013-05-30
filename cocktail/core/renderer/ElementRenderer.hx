@@ -130,10 +130,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * A reference to the Node in the DOM tree
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
-	 * 
-	 * TODO IMPORTANT : for now HTMLElement as even
-	 * Text inherits from HTMLElement in haxe JS API,
-	 * shouldn't be so
 	 */
 	public var domNode(default, null):Node;
 	
