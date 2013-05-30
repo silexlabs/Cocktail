@@ -720,7 +720,7 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE DOM METHODS
+	// PUBLIC DOM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -730,7 +730,7 @@ class HTMLElement extends Element
 	 * attached to the DOM, meaning that
 	 * the document itself is its ancesotr
 	 */
-	private function appended():Void
+	public function appended():Void
 	{
 		//do nothing if already attached to the DOM
 		if (attachedToDOM == false)
@@ -755,6 +755,10 @@ class HTMLElement extends Element
 			}
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Called by the parent HTMLElement
@@ -910,20 +914,9 @@ class HTMLElement extends Element
 				//to re-create all its children
 				else
 				{
-					//var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
-				
 					//detach and attach only own element renderer
 					detach(false);
 					attach(false);
-					
-					//TODO 2 : is it necessary to re-append all child ?
-					
-					//re-append all children
-					//var length:Int = elementRendererChildren.length;
-					//for (i in 0...length) 
-					//{
-						//elementRenderer.appendChild(elementRendererChildren[0]);
-					//}
 				}	
 			}
 		}
@@ -942,11 +935,8 @@ class HTMLElement extends Element
 				}
 			}
 		}
-		
 	}
 		
-		
-	
 	/**
 	 * Tries to attach the ElementRender to the rendering tree.
 	 * 
@@ -1330,6 +1320,8 @@ class HTMLElement extends Element
 	 */
 	private function createElementRenderer():Void
 	{
+		
+		
 		switch (coreStyle.getKeyword(coreStyle.display))
 		{
 			case BLOCK, INLINE_BLOCK:

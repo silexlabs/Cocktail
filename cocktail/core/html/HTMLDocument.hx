@@ -397,6 +397,18 @@ class HTMLDocument extends Document
 			activeElement = body;
 		}
 	}
+	
+	/**
+	 * Init the document element by attaching it to the document
+	 */
+	private function initDocumentElement(documentElement:HTMLHtmlElement):Void
+	{
+		this.documentElement = documentElement;
+		
+		//document element is attached as first child of document
+		appendChild(documentElement);
+		documentElement.appended();
+	}
 
 	/**
 	 * Instantaite the style manager and add a default
@@ -751,12 +763,10 @@ class HTMLDocument extends Document
 	private function set_innerHTML(value:String):String
 	{
 		//parse the html string into a node object
-		var node:Node = DOMParser.parse(value, this);
-		documentElement = cast(node);
-		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		var node:HTMLElement = cast(DOMParser.parse(value, this));
 		
-		//the document element must be a child of the document
-		appendChild(documentElement);
+		initDocumentElement(cast(node));
+		initBody(cast(node.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		
 		//check if document can dispatch load event instantly,
 		//if no element is delaying the load of the document
