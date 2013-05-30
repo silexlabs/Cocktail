@@ -41,7 +41,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 			_node = document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 		}
 		
-		super(_node);
+		super(_node, _node.coreStyle);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.dom.Node;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
@@ -83,9 +85,9 @@ class InputRenderer extends BlockBoxRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		
 		createNativeInput();
 		setNativeInputCallbacks();

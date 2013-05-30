@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 
@@ -24,9 +25,9 @@ import cocktail.core.geom.GeomData;
 class BodyBoxRenderer extends BlockBoxRenderer
 {
 
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

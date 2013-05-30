@@ -7,6 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.dom.Node;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
@@ -26,9 +28,9 @@ class InputButtonRenderer extends InputRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 	}
 	
 	/**
@@ -36,6 +38,6 @@ class InputButtonRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeInput = new NativeButton(domNode);
+		nativeInput = new NativeButton(cast(domNode));
 	}
 }

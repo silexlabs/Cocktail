@@ -383,7 +383,7 @@ class HTMLFormElement extends HTMLElement
 	 */
 	private function getSubmittablesElements(rootElement:HTMLElement, submittableElements:Array<HTMLElement>):Array<HTMLElement>
 	{
-		var child:HTMLElement = rootElement.firstChild;
+		var child:HTMLElement = cast(rootElement.firstChild);
 		while (child != null)
 		{
 			switch(child.tagName)
@@ -394,7 +394,7 @@ class HTMLFormElement extends HTMLElement
 			}
 			
 			getSubmittablesElements(child, submittableElements);
-			child = child.nextSibling;
+			child = cast(child.nextSibling);
 		}
 		
 		return submittableElements;

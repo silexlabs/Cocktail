@@ -41,9 +41,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		_renderRect = new RectangleVO();
 	}
 	

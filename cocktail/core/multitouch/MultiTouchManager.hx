@@ -9,6 +9,7 @@
 package cocktail.core.multitouch;
 
 import cocktail.core.event.EventConstants;
+import cocktail.core.event.EventTarget;
 import cocktail.core.event.Touch;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
@@ -60,9 +61,9 @@ class MultiTouchManager
 	 * the current state of touched point on screen
 	 * 
 	 * @param touchEvent the TouchEvent to complete
-	 * @param target the HTMLElement that was touched, triggering the TouchEvent
+	 * @param target the element that was touched, triggering the TouchEvent
 	 */
-	public function setUpTouchEvent(touchEvent:TouchEvent, target:HTMLElement):Void
+	public function setUpTouchEvent(touchEvent:TouchEvent, target:EventTarget):Void
 	{
 		//get the only Touch point currently provided by the TouchEvent
 		var touch:Touch = touchEvent.touches.item(0);
@@ -90,9 +91,9 @@ class MultiTouchManager
 	 * 
 	 * @param	touch the touch which juste started
 	 * @param	touchEvent the incomplete TouchEvent
-	 * @param	target the HTMLElement that was touched
+	 * @param	target the element that was touched
 	 */
-	private function registerTouch(touch:Touch, touchEvent:TouchEvent, target:HTMLElement):Void
+	private function registerTouch(touch:Touch, touchEvent:TouchEvent, target:EventTarget):Void
 	{
 		touch.target = target;
 		updatePagePosition(touch);
@@ -189,7 +190,7 @@ class MultiTouchManager
 	 * Returns all the currently active touches which have the same target,
 	 * meaning they corresponded to the same HTMLElement when created
 	 */
-	private function getTouchesByTarget(target:HTMLElement):TouchList
+	private function getTouchesByTarget(target:EventTarget):TouchList
 	{
 		var targetTouches:Array<Touch> = new Array<Touch>();
 		

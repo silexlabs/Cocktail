@@ -181,7 +181,7 @@ class EventTarget
 	 * phase. If false, the event listener must only be triggered during
 	 * the target and bubbling phases.
 	 */
-	public function addEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
+	public function addEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false):Void
 	{
 		if (_registeredEventListeners == null)
 		{
@@ -212,7 +212,7 @@ class EventTarget
 	 * phases does not affect the same event listener registered for the target and bubbling phases,
 	 * and vice versa.
 	 */
-	public function removeEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
+	public function removeEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false):Void
 	{
 		//no event listener was added yet
 		if (_registeredEventListeners == null)

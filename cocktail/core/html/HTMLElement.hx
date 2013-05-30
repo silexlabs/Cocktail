@@ -56,7 +56,7 @@ import cocktail.core.font.FontData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element<HTMLElement>
+class HTMLElement extends Element
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
@@ -417,10 +417,15 @@ class HTMLElement extends Element<HTMLElement>
 	 * When a child is added to the DOM, an init
 	 * method is called on it
 	 */
-	override public function appendChild(newChild:HTMLElement):HTMLElement
+	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		newChild.appended();
+		
+		if (newChild.nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			var child:HTMLElement = cast(newChild);
+			child.appended();
+		}
 		
 		//when a new child is added, refreh the style of this html element
 		//TODO 2 : don't seem necessary, but tried to remove it and add
@@ -435,10 +440,16 @@ class HTMLElement extends Element<HTMLElement>
 	 * called on it so that it
 	 * can be cleaned-up
 	 */
-	override public function removeChild(oldChild:HTMLElement):HTMLElement
+	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		oldChild.removed();
+		
+		if(oldChild.nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			var child:HTMLElement = cast(oldChild);
+			child.removed();
+		}
+		
 		return oldChild;
 	}
 	
@@ -446,7 +457,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * When a child is added to the DOM, an init
 	 * method is called on it
 	 */
-	override public function insertBefore(newChild:HTMLElement, refChild:HTMLElement):HTMLElement
+	override public function insertBefore(newChild:Node, refChild:Node):Node
 	{
 		super.insertBefore(newChild, refChild);
 		
@@ -455,8 +466,13 @@ class HTMLElement extends Element<HTMLElement>
 		//of calling the init method
 		if (refChild != null)
 		{
-			newChild.appended();
-			invalidateCascade();
+			if(newChild.nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var child:HTMLElement = cast(newChild);
+				child.appended();
+				invalidateCascade();
+			}
+			
 		}
 	
 		return newChild;
@@ -648,7 +664,11 @@ class HTMLElement extends Element<HTMLElement>
 				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					childNodes[i].invalidateStyleDeclaration(true);
+					if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+					{
+						var child:HTMLElement = cast(childNodes[i]);
+						child.invalidateStyleDeclaration(true);
+					}
 				}
 			}
 		}
@@ -700,7 +720,7 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE DOM METHODS
+	// PUBLIC DOM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -710,7 +730,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * attached to the DOM, meaning that
 	 * the document itself is its ancesotr
 	 */
-	private function appended():Void
+	public function appended():Void
 	{
 		//do nothing if already attached to the DOM
 		if (attachedToDOM == false)
@@ -722,15 +742,23 @@ class HTMLElement extends Element<HTMLElement>
 				
 				//all the child of this htmlelement are
 				//now attached to the DOM as well
-				var child:HTMLElement = firstChild;
+				var child:Node = firstChild;
 				while (child != null)
 				{
-					child.appended();
+					if (child.nodeType == DOMConstants.ELEMENT_NODE)
+					{
+						var htmlChild:HTMLElement = cast(child);
+						htmlChild.appended();
+					}
 					child = child.nextSibling;
 				}
 			}
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Called by the parent HTMLElement
@@ -744,10 +772,14 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//all child are now detached from DOM
 		//as well
-		var child:HTMLElement = firstChild;
+		var child:Node = firstChild;
 		while (child != null)
 		{
-			child.removed();
+			if (child.nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var htmlChild:HTMLElement = cast(child);
+				htmlChild.removed();
+			}
 			child = child.nextSibling;
 		}
 	}
@@ -803,17 +835,13 @@ class HTMLElement extends Element<HTMLElement>
 	 * DOM. Check all ancestors until either a document
 	 * is found, meaning the htmlelement is in factg attached
 	 * to the DOM or null
-	 * 
-	 * TODO 3 : for now check wether ancestor is HTML HTML element
-	 * but should be document instead. Trouble is for now, document
-	 * element is not attached as a child of document
 	 */
 	private function isAttachedToDOM():Bool
 	{
-		var parent:HTMLElement = parentNode;
+		var parent:Node = parentNode;
 		while (parent != null)
 		{
-			if (parent.nodeName == HTMLConstants.HTML_HTML_TAG_NAME)
+			if (parent.nodeType == DOMConstants.DOCUMENT_NODE)
 			{
 				return true;
 			}
@@ -886,20 +914,9 @@ class HTMLElement extends Element<HTMLElement>
 				//to re-create all its children
 				else
 				{
-					//var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
-				
 					//detach and attach only own element renderer
 					detach(false);
 					attach(false);
-					
-					//TODO 2 : is it necessary to re-append all child ?
-					
-					//re-append all children
-					//var length:Int = elementRendererChildren.length;
-					//for (i in 0...length) 
-					//{
-						//elementRenderer.appendChild(elementRendererChildren[0]);
-					//}
 				}	
 			}
 		}
@@ -911,14 +928,15 @@ class HTMLElement extends Element<HTMLElement>
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				childNodes[i].updateElementRenderer();
+				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+				{
+					var child:HTMLElement = cast(childNodes[i]);
+					child.updateElementRenderer();
+				}
 			}
 		}
-		
 	}
 		
-		
-	
 	/**
 	 * Tries to attach the ElementRender to the rendering tree.
 	 * 
@@ -963,7 +981,15 @@ class HTMLElement extends Element<HTMLElement>
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						childNodes[i].attach(true);
+						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+						{
+							var child:HTMLElement = cast(childNodes[i]);
+							child.attach(true);
+						}
+						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+						{
+							attachTextNode(childNodes[i]);
+						}
 					}
 				}
 				
@@ -996,7 +1022,15 @@ class HTMLElement extends Element<HTMLElement>
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						childNodes[i].detach(true);
+						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+						{
+							var child:HTMLElement = cast(childNodes[i]);
+							child.detach(true);
+						}
+						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+						{
+							detachTextNode(childNodes[i]);
+						}
 					}
 				}
 			}
@@ -1064,12 +1098,14 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//cascade all the children, to cascade all the DOM tree
 		//recursively
-		var childNodes:Array<HTMLElement> = this.childNodes;
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			var childNode:HTMLElement = childNodes[i];
-			childNode.cascade(cascadeManager, programmaticChange);
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var htmlChild:HTMLElement = cast(childNodes[i]);
+				htmlChild.cascade(cascadeManager, programmaticChange);
+			}
 		}
 	}
 	
@@ -1100,14 +1136,13 @@ class HTMLElement extends Element<HTMLElement>
 	 * cascade
 	 * @param	programmaticChange wether the change is programmatic. If it is,
 	 * animations may be started
-	 * 
-	 * TODO 1 : should subclass in HTMLHTMLElement
 	 */
 	private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
 		if (parentNode != null)
 		{
-			if (parentNode.styleManagerCSSDeclaration != null)
+			var parent:HTMLElement = cast(parentNode);
+			if (parent.styleManagerCSSDeclaration != null)
 			{
 				if (_needsStyleDeclarationUpdate == true || styleManagerCSSDeclaration == null)
 				{
@@ -1115,8 +1150,9 @@ class HTMLElement extends Element<HTMLElement>
 					_needsStyleDeclarationUpdate = false;
 				}
 				
-				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
-				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
+				
+				var parentStyleDeclaration:CSSStyleDeclaration = parent.coreStyle.computedValues;
+				var parentFontMetrics:FontMetricsVO = parent.coreStyle.fontMetrics;
 			
 				if (_shouldCascadeAllProperties == true)
 				{
@@ -1133,29 +1169,6 @@ class HTMLElement extends Element<HTMLElement>
 	
 				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
-		}
-		else
-		{
-			if (_needsStyleDeclarationUpdate == true || styleManagerCSSDeclaration == null)
-			{
-				getStyleDeclaration();
-				_needsStyleDeclarationUpdate = false;
-			}
-			
-			if (_shouldCascadeAllProperties == true)
-			{
-				cascadeManager.shouldCascadeAll();
-			}
-			else
-			{
-				var length:Int = _pendingChangedProperties.length;
-				for (i in 0...length)
-				{
-					cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
-				}
-			}
-			
-			coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, 12, 12, programmaticChange);
 		}
 		
 		_shouldCascadeAllProperties = false;
@@ -1195,7 +1208,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = this.nextSibling;
+		var nextSibling:Node = this.nextSibling;
 					
 		if (nextSibling == null)
 		{
@@ -1205,19 +1218,24 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			while (nextSibling != null)
 			{
-				if (nextSibling.elementRenderer != null)
+				if (nextSibling.nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
-					
-					//in the case where the parent of the next sibling's elementRenderer is an 
-					//anonymous block, the anonymous block should be return as sibling
-					if (elementRenderParent.isAnonymousBlockBox() == true)
+					var htmlNextSibling:HTMLElement = cast(nextSibling);
+					if (htmlNextSibling.elementRenderer != null)
 					{
-						return elementRenderParent;
+						var elementRenderParent:ElementRenderer = htmlNextSibling.elementRenderer.parentNode;
+						
+						//in the case where the parent of the next sibling's elementRenderer is an 
+						//anonymous block, the anonymous block should be return as sibling
+						if (elementRenderParent.isAnonymousBlockBox() == true)
+						{
+							return elementRenderParent;
+						}
+						
+						return htmlNextSibling.elementRenderer;
 					}
-					
-					return nextSibling.elementRenderer;
 				}
+				
 				
 				nextSibling = nextSibling.nextSibling;
 			}
@@ -1234,7 +1252,8 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function attachToParentElementRenderer():Void
 	{
-		parentNode.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
+		var parent:HTMLElement = cast(parentNode);
+		parent.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
 	}
 	
 	/**
@@ -1247,19 +1266,69 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
+	 * This HTMLElement is responsible for instantiating text renderer
+	 * for it's child text nodes and to attach to text renderers to
+	 * the rendering tree
+	 * @param	textNode the text node that must be attached to the rendering
+	 * tree
+	 */
+	private function attachTextNode(textNode:Node):Void
+	{
+		var textRenderer:TextRenderer = new TextRenderer(textNode, coreStyle);
+		elementRenderer.appendChild(textRenderer);
+	}
+	
+	/**
+	 * The HTMLElement is also in charge of detaching is rendered text child nodes
+	 * from the rendering tree. When a text node must be detached, find
+	 * the node it owns in the rendering tree then remove it from the rendering
+	 * tree
+	 * @param textNode the text node to remove from the rendering tree
+	 */
+	private function detachTextNode(textNode:Node):Void
+	{
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while (child != null)
+		{
+			if (child.domNode == textNode)
+			{
+				elementRenderer.removeChild(child);
+				return;
+			}
+			//special case for anonymous block, check wether the wrapped
+			//child is the text renderer owned by the text node
+			else if (child.isAnonymousBlockBox() == true)
+			{
+				if (child.firstChild != null)
+				{
+					if (child.firstChild.domNode == textNode)
+					{
+						elementRenderer.removeChild(child);
+						return;
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
 	 * Instantiate the right ElementRenderer
 	 * based on the Display style and/or the 
 	 * type of HTMLElement
 	 */
 	private function createElementRenderer():Void
 	{
+		
+		
 		switch (coreStyle.getKeyword(coreStyle.display))
 		{
 			case BLOCK, INLINE_BLOCK:
-				elementRenderer = new BlockBoxRenderer(this);
+				elementRenderer = new BlockBoxRenderer(this, coreStyle);
 				
 			case INLINE:
-				elementRenderer = new InlineBoxRenderer(this);
+				elementRenderer = new InlineBoxRenderer(this, coreStyle);
 				
 			case NONE:
 				
@@ -1298,7 +1367,8 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			return false;
 		}
-		return parentNode.elementRenderer != null;
+		var parent:HTMLElement = cast(parentNode);
+		return parent.elementRenderer != null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1324,12 +1394,17 @@ class HTMLElement extends Element<HTMLElement>
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var transitionStarted:Bool = childNodes[i].startPendingTransitions();
-			
-			if (transitionStarted == true)
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 			{
-				atLeastOneTransitionStarted = true;
+				var child:HTMLElement = cast(childNodes[i]);
+				var transitionStarted:Bool = child.startPendingTransitions();
+				
+				if (transitionStarted == true)
+				{
+					atLeastOneTransitionStarted = true;
+				}
 			}
+			
 		}
 		
 		return atLeastOneTransitionStarted;
@@ -1346,7 +1421,11 @@ class HTMLElement extends Element<HTMLElement>
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			childNodes[i].endPendingTransitions();
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var child:HTMLElement = cast(childNodes[i]);
+				child.endPendingTransitions();
+			}
 		}
 	}
 	
@@ -1583,11 +1662,12 @@ class HTMLElement extends Element<HTMLElement>
 		var htmlElement:HTMLElement = this;
 		while (htmlElement.hasActivationBehaviour() == false)
 		{
-			if (htmlElement.parentNode == null)
+			if (htmlElement.parentNode == null || htmlElement.parentNode.nodeType == DOMConstants.DOCUMENT_NODE)
 			{
 				return null;
 			}
-			htmlElement = htmlElement.parentNode;
+			
+			htmlElement = cast(htmlElement.parentNode);
 		}
 		
 		return htmlElement;
@@ -1943,7 +2023,7 @@ class HTMLElement extends Element<HTMLElement>
 		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(wrappedHTML, ownerDocument);
+		var node:Node = DOMParser.parse(wrappedHTML, ownerDocument);
 
 		//the returned node might be null for instance, if 
 		//only an empty string was provided
@@ -1972,9 +2052,9 @@ class HTMLElement extends Element<HTMLElement>
 	private function set_outerHTML(value:String):String
 	{
 		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+		var node:Node = DOMParser.parse(value, ownerDocument);
 
-		var oldNextSibling:HTMLElement = this.nextSibling;
+		var oldNextSibling:HTMLElement = cast(this.nextSibling);
 		parentNode.removeChild(cast(this));
 
 		if (node == null)
@@ -2056,14 +2136,14 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		//find the first non-static parent or return the body
-		var parent:HTMLElement = parentNode;
+		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
 			if (parent.elementRenderer.isPositioned() == true || parent.tagName == HTMLConstants.HTML_BODY_TAG_NAME)
 			{
 				return parent;
 			}
-			parent = parent.parentNode;
+			parent = cast(parent.parentNode);
 		}
 		
 		return null;

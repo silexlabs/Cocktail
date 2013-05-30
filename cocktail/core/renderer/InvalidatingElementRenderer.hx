@@ -8,6 +8,8 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CoreStyle;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.ParserData;
@@ -42,9 +44,9 @@ class InvalidatingElementRenderer extends ElementRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domNode:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(domNode);
+		super(domNode, coreStyle);
 	
 		_needsLayout = true;
 		_childrenNeedLayout = true;

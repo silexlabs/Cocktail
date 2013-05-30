@@ -31,9 +31,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * class constructor.
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:Node, coreStyle:CoreStyle) 
 	{
-		super(node);
+		super(domNode, coreStyle);
 		
 		//as this is the root of the rendering
 		//tree, it is considered to be its
