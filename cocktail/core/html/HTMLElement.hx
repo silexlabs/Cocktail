@@ -831,21 +831,17 @@ class HTMLElement extends Element
 	 * DOM. Check all ancestors until either a document
 	 * is found, meaning the htmlelement is in factg attached
 	 * to the DOM or null
-	 * 
-	 * TODO 3 : for now check wether ancestor is HTML HTML element
-	 * but should be document instead. Trouble is for now, document
-	 * element is not attached as a child of document
 	 */
 	private function isAttachedToDOM():Bool
 	{
-		var parent:HTMLElement = cast(parentNode);
+		var parent:Node = parentNode;
 		while (parent != null)
 		{
-			if (parent.nodeName == HTMLConstants.HTML_HTML_TAG_NAME)
+			if (parent.nodeType == DOMConstants.DOCUMENT_NODE)
 			{
 				return true;
 			}
-			parent = cast(parent.parentNode);
+			parent = parent.parentNode;
 		}
 		
 		return false;
