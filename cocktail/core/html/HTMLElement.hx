@@ -993,6 +993,10 @@ class HTMLElement extends Element
 							var child:HTMLElement = cast(childNodes[i]);
 							child.attach(true);
 						}
+						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+						{
+							attachTextNode(childNodes[i]);
+						}
 					}
 				}
 				
@@ -1025,8 +1029,15 @@ class HTMLElement extends Element
 					var length:Int = childNodes.length;
 					for (i in 0...length)
 					{
-						var child:HTMLElement = cast(childNodes[i]);
-						child.detach(true);
+						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+						{
+							var child:HTMLElement = cast(childNodes[i]);
+							child.detach(true);
+						}
+						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+						{
+							detachTextNode(childNodes[i]);
+						}
 					}
 				}
 			}
@@ -1259,6 +1270,54 @@ class HTMLElement extends Element
 	private function detachFromParentElementRenderer():Void
 	{
 		elementRenderer.parentNode.removeChild(elementRenderer);
+	}
+	
+	/**
+	 * This HTMLElement is responsible for instantiating text renderer
+	 * for it's child text nodes and to attach to text renderers to
+	 * the rendering tree
+	 * @param	textNode the text node that must be attached to the rendering
+	 * tree
+	 */
+	private function attachTextNode(textNode:Node):Void
+	{
+		var textRenderer:TextRenderer = new TextRenderer(textNode, coreStyle);
+		elementRenderer.appendChild(textRenderer);
+	}
+	
+	/**
+	 * The HTMLElement is also in charge of detaching is rendered text child nodes
+	 * from the rendering tree. When a text node must be detached, find
+	 * the node it owns in the rendering tree then remove it from the rendering
+	 * tree
+	 * @param textNode the text node to remove from the rendering tree
+	 */
+	private function detachTextNode(textNode:Node):Void
+	{
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while (child != null)
+		{
+			if (child.domNode == textNode)
+			{
+				elementRenderer.removeChild(child);
+				return;
+			}
+			//special case for anonymous block, check wether the wrapped
+			//child is the text renderer owned by the text node
+			else if (child.isAnonymousBlockBox() == true)
+			{
+				if (child.firstChild != null)
+				{
+					if (child.firstChild.domNode == textNode)
+					{
+						elementRenderer.removeChild(child);
+						return;
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
 	}
 	
 	/**
