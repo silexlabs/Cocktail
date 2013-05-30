@@ -935,8 +935,11 @@ class HTMLElement extends Element
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				var child:HTMLElement = cast(childNodes[i]);
-				child.updateElementRenderer();
+				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+				{
+					var child:HTMLElement = cast(childNodes[i]);
+					child.updateElementRenderer();
+				}
 			}
 		}
 		
