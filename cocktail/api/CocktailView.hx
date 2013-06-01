@@ -211,7 +211,6 @@ class CocktailView
 		
 		document = new HTMLDocument();
 		window = new Window(document, platform);
-		document.window = window;
 		updateViewport(viewport);
 	}
 	

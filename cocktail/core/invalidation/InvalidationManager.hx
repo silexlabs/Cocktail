@@ -543,7 +543,7 @@ class InvalidationManager
 		//the new size
 		if (_bitmapSizeNeedsUpdate == true)
 		{
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.graphicsContext.updateGraphicsSize(_htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.graphicsContext.updateGraphicsSize(Math.floor(_htmlDocument.getViewportWidth()), Math.floor(_htmlDocument.getViewportHeight()));
 			_bitmapSizeNeedsUpdate = false;
 		}
 		
@@ -572,7 +572,7 @@ class InvalidationManager
 				initialLayerRenderer.updateScrollOffset();
 				
 				//update the clip rects of layers used for rendering, default clip rect starts with the viewport
-				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.getViewportWidth(), _htmlDocument.getViewportHeight());
 				initialLayerRenderer.updateClipRect();
 				
 				//update the hit testing bound to respond accurately to user interaction
@@ -593,8 +593,8 @@ class InvalidationManager
 				{
 					_dirtyRect.x = 0;
 					_dirtyRect.y = 0;
-					_dirtyRect.width = _htmlDocument.window.innerWidth;
-					_dirtyRect.height = _htmlDocument.window.innerHeight;
+					_dirtyRect.width = _htmlDocument.getViewportWidth();
+					_dirtyRect.height = _htmlDocument.getViewportHeight();
 				}
 				
 				//on every layer with its bitmap, clear the area of the dirty rect which is about to
@@ -617,7 +617,7 @@ class InvalidationManager
 				initialLayerRenderer.resetScrollOffset();
 				initialLayerRenderer.updateScrollOffset();
 				
-				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+				initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.getViewportWidth(), _htmlDocument.getViewportHeight());
 				initialLayerRenderer.updateClipRect();
 				
 				//update the hit testing bound to respond accurately to user interaction
@@ -669,7 +669,7 @@ class InvalidationManager
 			_viewportResized = false;
 			var resizeEvent:UIEvent = new UIEvent();
 			resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0);
-			_htmlDocument.window.dispatchEvent(resizeEvent);
+			_htmlDocument.dispatchEvent(resizeEvent);
 		}
 		
 		//signal to the document that it is up to date

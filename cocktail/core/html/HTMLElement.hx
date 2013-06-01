@@ -550,7 +550,10 @@ class HTMLElement extends Element
 	{
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		targetAncestors.push(_ownerHTMLDocument);
-		targetAncestors.push(_ownerHTMLDocument.window);
+		if (_ownerHTMLDocument.defaultView != null)
+		{
+			targetAncestors.push(_ownerHTMLDocument.defaultView);
+		}
 		return targetAncestors;
 	}
 	

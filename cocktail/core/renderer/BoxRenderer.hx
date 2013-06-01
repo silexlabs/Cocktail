@@ -62,12 +62,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private var _containerBlockData:ContainingBlockVO;
 	
 	/**
-	 * Holds the current dimensions of the window
-	 * 
-	 * TODO 2 : should be held by the window object, just a
-	 * DimensionVO ?
+	 * Holds the current dimensions of the viewport
 	 */
-	private var _windowData:ContainingBlockVO;
+	private var _viewportData:ContainingBlockVO;
 	
 	/**
 	 * Holds the dimensions and position of the box where
@@ -88,7 +85,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		super(domNode, coreStyle);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
-		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
+		_viewportData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_backgroundAndBorderBounds = new RectangleVO();
 	}
 	
@@ -1048,22 +1045,19 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * Retrieve the data of the viewport. The viewport
-	 * origin is always to the top left of the window
-	 * displaying the document
+	 * Retrieve the dimensions of the viewport
 	 */
-	private function getWindowData():ContainingBlockVO
+	private function getViewportData():ContainingBlockVO
 	{	
-		var htmlDocuement:HTMLDocument = cast(domNode.ownerDocument);
-		var window:Window = htmlDocuement.window;
-		var width:Float = window.innerWidth;
-		var height:Float = window.innerHeight;
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		var width:Float = htmlDocument.getViewportWidth();
+		var height:Float = htmlDocument.getViewportHeight();
 		
-		_windowData.width = window.innerWidth;
-		_windowData.height = window.innerHeight;
-		_windowData.isHeightAuto = false;
-		_windowData.isWidthAuto = false;
+		_viewportData.width = width;
+		_viewportData.height = height;
+		_viewportData.isHeightAuto = false;
+		_viewportData.isWidthAuto = false;
 		
-		return _windowData;
+		return _viewportData;
 	}
 }

@@ -282,11 +282,6 @@ class HTMLDocument extends Document
 	private var _hitTestManager:HitTestManager;
 	
 	/**
-	 * A ref to the global Window object
-	 */
-	public var window:Window;
-	
-	/**
 	 * A ref to the style manager holding all the
 	 * style sheet data of the document
 	 */
@@ -328,6 +323,12 @@ class HTMLDocument extends Document
 	* an html string  	
    */ 	
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
+	 * A reference to the window of the document or null
+	 * if there are none
+	 */
+	public var defaultView:Window;
 	
 	/**
 	 * class constructor.
@@ -567,7 +568,7 @@ class HTMLDocument extends Document
 	 * element, such as pictures, CSS stylesheet...
 	 * are loaded.
 	 * 
-	 * Dispatch a load event on the window
+	 * Dispatch a load event on the document
 	 */
 	private function onDocumentLoaded():Void
 	{
@@ -575,7 +576,7 @@ class HTMLDocument extends Document
 		
 		var event:UIEvent = new UIEvent();
 		event.initUIEvent(EventConstants.LOAD, false, false, null, 0);
-		window.dispatchEvent(event);
+		dispatchEvent(event);
 	}
 	
 	/**
