@@ -147,6 +147,21 @@ class HTMLDocument extends Document
 	public var onExitFullscreen:Void->Void;
 	
 	/**
+	 * Callback provided by the platform
+	 * to the document to check wether the
+	 * document is currently displayed in fullscreen
+	 * mode
+	 */
+	public var isFullscreen:Void->Bool;
+	
+	/**
+	 * Callback provided by the platform to 
+	 * the document to check wether fullscreen
+	 * mode is currently supported
+	 */
+	public var isFullScreenEnabled:Void->Bool;
+	
+	/**
 	 * Callback called
 	 * to change the mouse cursor when needed using
 	 * platform specific APIs
@@ -1210,10 +1225,14 @@ class HTMLDocument extends Document
 	{
 		//if the platform just exited the fullscreen mode,
 		//then the document must also exit it
-		if (window.platform.fullscreen() == false)
+		if (isFullscreen != null)
 		{
-			exitFullscreen();
+			if (isFullscreen() == false)
+			{
+				exitFullscreen();
+			}
 		}
+		
 	}
 	
 	/**
@@ -1252,7 +1271,14 @@ class HTMLDocument extends Document
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return window.platform.fullScreenEnabled();
+		if (isFullScreenEnabled != null)
+		{
+			return isFullScreenEnabled();
+		}
+		
+		//if no callback provided
+		//by platform, by default fullscreen is not enabled
+		return false;
 	}
 	
 	/**
