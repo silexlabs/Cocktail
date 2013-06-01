@@ -56,6 +56,7 @@ import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+import cocktail.port.Bindings;
 
 
 /**
@@ -147,6 +148,39 @@ class HTMLDocument extends Document
 	public var onExitFullscreen:Void->Void;
 	
 	/**
+	 * Callback provided by the platform
+	 * to the document to check wether the
+	 * document is currently displayed in fullscreen
+	 * mode
+	 */
+	public var isFullscreen:Void->Bool;
+	
+	/**
+	 * Callback provided by the platform to 
+	 * the document to check wether fullscreen
+	 * mode is currently supported
+	 */
+	public var isFullScreenEnabled:Void->Bool;
+	
+	/**
+	 * Callback provided by the platform to the
+	 * document to get the viewport current 
+	 * height
+	 */
+	public var getViewportHeight:Void->Float;
+	
+	/**
+	 * Same as above for width
+	 */
+	public var getViewportWidth:Void->Float;
+	
+	/**
+	 * Callback provided by the platform to the
+	 * document to get the top platform layer
+	 */
+	public var getTopPlatformLayer:Void->PlatformLayer;
+	
+	/**
 	 * Callback called
 	 * to change the mouse cursor when needed using
 	 * platform specific APIs
@@ -163,6 +197,12 @@ class HTMLDocument extends Document
 	 * Callback called just after a document update
 	 */
 	public var onDocumentUpdated:Void->Void;
+	
+	/**
+	 * Callback called when the document invalidated. 
+	 * Can be layout, rendering... that got invalidated
+	 */
+	public var onDocumentInvalidated:Void->Void;
 	
 	/**
 	 * Callback called when the document must
@@ -248,11 +288,6 @@ class HTMLDocument extends Document
 	private var _hitTestManager:HitTestManager;
 	
 	/**
-	 * A ref to the global Window object
-	 */
-	public var window:Window;
-	
-	/**
 	 * A ref to the style manager holding all the
 	 * style sheet data of the document
 	 */
@@ -294,6 +329,12 @@ class HTMLDocument extends Document
 	* an html string  	
    */ 	
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
+	 * A reference to the window of the document or null
+	 * if there are none
+	 */
+	public var defaultView:Window;
 	
 	/**
 	 * class constructor.
@@ -533,7 +574,7 @@ class HTMLDocument extends Document
 	 * element, such as pictures, CSS stylesheet...
 	 * are loaded.
 	 * 
-	 * Dispatch a load event on the window
+	 * Dispatch a load event on the document
 	 */
 	private function onDocumentLoaded():Void
 	{
@@ -541,7 +582,7 @@ class HTMLDocument extends Document
 		
 		var event:UIEvent = new UIEvent();
 		event.initUIEvent(EventConstants.LOAD, false, false, null, 0);
-		window.dispatchEvent(event);
+		dispatchEvent(event);
 	}
 	
 	/**
@@ -576,6 +617,14 @@ class HTMLDocument extends Document
 		{
 			onDocumentUpdated();
 		}
+	}
+	
+	/**
+	 * start an update of the document
+	 */
+	public function update():Void
+	{
+		invalidationManager.update();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1210,10 +1259,14 @@ class HTMLDocument extends Document
 	{
 		//if the platform just exited the fullscreen mode,
 		//then the document must also exit it
-		if (window.platform.fullscreen() == false)
+		if (isFullscreen != null)
 		{
-			exitFullscreen();
+			if (isFullscreen() == false)
+			{
+				exitFullscreen();
+			}
 		}
+		
 	}
 	
 	/**
@@ -1252,7 +1305,14 @@ class HTMLDocument extends Document
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return window.platform.fullScreenEnabled();
+		if (isFullScreenEnabled != null)
+		{
+			return isFullScreenEnabled();
+		}
+		
+		//if no callback provided
+		//by platform, by default fullscreen is not enabled
+		return false;
 	}
 	
 	/**

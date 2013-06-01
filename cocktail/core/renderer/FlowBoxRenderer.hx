@@ -180,7 +180,7 @@ class FlowBoxRenderer extends BoxRenderer
 	private function layoutAbsolutelyPositionedChildren(layoutState:LayoutStateValue):Void
 	{
 		var containerBlockData:ContainingBlockVO = getContainerBlockData();
-		var windowData:ContainingBlockVO = getWindowData();
+		var viewportData:ContainingBlockVO = getViewportData();
 		
 		//lay out each stored children
 		var length:Int = _absolutelyPositionedChildren.length;
@@ -189,7 +189,7 @@ class FlowBoxRenderer extends BoxRenderer
 			_absolutelyPositionedChildren[i].layout(true, layoutState);
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
-			layoutPositionedChild(_absolutelyPositionedChildren[i], containerBlockData, windowData);
+			layoutPositionedChild(_absolutelyPositionedChildren[i], containerBlockData, viewportData);
 		}
 	}
 	

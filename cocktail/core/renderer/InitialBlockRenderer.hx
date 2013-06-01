@@ -110,7 +110,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		var viewportData:ContainingBlockVO = getWindowData();
+		var viewportData:ContainingBlockVO = getViewportData();
 		
 		coreStyle.usedValues.width = viewportData.width;
 		coreStyle.usedValues.height = viewportData.height;
@@ -174,11 +174,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 
 	/**
 	 * The dimensions of the initial
-	 * block renderer are always the same as the Window's
+	 * block renderer are always the same as the viewport's
 	 */
 	override public function getContainerBlockData():ContainingBlockVO
 	{
-		return getWindowData();
+		return getViewportData();
 	}
 	
 	/**

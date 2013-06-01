@@ -11,10 +11,12 @@ package cocktail.core.window;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.Bindings;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
@@ -49,12 +51,6 @@ class Window extends EventCallback
 	public var innerWidth(get_innerWidth, never):Int;
 	
 	/**
-	 * A reference to the class through which platform specific
-	 * events and methods are retrieved
-	 */
-	public var platform(default, null):Platform;
-	
-	/**
 	 * A reference to the history instance
 	 */
 	public var history:History;
@@ -66,11 +62,10 @@ class Window extends EventCallback
 	/**
 	 * class constructor. Initialise the Document
 	 */
-	public function new(htmlDocument:HTMLDocument, platform:Platform) 
+	public function new(htmlDocument:HTMLDocument) 
 	{
 		super();
-		this.platform = platform;
-		init(htmlDocument, platform);
+		init(htmlDocument);
 	}
 	
 	/**
@@ -81,18 +76,17 @@ class Window extends EventCallback
 		document = null;
 		history.dispose();
 		history = null;
-		platform.dispose();
-		platform = null;
 	}
 	
 	/**
 	 * Initialise the Document and set platform specific
 	 * listener on it
 	 */
-	private function init(htmlDocument:HTMLDocument, platform:Platform):Void
+	private function init(htmlDocument:HTMLDocument):Void
 	{
 		document = htmlDocument;
-
+		setDocumentListener(document);
+		
 		// history
 		history = new History(htmlDocument);
 	}
@@ -110,16 +104,29 @@ class Window extends EventCallback
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * set listeners for document events which should also be dispatched on the window
+	 */
+	private function setDocumentListener(document:HTMLDocument):Void
+	{
+		document.addEventListener(EventConstants.LOAD, function(e) dispatchEvent(e));
+		document.addEventListener(EventConstants.RESIZE, function(e) dispatchEvent(e));
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_innerHeight():Int
 	{
-		return Math.floor(platform.viewportHeight);
+		return Math.floor(document.getViewportHeight());
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return Math.floor(platform.viewportWidth);
+		return Math.floor(document.getViewportWidth());
 	}
 }

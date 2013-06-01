@@ -46,9 +46,9 @@ class Browser
 	 * instantiate Docuement and Window, called
 	 * the first time either of them is requested
 	 */
-	public static function init(htmlDocument:HTMLDocument):Void
+	public static function init(htmlDocument:HTMLDocument, documentWindow:Window):Void
 	{
 		document = htmlDocument;
-		window = document.window;
+		window = documentWindow;
 	}
 }
