@@ -13,7 +13,7 @@ with CSS and can be customised for desktop and mobile scrollbar.
 - selector API (standard jQuery style selectors)
 
 #####1.2.0
-- HTML parser instead of XML parser, provided by [Domino](https://github.com/silexlabs/Dominos)
+- HTML parser instead of XML parser, provided by [Dominos](https://github.com/silexlabs/Dominos)
 - adding missing HTMLElements with special attributes.
 - improve cocktail's DOM implementation now that it uses Haxe 3 types. For instance CharacterData should no longer inherit from HTMLElement.
 
