@@ -56,6 +56,7 @@ import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+import cocktail.port.Bindings;
 
 
 /**
@@ -160,6 +161,24 @@ class HTMLDocument extends Document
 	 * mode is currently supported
 	 */
 	public var isFullScreenEnabled:Void->Bool;
+	
+	/**
+	 * Callback provided by the platform to the
+	 * document to get the viewport current 
+	 * height
+	 */
+	public var getViewportHeight:Void->Float;
+	
+	/**
+	 * Same as above for width
+	 */
+	public var getViewportWidth:Void->Float;
+	
+	/**
+	 * Callback provided by the platform to the
+	 * document to get the top platform layer
+	 */
+	public var getTopPlatformLayer:Void->PlatformLayer;
 	
 	/**
 	 * Callback called

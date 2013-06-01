@@ -115,11 +115,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return Math.floor(platform.viewportHeight);
+		return Math.floor(document.getViewportHeight());
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return Math.floor(platform.viewportWidth);
+		return Math.floor(document.getViewportWidth());
 	}
 }

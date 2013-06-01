@@ -360,6 +360,9 @@ class CocktailView
 	{
 		platform.onResize = document.onPlatformResizeEvent;
 		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
+		document.getViewportHeight = function() return platform.viewportHeight;
+		document.getViewportWidth = function() return platform.viewportWidth;
+		document.getTopPlatformLayer = platform.getTopPlatformLayer;
 	}
 	
 	/**

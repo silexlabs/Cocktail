@@ -79,6 +79,6 @@ class InitialGraphicsContext extends GraphicsContext
 	private function getTopPlatformLayer():PlatformLayer
 	{
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
-		return htmlDocument.window.platform.getTopPlatformLayer();
+		return htmlDocument.getTopPlatformLayer();
 	}
 }
