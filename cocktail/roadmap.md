@@ -23,6 +23,7 @@ with CSS and can be customised for desktop and mobile scrollbar.
 #####1.4.0
 - finish CSS transition implementation, for now only works with 1 float values (width, height...). Make it work also with matrix, color and other transitionable data types.
 - finish CSS transform 2d implementation, for now deactivated as incomplete.
+- add missing CSS units : ch, rem, vw, vh, vmin, vmax
 
 ###1.5.0 Hangover
 - list styles (list-style, list-style-image...)
