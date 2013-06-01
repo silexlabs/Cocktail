@@ -100,6 +100,12 @@ class CocktailView
 	public var viewport(default, set_viewport):Viewport;
 
 	/**
+	 * a reference to the platform API instantiated for the 
+	 * document
+	 */ 
+	private var _platform:Platform;
+	
+	/**
 	 * class constructor
 	 */
 	public function new()
@@ -196,6 +202,11 @@ class CocktailView
 		{
 			window.dispose();
 		}
+		
+		if (_platform != null)
+		{
+			_platform.dispose();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -207,10 +218,10 @@ class CocktailView
 	 */
 	private function createDocument():Void
 	{
-		var platform:Platform = initPlatform();
+		_platform = initPlatform();
 		
 		document = new HTMLDocument();
-		window = new Window(document, platform);
+		window = new Window(document);
 		updateViewport(viewport);
 	}
 	
@@ -245,7 +256,7 @@ class CocktailView
 			htmlDocument.innerHTML = html;
 		}
 		
-		setPlatformBindings(window.platform, document);
+		setPlatformBindings(_platform, document);
 	}
 	
 	/**
@@ -280,7 +291,7 @@ class CocktailView
 		//reset the viewport if null
 		if (viewport == null)
 		{
-			window.platform.viewport = null;
+			_platform.viewport = null;
 		}
 		else
 		{
@@ -291,7 +302,7 @@ class CocktailView
 			rect.width = viewport.width;
 			rect.height = viewport.height;
 			
-			window.platform.viewport = rect;
+			_platform.viewport = rect;
 		}
 	}
 	

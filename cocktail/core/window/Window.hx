@@ -51,12 +51,6 @@ class Window extends EventCallback
 	public var innerWidth(get_innerWidth, never):Int;
 	
 	/**
-	 * A reference to the class through which platform specific
-	 * events and methods are retrieved
-	 */
-	public var platform(default, null):Platform;
-	
-	/**
 	 * A reference to the history instance
 	 */
 	public var history:History;
@@ -68,11 +62,10 @@ class Window extends EventCallback
 	/**
 	 * class constructor. Initialise the Document
 	 */
-	public function new(htmlDocument:HTMLDocument, platform:Platform) 
+	public function new(htmlDocument:HTMLDocument) 
 	{
 		super();
-		this.platform = platform;
-		init(htmlDocument, platform);
+		init(htmlDocument);
 	}
 	
 	/**
@@ -83,15 +76,13 @@ class Window extends EventCallback
 		document = null;
 		history.dispose();
 		history = null;
-		platform.dispose();
-		platform = null;
 	}
 	
 	/**
 	 * Initialise the Document and set platform specific
 	 * listener on it
 	 */
-	private function init(htmlDocument:HTMLDocument, platform:Platform):Void
+	private function init(htmlDocument:HTMLDocument):Void
 	{
 		document = htmlDocument;
 		setDocumentListener(document);
