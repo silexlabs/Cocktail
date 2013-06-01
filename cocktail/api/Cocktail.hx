@@ -43,6 +43,6 @@ class Cocktail
 		//set static reference to the document and window,
 		//so that they can be accessed with cocktail.Browser.document
 		//and cocktail.Browser.window
-		cocktail.Browser.init(cocktailView.document);
+		cocktail.Browser.init(cocktailView.document, cocktailView.window);
 	}
 }

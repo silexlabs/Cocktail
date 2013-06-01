@@ -104,10 +104,10 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 */
 	override private function getBackgroundAndBordersBounds(scrollOffset:PointVO):RectangleVO
 	{
-		var windowData:ContainingBlockVO = getWindowData();
+		var viewportData:ContainingBlockVO = getViewportData();
 		
-		var width:Float = windowData.width;
-		var height:Float = windowData.height;
+		var width:Float = viewportData.width;
+		var height:Float = viewportData.height;
 		bounds.width = width;
 		bounds.height = height;
 		bounds.x = 0.0;

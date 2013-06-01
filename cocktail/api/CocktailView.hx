@@ -100,6 +100,12 @@ class CocktailView
 	public var viewport(default, set_viewport):Viewport;
 
 	/**
+	 * a reference to the platform API instantiated for the 
+	 * document
+	 */ 
+	private var _platform:Platform;
+	
+	/**
 	 * class constructor
 	 */
 	public function new()
@@ -196,6 +202,11 @@ class CocktailView
 		{
 			window.dispose();
 		}
+		
+		if (_platform != null)
+		{
+			_platform.dispose();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -207,11 +218,10 @@ class CocktailView
 	 */
 	private function createDocument():Void
 	{
-		var platform:Platform = initPlatform();
+		_platform = initPlatform();
 		
 		document = new HTMLDocument();
-		window = new Window(document, platform);
-		document.window = window;
+		window = new Window(document);
 		updateViewport(viewport);
 	}
 	
@@ -234,6 +244,9 @@ class CocktailView
 	 */
 	private function initDocument(htmlDocument:HTMLDocument, html:String, url:String):Void
 	{
+		setDocumentBindings(document);
+		setPlatformBindings(_platform, document);
+		
 		if (url != null)
 		{
 			//set base url of document
@@ -245,8 +258,6 @@ class CocktailView
 			//starts the loading of the document
 			htmlDocument.innerHTML = html;
 		}
-		
-		setPlatformBindings(window.platform, document);
 	}
 	
 	/**
@@ -269,6 +280,15 @@ class CocktailView
 	}
 	
 	/**
+	 * set default behaviours for some document updating process
+	 */
+	private function setDocumentBindings(htmlDocument:HTMLDocument):Void
+	{
+		document.onDocumentUpdated = onDocumentUpdated;
+		document.onDocumentInvalidated = onDocumentInvalidated;
+	}
+	
+	/**
 	 * update the viewport of the document if the
 	 * document is ready
 	 */
@@ -281,7 +301,7 @@ class CocktailView
 		//reset the viewport if null
 		if (viewport == null)
 		{
-			window.platform.viewport = null;
+			_platform.viewport = null;
 		}
 		else
 		{
@@ -292,7 +312,7 @@ class CocktailView
 			rect.width = viewport.width;
 			rect.height = viewport.height;
 			
-			window.platform.viewport = rect;
+			_platform.viewport = rect;
 		}
 	}
 	
@@ -349,6 +369,8 @@ class CocktailView
 		platform.onFullScreenChange = document.onPlatformFullScreenChange;
 		document.onEnterFullscreen = platform.enterFullscreen;
 		document.onExitFullscreen = platform.exitFullscreen;
+		document.isFullscreen = platform.fullscreen;
+		document.isFullScreenEnabled = platform.fullScreenEnabled;
 	}
 	
 	/**
@@ -358,6 +380,9 @@ class CocktailView
 	{
 		platform.onResize = document.onPlatformResizeEvent;
 		platform.onOrientationChange = document.onPlatformOrientationChangeEvent;
+		document.getViewportHeight = function() return platform.viewportHeight;
+		document.getViewportWidth = function() return platform.viewportWidth;
+		document.getTopPlatformLayer = platform.getTopPlatformLayer;
 	}
 	
 	/**
@@ -366,6 +391,35 @@ class CocktailView
 	private function setNavigationBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
 	{
 		document.onNavigateToURL = platform.open;
+	}
+	
+	/**
+	 * Called just after the document has been fully
+	 * updated. 
+	 * No default behaviour but can be overrided to perform
+	 * additional steps just after document updated as there
+	 * are no standard api for this
+	 */
+	private function onDocumentUpdated():Void
+	{
+		
+	}
+	
+	/**
+	 * Called when the document gets invalidated. For instance
+	 * when the rendering or layout of an htmlelement must get
+	 * updated.
+	 * 
+	 * By default, set the document to get updated on next tick,
+	 * using the document's timer.
+	 * 
+	 * Can be overriden for instance to prevent updating the document.
+	 * Can be useful if only the DOM part is needed and not the layout
+	 * and rendering part
+	 */
+	private function onDocumentInvalidated():Void
+	{
+		document.timer.delay(function(timestamp) document.update());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
