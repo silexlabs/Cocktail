@@ -9,6 +9,7 @@
 package cocktail.core.html;
 
 import cocktail.core.css.SelectorManager;
+import cocktail.core.dom.NodeList;
 import cocktail.core.transition.TransitionManager;
 import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
@@ -655,6 +656,46 @@ class HTMLDocument extends Document
 	public function focusPreviousElement():Void
 	{
 		activeElement = _focusManager.getNextFocusedElement(true, body, activeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC SELECTORS API METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Get all the node in the document which matches the 
+	 * proveded selectors
+	 * @param	selectors
+	 * @return	the mathing node or an empty list if there are
+	 * none
+	 */
+	public function querySelectorAll(selectors:String):NodeList
+	{
+		//document might not have any child yet
+		if (documentElement != null)
+		{
+			return documentElement.querySelectorAll(selectors);
+		}
+		
+		return [];
+	}
+	
+	/**
+	 * Get the first node in the document which match the 
+	 * provided selector
+	 * @param	selectors
+	 * @return	the first matching node or none if there are
+	 * none
+	 */
+	public function querySelector(selectors:String):HTMLElement
+	{
+		//document might not have any child yet
+		if (documentElement != null)
+		{
+			return documentElement.querySelector(selectors);
+		}
+		
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
