@@ -11,12 +11,15 @@ package cocktail.core.html;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.css.parsers.CSSSelectorParser;
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
+import cocktail.core.dom.DOMException;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeList;
 import cocktail.core.dom.Text;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
@@ -1433,6 +1436,140 @@ class HTMLElement extends Element
 				child.endPendingTransitions();
 			}
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC SELECTORS API METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the first element nodes matching the provided selector, looking in all
+	 * the DOM tree starting from this node
+	 * @param	selectors
+	 * @return	the first matching node or null if there are none
+	 */
+	public function querySelector(selectors:String):HTMLElement
+	{
+		var typedSelectors:Array<SelectorVO> = new Array<SelectorVO>();
+		var isValidSelector:Bool = parseSelectors(selectors, typedSelectors);
+		if (isValidSelector == false)
+		{
+			throw DOMException.SYNTAX_ERR;
+		}
+		
+		var nodes:NodeList = doQuerySelector(this, typedSelectors, false);
+		
+		if (nodes.length == 0)
+		{
+			return null;
+		}
+		else
+		{
+			return cast(nodes[0]);
+		}
+	}
+	
+	/**
+	 * Return the descendant element nodes of this node which
+	 * match the provided selector
+	 * @param	selectors
+	 * @return	a node list, possibly empty of no matches
+	 */
+	public function querySelectorAll(selectors:String):NodeList
+	{
+		var typedSelectors:Array<SelectorVO> = new Array<SelectorVO>();
+		var isValidSelector:Bool = parseSelectors(selectors, typedSelectors);
+		if (isValidSelector == false)
+		{
+			throw DOMException.SYNTAX_ERR;
+		}
+		
+		return doQuerySelector(this, typedSelectors, true);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE SELECTORS API METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Do get the node matching the selectors, starting from this node and checking
+	 * all the descendants recursively
+	 * 
+	 * @param	node the current node
+	 * @param	selectors the typed parsed selectors
+	 * @param	queryAll wether to get all matching descendant (true) or
+	 * stop at the first match (false)
+	 * @return	the list of matching nodes, might be empty
+	 */
+	private function doQuerySelector(node:HTMLElement, selectors:Array<SelectorVO>, queryAll:Bool):NodeList
+	{
+		//will hold all matching nodes
+		var nodes:NodeList = new NodeList();
+		
+		//first check the current node
+		var matches:Bool = _ownerHTMLDocument.matchesSelector(node, selectors);
+		if (matches == true)
+		{
+			nodes.push(node);
+			
+			//if false, stop on first matching node
+			if (queryAll == false)
+			{
+				return nodes;
+			}
+		}
+		
+		//check all descendant
+		var length:Int = node.childNodes.length;
+		for (i in 0...length)
+		{
+			//only applies to element nodes
+			if (node.childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+			{
+				var matchingNodes:NodeList = doQuerySelector(cast(node.childNodes[i]), selectors, queryAll);
+				
+				//if queryAll false, stop on first match
+				if (queryAll == false && matchingNodes.length > 0)
+				{
+					return matchingNodes;
+				}
+				
+				//else add all matching nodes
+				var matchingNodesLength:Int = matchingNodes.length;
+				for (j in 0...matchingNodesLength)
+				{
+					nodes.push(matchingNodes[j]);
+				}
+			}
+		}
+		
+		return nodes;
+	}
+	
+	/**
+	 * Parse the provided css selectors into an array
+	 * of typed selectors
+	 * @param	selectors	the selectors as a comma separated string
+	 * @param	typedSelectors the array which should be filled by the parsed
+	 * selectors
+	 * @return	wether the selectors are valid, return false if at least one
+	 * is not valid
+	 */
+	private function parseSelectors(selectors:String, typedSelectors:Array<SelectorVO>):Bool
+	{
+		var selectorParser:CSSSelectorParser = new CSSSelectorParser();
+		
+		var separatedSelectors:Array<String> = selectors.split(",");
+		for (i in 0...separatedSelectors.length)
+		{
+			var isValidSelector:Bool = selectorParser.parseSelector(separatedSelectors[i], typedSelectors);
+			if (isValidSelector == false)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
