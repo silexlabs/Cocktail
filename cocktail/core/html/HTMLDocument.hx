@@ -199,6 +199,12 @@ class HTMLDocument extends Document
 	public var onDocumentUpdated:Void->Void;
 	
 	/**
+	 * Callback called when the document invalidated. 
+	 * Can be layout, rendering... that got invalidated
+	 */
+	public var onDocumentInvalidated:Void->Void;
+	
+	/**
 	 * Callback called when the document must
 	 * navigate to a new url
 	 */
@@ -611,6 +617,14 @@ class HTMLDocument extends Document
 		{
 			onDocumentUpdated();
 		}
+	}
+	
+	/**
+	 * start an update of the document
+	 */
+	public function update():Void
+	{
+		invalidationManager.update();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

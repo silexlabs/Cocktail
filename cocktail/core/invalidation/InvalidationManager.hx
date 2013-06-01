@@ -220,6 +220,19 @@ class InvalidationManager
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC UPDATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * start the update of the document
+	 */
+	public function update():Void
+	{
+		_invalidationScheduled = false;
+		updateDocument();
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -436,23 +449,17 @@ class InvalidationManager
 	}
 	
 	/**
-	 * Actually schedule an update if one
-	 * is not yet scheduled
+	 * Actually invalidate the document. Default
+	 * behaviour for the document is to schedule
+	 * an asynchronous update
 	 */
 	private function doInvalidate():Void
 	{
-		_invalidationScheduled = true;
-		_htmlDocument.timer.delay(onUpdateSchedule);
-	}
-	
-	/**
-	 * Callback called after an invalidation is
-	 * scheduled, starts updating the document
-	 */
-	private function onUpdateSchedule(timeStamp:Float):Void
-	{
-		_invalidationScheduled = false;
-		updateDocument();
+		if (_htmlDocument.onDocumentInvalidated != null)
+		{
+			_invalidationScheduled = true;
+			_htmlDocument.onDocumentInvalidated();
+		}
 	}
 	
 	/**

@@ -244,6 +244,9 @@ class CocktailView
 	 */
 	private function initDocument(htmlDocument:HTMLDocument, html:String, url:String):Void
 	{
+		setDocumentBindings(document);
+		setPlatformBindings(_platform, document);
+		
 		if (url != null)
 		{
 			//set base url of document
@@ -255,8 +258,6 @@ class CocktailView
 			//starts the loading of the document
 			htmlDocument.innerHTML = html;
 		}
-		
-		setPlatformBindings(_platform, document);
 	}
 	
 	/**
@@ -276,6 +277,15 @@ class CocktailView
 		setViewportBindings(platform, htmlDocument);
 		setMouseCursorBindings(platform, htmlDocument);
 		setNavigationBindings(platform, htmlDocument);
+	}
+	
+	/**
+	 * set default behaviours for some document updating process
+	 */
+	private function setDocumentBindings(htmlDocument:HTMLDocument):Void
+	{
+		document.onDocumentUpdated = onDocumentUpdated;
+		document.onDocumentInvalidated = onDocumentInvalidated;
 	}
 	
 	/**
@@ -381,6 +391,35 @@ class CocktailView
 	private function setNavigationBindings(platform:Platform, htmlDocument:HTMLDocument):Void 
 	{
 		document.onNavigateToURL = platform.open;
+	}
+	
+	/**
+	 * Called just after the document has been fully
+	 * updated. 
+	 * No default behaviour but can be overrided to perform
+	 * additional steps just after document updated as there
+	 * are no standard api for this
+	 */
+	private function onDocumentUpdated():Void
+	{
+		
+	}
+	
+	/**
+	 * Called when the document gets invalidated. For instance
+	 * when the rendering or layout of an htmlelement must get
+	 * updated.
+	 * 
+	 * By default, set the document to get updated on next tick,
+	 * using the document's timer.
+	 * 
+	 * Can be overriden for instance to prevent updating the document.
+	 * Can be useful if only the DOM part is needed and not the layout
+	 * and rendering part
+	 */
+	private function onDocumentInvalidated():Void
+	{
+		document.timer.delay(function(timestamp) document.update());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
