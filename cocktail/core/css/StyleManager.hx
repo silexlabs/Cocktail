@@ -79,7 +79,7 @@ class StyleManager
 	/**
 	 * class constructor. Init class attribute
 	 */
-	public function new() 
+	public function new(selectorManager:SelectorManager) 
 	{
 		_styleSheets = new Array<CSSStyleSheet>();
 		
@@ -91,7 +91,7 @@ class StyleManager
 		_authorNormalDeclarations = new Array<PropertyVO>();
 		_authorImportantDeclarations = new Array<PropertyVO>();
 		
-		_selectorManager = new SelectorManager();
+		_selectorManager = selectorManager;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
