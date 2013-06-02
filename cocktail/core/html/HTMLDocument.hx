@@ -8,6 +8,8 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.SelectorManager;
+import cocktail.core.dom.NodeList;
 import cocktail.core.transition.TransitionManager;
 import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
@@ -294,6 +296,12 @@ class HTMLDocument extends Document
 	private var _styleManager:StyleManager;
 	
 	/**
+	 * A ref to the selector manager which can determine
+	 * wether a node matches a given selector
+	 */
+	private var _selectorManager:SelectorManager;
+	
+	/**
 	 * an instance of the class managing layout.
 	 * Holds instances of each class used during layout
 	 */
@@ -457,7 +465,8 @@ class HTMLDocument extends Document
 	 */
 	private function initStyleManager():Void
 	{
-		_styleManager = new StyleManager();
+		_selectorManager = new SelectorManager();
+		_styleManager = new StyleManager(_selectorManager);
 		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
 		
 	}
@@ -650,6 +659,46 @@ class HTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC SELECTORS API METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Get all the node in the document which matches the 
+	 * proveded selectors
+	 * @param	selectors
+	 * @return	the mathing node or an empty list if there are
+	 * none
+	 */
+	public function querySelectorAll(selectors:String):NodeList
+	{
+		//document might not have any child yet
+		if (documentElement != null)
+		{
+			return documentElement.querySelectorAll(selectors);
+		}
+		
+		return [];
+	}
+	
+	/**
+	 * Get the first node in the document which match the 
+	 * provided selector
+	 * @param	selectors
+	 * @return	the first matching node or none if there are
+	 * none
+	 */
+	public function querySelector(selectors:String):HTMLElement
+	{
+		//document might not have any child yet
+		if (documentElement != null)
+		{
+			return documentElement.querySelector(selectors);
+		}
+		
+		return null;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC STYLE MANAGER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -692,6 +741,26 @@ class HTMLDocument extends Document
 	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
 	{
 		return _styleManager.getStyleDeclaration(node, getMatchedPseudoClassesVO(node));
+	}
+	
+	/**
+	 * For a given node and selectors, return wether the node matches at least one 
+	 * of them
+	 */
+	public function matchesSelector(node:HTMLElement, selectors:Array<SelectorVO>):Bool
+	{
+		var matchedPseudoClass:MatchedPseudoClassesVO = getMatchedPseudoClassesVO(node);
+		
+		var length:Int = selectors.length;
+		for (i in 0...length)
+		{
+			if (_selectorManager.matchSelector(node, selectors[i], matchedPseudoClass) == true)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	 
 	//////////////////////////////////////////////////////////////////////////////////////////
