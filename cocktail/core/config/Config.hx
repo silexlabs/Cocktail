@@ -132,6 +132,21 @@ class Config extends EventTarget
 	public var thickBorderWidth:Int;
 	
 	/////////////////////////////////////////////////
+	// SCROLLBAR CONFIG
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Set the width of scrollbars displayed when
+	 * 'overflow' is set to 'auto' or 'scroll'
+	 */
+	public var scrollBarWidth:Int;
+
+	/**
+	 * Same as above for the scrollbar height
+	 */ 
+	public var scrollBarHeight:Int;
+
+	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
 	/////////////////////////////////////////////////
 	
@@ -194,6 +209,9 @@ class Config extends EventTarget
 		mediumBorderWidth = 3;
 		thickBorderWidth = 5;
 		
+		scrollBarHeight = 15;
+		scrollBarWidth = 15;
+
 		enableCompositing = false;
 		objectBelowWhenNoCompositing = true;
 		videoBelowWhenNoCompositing = true;
@@ -229,7 +247,7 @@ class Config extends EventTarget
 				
 			case "touchMovePreventClickDistance", "xxSmallFontSize", "xSmallFontSize", "smallFontSize",
 			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize", "thinBorderWidth",
-			"mediumBorderWidth", "thickBorderWidth":
+			"mediumBorderWidth", "thickBorderWidth", "scrollBarHeight", "scrollBarWidth":
 				updateIntParam(name, value);
 				didUpdate = true;
 				
