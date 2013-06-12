@@ -82,6 +82,30 @@ class CSSValueConverter
 				
 			case EX(value):
 				lengthValue = exReference * value;
+				
+			case CH(value):
+				//TODO
+				lengthValue = 0;
+				
+			case REM(value):
+				//TODO
+				lengthValue = 0;
+				
+			case VMAX(value):
+				//TODO
+				lengthValue = 0;
+				
+			case VMIN(value):	
+				//TODO
+				lengthValue = 0;
+				
+			case VH(value):	
+				//TODO
+				lengthValue = 0;	
+				
+			case VW(value):	
+				//TODO
+				lengthValue = 0;		
 		}
 		
 		return lengthValue;

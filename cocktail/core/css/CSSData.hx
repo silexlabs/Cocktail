@@ -1213,6 +1213,13 @@ enum CSSLengthValue {
 	EM(value:Float);
 	
 	/**
+	 * Equal to the computed value of ‘font-size’ on the root element.
+	 * When specified on the ‘font-size’ property of the root element, 
+	 * the ‘rem’ units refer to the property's initial value.
+	 */
+	REM(value:Float);
+	
+	/**
 	 * The 'ex' unit is defined by the element's first available font.
 	 * The exception is when 'ex' occurs in
 	 * the value of the 'font-size' property,
@@ -1223,6 +1230,32 @@ enum CSSLengthValue {
 	 * defined even for fonts that do not contain an "x".
 	 */
 	EX(value:Float);
+	
+	/**
+	 * Equal to the advance measure of the "0" 
+	 * (ZERO, U+0030) glyph found in the font used to render it.
+	 */
+	CH(value:Float);
+	
+	/**
+	 * Equal to 1% of the width of the initial containing block.
+	 */
+	VW(value:Float);
+	
+	/**
+	 * Equal to 1% of the height of the initial containing block.
+	 */
+	VH(value:Float);
+	
+	/**
+	 * Equal to the smaller of ‘vw’ or ‘vh’.
+	 */
+	VMIN(value:Float);
+	
+	/**
+	 * Equal to the larger of ‘vw’ or ‘vh’.
+	 */
+	VMAX(value:Float);
 }
 
 /**
