@@ -125,6 +125,8 @@ class HTMLConstants
 	
 	public static inline var HTML_TEXT_AREA_TAG_NAME:String = "TEXTAREA";
 	
+	public static inline var HTML_TITLE_TAG_NAME:String = "TITLE";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
