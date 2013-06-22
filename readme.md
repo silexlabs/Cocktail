@@ -28,7 +28,7 @@ Cocktail is a library for the Haxe programming language, you should be familiar 
 Building
 -------------
 
-1. Cocktail is written for Haxe 2.10, you need to [download and install](http://haxe.org/download) it first:
+1. Cocktail is written for Haxe 3, you need to [download and install](http://haxe.org/download) it first:
 
 2. Cocktail is available on [haxelib](http://haxe.org/haxelib), once Haxe is installed, open you command prompt and type:
 > haxelib install cocktail
@@ -46,9 +46,9 @@ Maturity
 -------------
 This project has been used in production by core members of the project which could easily debug it. So it's getting stable but expect quirks, especially when using some tricky CSS layout. The API however, as it is based on the W3C standards is very stable.
 
-Haxe 3
+Haxe 2
 -------------
-For Haxe 3 users, there is an Haxe 3 branch which builds. The samples work when built for flash, however, with latest NME (3.5.6), the sample crash (tested on Windows). The samples work when using Haxe 2 and NME. This bug needs to be fixed before the Haxe 3 version can become the official one.
+For Haxe 2 users, cocktail is also available on haxelib, although the Haxe 2 version won't be maintained.
 
 Licence
 -------------
