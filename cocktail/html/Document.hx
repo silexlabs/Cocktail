@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef Document = cocktail.core.html.HtmlDocument;
+typedef Document = cocktail.core.html.HTMLDocument;
