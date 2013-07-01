@@ -76,8 +76,14 @@ class FontMetricsVO {
 	 */
 	public var spaceWidth:Float;
 	
+	/**
+	 * Equal to the advance measure of the "0" (ZERO, U+0030) 
+	 * glyph found in the font used to render it.
+	 */
+	public var zeroHeight:Float;
+	
 	public function new(fontSize:Float, ascent:Float, descent:Float, xHeight:Float, subscriptOffset:Float, superscriptOffset:Float,
-	underlineOffset:Float, spaceWidth:Float)
+	underlineOffset:Float, spaceWidth:Float, zeroHeight:Float)
 	{
 		this.fontSize = fontSize;
 		this.ascent = ascent;
@@ -87,5 +93,6 @@ class FontMetricsVO {
 		this.superscriptOffset = superscriptOffset;
 		this.underlineOffset = underlineOffset;
 		this.spaceWidth = spaceWidth;
+		this.zeroHeight = zeroHeight;
 	}
 }

@@ -727,6 +727,24 @@ class CSSStyleSerializer
 				
 			case CM(value):
 				return value + "cm";
+				
+			case CH(value):
+				return value + "ch";	
+				
+			case REM(value):
+				return value + "rem";
+				
+			case VMAX(value):
+				return value + "vmax";
+				
+			case VMIN(value):
+				return value + "vmin";	
+				
+			case VW(value):
+				return value + "vw";	
+				
+			case VH(value):
+				return value + "vh";		
 		}
 	}
 	

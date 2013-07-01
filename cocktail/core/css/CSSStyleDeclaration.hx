@@ -3979,7 +3979,25 @@ class CSSStyleDeclaration
 				return value >= 0;		
 				
 			case CM(value):
-				return value >= 0;		
+				return value >= 0;	
+				
+			case CH(value):
+				return value >= 0; 
+				
+			case REM(value):
+				return value >= 0; 	
+				
+			case VH(value):
+				return value >= 0; 		
+				
+			case VW(value):
+				return value >= 0; 	
+				
+			case VMIN(value):
+				return value >= 0; 	
+				
+			case VMAX(value):
+				return value >= 0; 		
 		}
 	}
 	

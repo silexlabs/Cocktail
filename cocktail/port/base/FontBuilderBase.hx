@@ -50,7 +50,7 @@ class FontBuilderBase
 	 */
 	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
+		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0, 12.0 );
 	}
 	
 	/**
