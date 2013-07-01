@@ -148,12 +148,14 @@ class DOMParser
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = cast(node.childNodes[i]);
+			var node:Node = node.childNodes[i];
 			
-			switch(child.nodeType)
+			switch(node.nodeType)
 			{
 				case DOMConstants.ELEMENT_NODE:
 				
+					var child : HTMLElement = cast(node);
+					
 					//create an xml node with the tag name of the HTMLElement,
 					//for instance 'div', 'span', 'img'...
 					var childXml:Xml = Xml.createElement(child.nodeName);
@@ -193,12 +195,12 @@ class DOMParser
 
 				case DOMConstants.TEXT_NODE:
 					//serialize a Text node
-					var text:Xml = Xml.createPCData(child.nodeValue);
+					var text:Xml = Xml.createPCData(node.nodeValue);
 					xml.addChild(text);
 					
 				case DOMConstants.COMMENT_NODE:
 					//serialize a Comment node
-					var comment:Xml = Xml.createComment(child.nodeValue);
+					var comment:Xml = Xml.createComment(node.nodeValue);
 					xml.addChild(comment);
 			}
 		}
