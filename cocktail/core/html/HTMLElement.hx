@@ -1176,6 +1176,11 @@ class HTMLElement extends Element
 					}
 				}
 	
+				//update the relative reference for the cascade of this node
+				cascadeManager.parentRelativeLengthReference.em = parentFontMetrics.fontSize;
+				cascadeManager.parentRelativeLengthReference.ch = parentFontMetrics.zeroHeight;
+				cascadeManager.parentRelativeLengthReference.ex = parentFontMetrics.xHeight;
+				
 				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, programmaticChange);
 			}
 		}

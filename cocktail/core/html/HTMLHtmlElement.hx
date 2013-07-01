@@ -127,7 +127,25 @@ class HTMLHtmlElement extends HTMLElement
 			}
 		}
 		
+		//update the relative reference for the cascade of this node
+		//the root html element has special rules as it has no parent
+		//It uses the computed font metrics corresponding to the initial values
+		//of the font property
+		//TODO : implement actual values instead of hard-coded ones
+		cascadeManager.parentRelativeLengthReference.em = 12.0;
+		cascadeManager.parentRelativeLengthReference.ch = 12.0;
+		cascadeManager.parentRelativeLengthReference.ex = 12.0;
+		
+		//TODO : use the computed value of the initial font-size on the root
+		//element instead
+		cascadeManager.parentRelativeLengthReference.rem = 12.0;
+		
 		coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, programmaticChange);
+		
+		//now that the root element is cascaded, we can retrieve the 'rem' reference which 
+		//will be used for all the other nodes in the document
+		cascadeManager.parentRelativeLengthReference.rem = coreStyle.fontMetrics.fontSize;
+		cascadeManager.relativeLengthReference.rem = coreStyle.fontMetrics.fontSize;
 		
 		_shouldCascadeAllProperties = false;
 		_pendingChangedProperties = [];

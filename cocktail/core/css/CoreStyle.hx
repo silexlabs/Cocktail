@@ -841,8 +841,10 @@ class CoreStyle
 			cascadeManager.removePropertyToCascade(CSSConstants.COLOR);
 		}
 		
-		var fontSize:Float = fontMetrics.fontSize;
-		var xHeight:Float = fontMetrics.xHeight;
+		//update the relative reference to compute this element's relative lengths
+		relativeLengthReference.em = fontMetrics.fontSize;
+		relativeLengthReference.ex = fontMetrics.xHeight;
+		relativeLengthReference.ch = fontMetrics.zeroHeight;
 		
 		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<Int> = null;

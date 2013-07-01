@@ -720,6 +720,17 @@ class HTMLDocument extends Document
 		if (documentElement != null)
 		{
 			documentElement.invalidateStyleDeclaration(true);
+			
+			//before cascading, we must update the references used for relative
+			//length computation which will remain the same during the whole cascade
+			var parentRelativeLengthReference:RelativeLengthReferenceData = cascadeManager.parentRelativeLengthReference;
+			var relativeLengthReference:RelativeLengthReferenceData = cascadeManager.relativeLengthReference;
+			
+			parentRelativeLengthReference.viewportHeight = getViewportHeight();
+			parentRelativeLengthReference.viewportWidth = getViewportWidth();
+			relativeLengthReference.viewportHeight = getViewportHeight();
+	        relativeLengthReference.viewportWidth = getViewportWidth();
+			
 			documentElement.cascade(cascadeManager, false);
 		}
 		

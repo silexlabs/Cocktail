@@ -73,7 +73,7 @@ class FontBuilder extends FontBuilderBase
 		textFormat.font = fontFamily;
 		textField.setTextFormat(textFormat);
 		
-		var fontMetricsVO:FontMetricsVO = new FontMetricsVO(fontSize, 0, 0, 0, 0, 0, 0, 0);
+		var fontMetricsVO:FontMetricsVO = new FontMetricsVO(fontSize, 0, 0, 0, 0, 0, 0, 0, 0);
 		
 		setAscentAndDescent(textField, fontMetricsVO, textFormat);
 		
