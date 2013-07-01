@@ -652,7 +652,7 @@ class CoreStyle
 	 * source, this method manages the priority among those sources
 	 * 
 	 * @param cascadeManager contain the names of the properties to update and info about the current
-	 * cascade
+	 * cascade as well as reference to compute relative lengths
 	 * @param	initialStyleDeclaration contains the initial value for each of the supported CSS styles.
 	 * Used last if a value for a given style is not provided from other sources
 	 * @param	styleSheetDeclaration	contains all the style values applying to the HTMLElement which
@@ -661,13 +661,11 @@ class CoreStyle
 	 * its "style" HTML attribute
 	 * @param	parentStyleDeclaration contains the definition of all of the computed styles from the direct
 	 * parent of the HTMLElement, used for inherithance
-	 * @param	parentFontSize parent node's computed font size
-	 * @param	parentXHeight parent node's computed x height
 	 * @param programmaticChange wether the triggering of the cascade is the result of a programmatic (scripted) change
 	 * as opposed to a declarative one
 	 * @return an array containing the names of all the properties whose specified values changed during cascading
 	 */
-	public function cascade(cascadeManager:CascadeManager, initialStyleDeclaration:InitialStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Void
+	public function cascade(cascadeManager:CascadeManager, initialStyleDeclaration:InitialStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, programmaticChange:Bool):Void
 	{
 		//no need to cascade if no styles need to be
 		//updated on this HTMLElement
@@ -675,6 +673,10 @@ class CoreStyle
 		{
 			return;
 		}
+		
+		//those holds the data to compute relative lengths
+		var parentRelativeLengthReference:RelativeLengthReferenceData = cascadeManager.parentRelativeLengthReference;
+		var relativeLengthReference:RelativeLengthReferenceData = cascadeManager.relativeLengthReference;
 		
 		//will store all the properties which value
 		//change during cascading
@@ -693,7 +695,7 @@ class CoreStyle
 		//cascade
 		if (cascadeManager.hasTransitionProperty == true || cascadeManager.cascadeAll == true)
 		{
-			cascadeProperty(CSSConstants.TRANSITION_PROPERTY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			cascadeProperty(CSSConstants.TRANSITION_PROPERTY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
 			//store wether there are properties which can be transitioned. When other
 			//properties are computed, they can bypass the start transition step if
@@ -709,7 +711,7 @@ class CoreStyle
 		//forces the border width to be 0
 		if (cascadeManager.hasLeftBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_LEFT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_LEFT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			if (leftBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_LEFT_WIDTH);
@@ -722,7 +724,7 @@ class CoreStyle
 		//same for right border
 		if (cascadeManager.hasRightBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var rightBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_RIGHT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var rightBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_RIGHT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			if (rightBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_RIGHT_WIDTH);
@@ -735,7 +737,7 @@ class CoreStyle
 		//same for top border
 		if (cascadeManager.hasTopBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var topBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_TOP_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var topBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_TOP_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			if (topBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_TOP_WIDTH);
@@ -748,7 +750,7 @@ class CoreStyle
 		//same for bottom border
 		if (cascadeManager.hasBottomBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var bottomBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_BOTTOM_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var bottomBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_BOTTOM_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			if (bottomBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_BOTTOM_WIDTH);
@@ -762,7 +764,7 @@ class CoreStyle
 		//the outline width
 		if (cascadeManager.hasOutlineStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var outlineStyleDidChange:Bool = cascadeProperty(CSSConstants.OUTLINE_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var outlineStyleDidChange:Bool = cascadeProperty(CSSConstants.OUTLINE_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			if (outlineStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.OUTLINE_WIDTH);
@@ -781,8 +783,8 @@ class CoreStyle
 			//the computed absolute length to be correct, font-size
 			//and font-family must have been previously computed
 			//so that the right font metrics is used for the computation
-			var fontSizeDidChange:Bool = cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
-			var fontFamilyDidChange:Bool = cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var fontSizeDidChange:Bool = cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var fontFamilyDidChange:Bool = cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
 			//if font-size or font-family changed, all the properties which may depends
 			//on font metrics (because they are for instance Length with 'em' unit) need to be cascaded
@@ -817,7 +819,7 @@ class CoreStyle
 		//the same as the one of the color style value
 		if (cascadeManager.hasColor == true)
 		{
-			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
 			
 			//only cascade color propery if value actually changed
@@ -873,7 +875,7 @@ class CoreStyle
 			//cascade the property, returns a flag of wether the cascade changed
 			//the specified value of the property. Useful to know if children
 			//also need to cascade this property
-			var didChangeSpecifiedValue:Bool = cascadeProperty(propertiesToCascade[i], initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var didChangeSpecifiedValue:Bool = cascadeProperty(propertiesToCascade[i], initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration,  parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 	
 			if (didChangeSpecifiedValue == true)
 			{
@@ -1310,7 +1312,7 @@ class CoreStyle
 	/**
 	 * Actually cascade a property
 	 */
-	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, hasInlineStyle:Bool, hasStyleSheetStyle:Bool):Bool
+	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue,  parentRelativeLengthReference:RelativeLengthReferenceData, relativeLengthReference:RelativeLengthReferenceData, programmaticChange:Bool, hasInlineStyle:Bool, hasStyleSheetStyle:Bool):Bool
 	{
 		//the highest priority is for style defined in a stylesheet with an !important declaration.
 		//It has an even higher priority than inline style
@@ -1321,7 +1323,7 @@ class CoreStyle
 			{
 				if (typedProperty.important == true)
 				{
-					return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+					return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, false, false);
 				}
 			}
 		}
@@ -1332,7 +1334,7 @@ class CoreStyle
 			var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyIndex);
 			if (typedProperty != null)
 			{
-				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, false, false);
 			}
 		}
 		
@@ -1342,7 +1344,7 @@ class CoreStyle
 			var typedProperty:TypedPropertyVO = styleSheetDeclaration.getTypedProperty(propertyIndex);
 			if (typedProperty != null)
 			{
-				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, false, false);
 			}
 		}
 		
@@ -1352,7 +1354,7 @@ class CoreStyle
 		{
 			if (parentStyleDeclaration.getTypedProperty(propertyIndex) != null)
 			{
-				return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
+				return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentRelativeLengthReference, relativeLengthReference, programmaticChange, true, false);
 			}
 			//if the parent has no defined property for this style, it
 			//means that it uses the initial property value
@@ -1416,7 +1418,7 @@ class CoreStyle
 	 * 
 	 * @return wether the specified value of the property did change
 	 */
-	private function setProperty(propertyIndex:Int, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool, isInitial:Bool):Bool
+	private function setProperty(propertyIndex:Int, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentRelativeLengthReference:RelativeLengthReferenceData, relativeLengthReference:RelativeLengthReferenceData, programmaticChange:Bool, isInherited:Bool, isInitial:Bool):Bool
 	{
 		var property:CSSPropertyValue = cascadedProperty.typedValue;
 		
@@ -1471,14 +1473,14 @@ class CoreStyle
 					computedProperty = initialStyleDeclaration.getTypedProperty(propertyIndex).typedValue;
 					
 				default:	
-					computedProperty = getComputedProperty(propertyIndex, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+					computedProperty = getComputedProperty(propertyIndex, property, parentRelativeLengthReference, relativeLengthReference, parentColor);
 			}
 		}
 		//when initial value applied it is 
 		//sure that it won't be 'inherit' or 'initial'
 		else
 		{
-			computedProperty =  getComputedProperty(propertyIndex, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+			computedProperty =  getComputedProperty(propertyIndex, property,  parentRelativeLengthReference, relativeLengthReference, parentColor);
 		}
 		
 		//try to start a transition on the property
@@ -1600,7 +1602,7 @@ class CoreStyle
 	 * specified value and so it doesn't need any
 	 * further treatement
 	 */
-	private function getComputedProperty(propertyIndex:Int, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, parentColor:CSSColorValue):CSSPropertyValue
+	private function getComputedProperty(propertyIndex:Int, property:CSSPropertyValue, parentRelativeLengthReference:RelativeLengthReferenceData, relativeLengthReference:RelativeLengthReferenceData, parentColor:CSSColorValue):CSSPropertyValue
 	{
 		switch(propertyIndex)
 		{
@@ -1612,7 +1614,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -1626,7 +1628,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -1731,10 +1733,10 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, parentFontSize, parentXHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, parentRelativeLengthReference));
 						
 					case PERCENTAGE(value):	
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, parentFontSize));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, parentRelativeLengthReference.em));
 						
 					case KEYWORD(value):
 						switch(value)
@@ -1743,7 +1745,7 @@ class CoreStyle
 								return ABSOLUTE_LENGTH(CSSValueConverter.getFontSizeFromAbsoluteSizeValue(value));
 								
 							case LARGER, SMALLER:
-								return ABSOLUTE_LENGTH(CSSValueConverter.getFontSizeFromRelativeSizeValue(value, parentFontSize));
+								return ABSOLUTE_LENGTH(CSSValueConverter.getFontSizeFromRelativeSizeValue(value, parentRelativeLengthReference.em));
 								
 							default:	
 						}
@@ -1778,7 +1780,7 @@ class CoreStyle
 						return ABSOLUTE_LENGTH(0);
 						
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					default:	
 				}	
@@ -1797,16 +1799,16 @@ class CoreStyle
 				switch(property)
 				{
 					case NUMBER(value):
-						return ABSOLUTE_LENGTH(value * fontSize);
+						return ABSOLUTE_LENGTH(value * relativeLengthReference.em);
 						
 					case INTEGER(value):
-						return ABSOLUTE_LENGTH(value * fontSize);
+						return ABSOLUTE_LENGTH(value * relativeLengthReference.em);
 					
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					case PERCENTAGE(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, fontSize));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, relativeLengthReference.em));
 						
 					default:	
 				}
@@ -1815,7 +1817,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 	
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -1827,7 +1829,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					default:	
 				}
@@ -1836,7 +1838,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					case KEYWORD(value):
 						return ABSOLUTE_LENGTH(0);
@@ -1895,7 +1897,7 @@ class CoreStyle
 						return GROUP([ABSOLUTE_LENGTH(0), ABSOLUTE_LENGTH(0)]);
 						
 					case LENGTH(value):
-						return GROUP([ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
+						return GROUP([ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference)), KEYWORD(CENTER)]);
 						
 					case PERCENTAGE(value):
 						return GROUP([PERCENTAGE(value), KEYWORD(CENTER)]);
@@ -1909,7 +1911,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 								
 							case KEYWORD(keywordValue):
 								switch(keywordValue)
@@ -1931,11 +1933,11 @@ class CoreStyle
 							case LENGTH(value):
 								if (firstValueIsBackgroundPositionY == false)
 								{
-									backgroundPositionY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+									backgroundPositionY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 								}
 								else
 								{
-									backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+									backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 								}
 								
 							default:	
@@ -1992,7 +1994,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 						
 					//TODO	
 					case GROUP(value):
@@ -2002,7 +2004,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundSizeX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								backgroundSizeX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 								
 							default:	
 								backgroundSizeX = value[0];
@@ -2011,7 +2013,7 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundSizeY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								backgroundSizeY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 								
 							default:	
 								backgroundSizeY = value[1];
@@ -2026,7 +2028,7 @@ class CoreStyle
 					switch(property)
 					{
 						case LENGTH(value):
-							return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+							return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 							
 						case INTEGER(value):
 							return ABSOLUTE_LENGTH(value);
@@ -2038,7 +2040,7 @@ class CoreStyle
 							switch(value[0])
 							{
 								case LENGTH(value):
-									transformOriginX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+									transformOriginX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 							
 								case INTEGER(value):
 									transformOriginX = ABSOLUTE_LENGTH(value); 
@@ -2049,7 +2051,7 @@ class CoreStyle
 							switch(value[1])
 							{
 								case LENGTH(value):
-									transformOriginY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+									transformOriginY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, relativeLengthReference));
 							
 								case INTEGER(value):
 									transformOriginY = ABSOLUTE_LENGTH(value); 

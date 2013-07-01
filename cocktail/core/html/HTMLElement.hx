@@ -1176,7 +1176,7 @@ class HTMLElement extends Element
 					}
 				}
 	
-				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
+				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, programmaticChange);
 			}
 		}
 		

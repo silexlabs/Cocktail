@@ -1259,6 +1259,59 @@ enum CSSLengthValue {
 }
 
 /**
+ * When computing a length into an aboslute
+ * value, holds all the reference data necessary
+ * to compute this length
+ */
+class RelativeLengthReferenceData {
+	
+	/**
+	 * reference for an em length. Represents
+	 * the font-size of the element or of the 
+	 * parent
+	 */
+	public var em:Float;
+	
+	/**
+	 * represents the font-size of the root (HTML)
+	 * element
+	 */
+	public var rem:Float;
+	
+	/**
+	 * the current width of the viewport, in pixels
+	 */
+	public var viewportWidth:Float;
+	
+	/**
+	 * same for viewport height
+	 */
+	public var viewportHeight:Float;
+	
+	/**
+	 * the measure of the "0" of the element's
+	 * font
+	 */
+	public var ch:Float;
+	
+	/**
+	 * the measure of the "x" of the element's
+	 * font
+	 */
+	public var ex:Float;
+	
+	public function new() 
+	{
+		em = 0;
+		rem = 0;
+		viewportHeight = 0;
+		viewportWidth = 0;
+		ch = 0;
+		ex = 0;
+	}
+}
+
+/**
  * Lists of supported time dimensions
  */
 enum CSSTimeValue {

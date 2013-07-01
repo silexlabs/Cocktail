@@ -42,18 +42,12 @@ class CSSValueConverter
 	 * from a length value
 	 * (px, em, cm...)
 	 * @param	length contains the unit type and the value
-	 * @param	emReference the computed value used as reference
-	 * when computing an em relative length value. It can be either the
-	 * htmlElement's computed font size or its parent's if the computed em
-	 * value is the font size of the htmlElement
-	 * @param exReference he computed value used as reference
-	 * when computing an ex relative length value. It can be either the
-	 * htmlElement's x-height or its parent's x-height if the computed ex value
-	 * is the font size of the htmlElement
+	 * @param	relativeLengthReference holds all the data necessary to
+	 * compute a relative length
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLength(length:CSSLengthValue, emReference:Float, exReference:Float):Float
+	public static function getPixelFromLength(length:CSSLengthValue, relativeLengthReference:RelativeLengthReferenceData):Float
 	{
 		var lengthValue:Float;
 		
@@ -78,34 +72,42 @@ class CSSValueConverter
 				lengthValue = value * (12 * (1 / 0.75));	
 				
 			case EM(value):
-				lengthValue = emReference * value;
+				lengthValue = relativeLengthReference.em * value;
 				
 			case EX(value):
-				lengthValue = exReference * value;
+				lengthValue = relativeLengthReference.ex * value;
 				
 			case CH(value):
-				//TODO
-				lengthValue = 0;
+				lengthValue = relativeLengthReference.ch;
 				
 			case REM(value):
-				//TODO
-				lengthValue = 0;
+				lengthValue = relativeLengthReference.rem;
 				
 			case VMAX(value):
-				//TODO
-				lengthValue = 0;
+				if (relativeLengthReference.viewportHeight > relativeLengthReference.viewportWidth)
+				{
+					lengthValue = (relativeLengthReference.viewportHeight * 0.01) * value;	
+				}
+				else
+				{
+					lengthValue = (relativeLengthReference.viewportWidth * 0.01) * value;
+				}
 				
 			case VMIN(value):	
-				//TODO
-				lengthValue = 0;
+				if (relativeLengthReference.viewportHeight < relativeLengthReference.viewportWidth)
+				{
+					lengthValue = (relativeLengthReference.viewportHeight * 0.01) * value;	
+				}
+				else
+				{
+					lengthValue = (relativeLengthReference.viewportWidth * 0.01) * value;
+				}
 				
-			case VH(value):	
-				//TODO
-				lengthValue = 0;	
+			case VH(value):
+				lengthValue = (relativeLengthReference.viewportHeight * 0.01) * value;	
 				
 			case VW(value):	
-				//TODO
-				lengthValue = 0;		
+				lengthValue = (relativeLengthReference.viewportWidth * 0.01) * value;		
 		}
 		
 		return lengthValue;

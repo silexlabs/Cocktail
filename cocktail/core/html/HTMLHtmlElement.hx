@@ -127,7 +127,7 @@ class HTMLHtmlElement extends HTMLElement
 			}
 		}
 		
-		coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, 12, 12, programmaticChange);
+		coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, programmaticChange);
 		
 		_shouldCascadeAllProperties = false;
 		_pendingChangedProperties = [];
