@@ -78,10 +78,10 @@ class CSSValueConverter
 				lengthValue = relativeLengthReference.ex * value;
 				
 			case CH(value):
-				lengthValue = relativeLengthReference.ch;
+				lengthValue = relativeLengthReference.ch * value;
 				
 			case REM(value):
-				lengthValue = relativeLengthReference.rem;
+				lengthValue = relativeLengthReference.rem * value;
 				
 			case VMAX(value):
 				if (relativeLengthReference.viewportHeight > relativeLengthReference.viewportWidth)
@@ -107,7 +107,7 @@ class CSSValueConverter
 				lengthValue = (relativeLengthReference.viewportHeight * 0.01) * value;	
 				
 			case VW(value):	
-				lengthValue = (relativeLengthReference.viewportWidth * 0.01) * value;		
+				lengthValue = (relativeLengthReference.viewportWidth * 0.01) * value;
 		}
 		
 		return lengthValue;
