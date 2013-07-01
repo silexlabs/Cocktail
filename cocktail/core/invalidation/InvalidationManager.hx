@@ -18,6 +18,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 
 /**
  * This class is in charge of keeping
@@ -694,6 +695,17 @@ class InvalidationManager
 	private function updateCascade(programmaticChange:Bool):Void
 	{
 		_htmlDocument.cascadeManager.reset();
+		
+		//before cascading, we must update the references used for relative
+		//length computation which will remain the same during the whole cascade
+		var parentRelativeLengthReference:RelativeLengthReferenceData = _htmlDocument.cascadeManager.parentRelativeLengthReference;
+		var relativeLengthReference:RelativeLengthReferenceData = _htmlDocument.cascadeManager.relativeLengthReference;
+		
+		parentRelativeLengthReference.viewportHeight = _htmlDocument.getViewportHeight();
+		parentRelativeLengthReference.viewportWidth = _htmlDocument.getViewportWidth();
+		relativeLengthReference.viewportHeight = _htmlDocument.getViewportHeight();
+		relativeLengthReference.viewportWidth = _htmlDocument.getViewportWidth();
+	
 		_htmlDocument.documentElement.cascade(_htmlDocument.cascadeManager, programmaticChange);
 	}
 	

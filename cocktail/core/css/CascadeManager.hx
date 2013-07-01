@@ -8,6 +8,8 @@
 */
 package cocktail.core.css;
 
+import cocktail.core.css.CSSData;
+
 
 /**
  * During cascading, an instance of this
@@ -36,6 +38,21 @@ class CascadeManager
 	 * Wether at least one property needs cascading
 	 */
 	public var hasPropertiesToCascade(default, null):Bool;
+	
+	/**
+	 * holds the data from the parent node necessary to compute
+	 * a relative length into an absolute one. Used when the current
+	 * node must compute a relative length for its 'font-size', it will
+	 * needs reference from its parent
+	 */
+	public var parentRelativeLengthReference(default, null):RelativeLengthReferenceData;
+	
+	/**
+	 * holds the data from the currently cascaded node necessary to compute
+	 * a relative length into an absolute value. For instance it holds the 
+	 * computed font-size of the node, used to compute length of with a 'em' unit
+	 */
+	public var relativeLengthReference(default, null):RelativeLengthReferenceData;
 	
 	//////////////////////////////
 	// flags for property which need cascading,
@@ -133,6 +150,8 @@ class CascadeManager
 	public function new() 
 	{
 		propertiesToCascade = new Array<Bool>();
+		parentRelativeLengthReference = new RelativeLengthReferenceData();
+		relativeLengthReference = new RelativeLengthReferenceData();
 		reset();
 	}
 	

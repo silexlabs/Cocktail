@@ -805,6 +805,24 @@ class CSSStyleParser
 			case "pt":
 				styleValues.push(LENGTH(PT(numberOrInteger)));
 				
+			case "ch":
+				styleValues.push(LENGTH(CH(numberOrInteger)));	
+				
+			case "rem":
+				styleValues.push(LENGTH(REM(numberOrInteger)));		
+				
+			case "vh":
+				styleValues.push(LENGTH(VH(numberOrInteger)));	
+				
+			case "vw":
+				styleValues.push(LENGTH(VW(numberOrInteger)));			
+				
+			case "vmin":
+				styleValues.push(LENGTH(VMIN(numberOrInteger)));			
+				
+			case "vmax":
+				styleValues.push(LENGTH(VMAX(numberOrInteger)));			
+				
 			case "deg":
 				styleValues.push(ANGLE(DEG(numberOrInteger)));
 				

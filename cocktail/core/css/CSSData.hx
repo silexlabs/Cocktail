@@ -1213,6 +1213,13 @@ enum CSSLengthValue {
 	EM(value:Float);
 	
 	/**
+	 * Equal to the computed value of ‘font-size’ on the root element.
+	 * When specified on the ‘font-size’ property of the root element, 
+	 * the ‘rem’ units refer to the property's initial value.
+	 */
+	REM(value:Float);
+	
+	/**
 	 * The 'ex' unit is defined by the element's first available font.
 	 * The exception is when 'ex' occurs in
 	 * the value of the 'font-size' property,
@@ -1223,6 +1230,85 @@ enum CSSLengthValue {
 	 * defined even for fonts that do not contain an "x".
 	 */
 	EX(value:Float);
+	
+	/**
+	 * Equal to the advance measure of the "0" 
+	 * (ZERO, U+0030) glyph found in the font used to render it.
+	 */
+	CH(value:Float);
+	
+	/**
+	 * Equal to 1% of the width of the initial containing block.
+	 */
+	VW(value:Float);
+	
+	/**
+	 * Equal to 1% of the height of the initial containing block.
+	 */
+	VH(value:Float);
+	
+	/**
+	 * Equal to the smaller of ‘vw’ or ‘vh’.
+	 */
+	VMIN(value:Float);
+	
+	/**
+	 * Equal to the larger of ‘vw’ or ‘vh’.
+	 */
+	VMAX(value:Float);
+}
+
+/**
+ * When computing a length into an aboslute
+ * value, holds all the reference data necessary
+ * to compute this length
+ */
+class RelativeLengthReferenceData {
+	
+	/**
+	 * reference for an em length. Represents
+	 * the font-size of the element or of the 
+	 * parent
+	 */
+	public var em:Float;
+	
+	/**
+	 * represents the font-size of the root (HTML)
+	 * element
+	 */
+	public var rem:Float;
+	
+	/**
+	 * the current width of the viewport, in pixels
+	 */
+	public var viewportWidth:Float;
+	
+	/**
+	 * same for viewport height
+	 */
+	public var viewportHeight:Float;
+	
+	/**
+	 * the measure of the "0" of the element's
+	 * font
+	 */
+	public var ch:Float;
+	
+	/**
+	 * the measure of the "x" of the element's
+	 * font
+	 */
+	public var ex:Float;
+	
+	public function new() 
+	{
+		em = 0;
+		rem = 0;
+		viewportHeight = 0;
+		viewportWidth = 0;
+		ch = 0;
+		ex = 0;
+	}
 }
 
 /**
