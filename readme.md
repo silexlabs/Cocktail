@@ -54,3 +54,5 @@ Licence
 -------------
 
 Cocktail is open-source, released under the MIT licence, see licence.txt.
+
+######Lead developer : Yannick Dominguez
