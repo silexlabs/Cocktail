@@ -175,7 +175,8 @@ class VisualEffectStylesComputer
 						default:	
 					}
 				}
-				
+			case TRANSFORM_FUNCTION(value):
+				transformFunctions.push(value);
 				
 			default:		
 		}
