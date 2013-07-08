@@ -102,8 +102,22 @@ class FontBuilder extends FontBuilderBase
 		textField.text = text;
 		textField.selectable = false;
 		textField.autoSize = TextFieldAutoSize.LEFT;
+		
+		
+		#if nme
+		//when building with nme, font might have been embedded with 
+		//the project, so use embedded font if present
+		var embeddedFont:flash.text.Font = nme.Assets.getFont(fontFamily);
+		if (embeddedFont != null)
+		{
+			fontFamily = embeddedFont.fontName;
+			//must explicitely activate embedded fonts
+			textField.embedFonts = true;
+		}
+		#end
+		
 		textField.setTextFormat(getTextFormat(style, fontFamily));
-
+		
 		return textField;
 	}	
 	
