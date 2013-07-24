@@ -23,7 +23,7 @@ import cocktail.port.Bindings;
 import haxe.Timer;
 
 #if macro
-#elseif (flash || nme)
+#elseif (flash || openfl)
 import flash.events.IOErrorEvent;
 import flash.display.DisplayObjectContainer;
 import flash.display.DisplayObject;
@@ -48,7 +48,7 @@ import flash.display.ActionScriptVersion;
 class SWFPlugin extends Plugin
 {
 #if macro
-#elseif (flash || nme)
+#elseif (flash || openfl)
 	
 	//constant of the flash scale modes
 	
@@ -190,7 +190,7 @@ class SWFPlugin extends Plugin
 		//loading bytes is asynchronous
 		_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
 		
-		#if nme
+		#if openfl
 		//nme don't need loader context
 		_loader.loadBytes(loadedSWF.response);
 		#else
@@ -352,7 +352,7 @@ class SWFPlugin extends Plugin
 	override public function dispose():Void
 	{
 		//not supprted by nme
-		#if !nme
+		#if !openfl
 		_loader.unloadAndStop();
 		#end
 		
@@ -450,7 +450,7 @@ class SWFPlugin extends Plugin
 	private function onLoaderReady(loader:Loader):Void
 	{
 		//check if actionscript 1/2 or 3
-		#if nme
+		#if openfl
 		//not supported in nme
 		_isAVM1swf = false;
 		#else

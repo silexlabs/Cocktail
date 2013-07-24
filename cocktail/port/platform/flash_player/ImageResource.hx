@@ -61,8 +61,8 @@ class ImageResource extends ResourceBase
 	{
 		//if built with nme, the asset might have been embedded
 		//at compile-time
-		#if nme
-		var asset:BitmapData = nme.Assets.getBitmapData(url);
+		#if openfl
+		var asset:BitmapData = openfl.Assets.getBitmapData(url);
 		
 		//here the asset was embedded, no need
 		//to load
@@ -157,7 +157,7 @@ class ImageResource extends ResourceBase
 		intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
 		intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
 		//nme don't support contentLoaderInfo
-		#elseif nme
+		#elseif openfl
 		intrinsicHeight = Math.round(loader.height);
 		intrinsicWidth = Math.round(loader.width);
 		#end

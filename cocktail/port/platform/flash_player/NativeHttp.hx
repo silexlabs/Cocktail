@@ -75,8 +75,8 @@ class NativeHttp extends NativeHttpBase
 		//if built with nme, the text might have been
 		//embedded at compile-time
 		//TODO : also support bytes
-		#if nme
-		var asset:String = nme.Assets.getText(url);
+		#if openfl
+		var asset:String = openfl.Assets.getText(url);
 		
 		//if the asset was embbedded, store it
 		if (asset != null)
