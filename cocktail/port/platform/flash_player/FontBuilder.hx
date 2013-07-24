@@ -104,10 +104,10 @@ class FontBuilder extends FontBuilderBase
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		
 		
-		#if nme
+		#if openfl
 		//when building with nme, font might have been embedded with 
 		//the project, so use embedded font if present
-		var embeddedFont:flash.text.Font = nme.Assets.getFont(fontFamily);
+		var embeddedFont:flash.text.Font = openfl.Assets.getFont(fontFamily);
 		if (embeddedFont != null)
 		{
 			fontFamily = embeddedFont.fontName;

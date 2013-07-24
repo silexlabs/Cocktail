@@ -50,8 +50,8 @@ class KeyboardListener extends KeyboardListenerBase
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
-		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
+		Lib.current.stage.removeEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		Lib.current.stage.removeEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
 	}
 	
 	/**

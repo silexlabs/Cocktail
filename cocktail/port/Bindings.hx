@@ -19,7 +19,7 @@ typedef NativeInput = cocktail.port.base.NativeInputBase;
 typedef NativeRadio = cocktail.port.base.NativeInputBase;
 
 //bindings common to flash/air and nme
-#if ((flash || nme) && !macro)
+#if ((flash || openfl) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 typedef KeyboardListener =  cocktail.port.platform.flash_player.KeyboardListener;
@@ -45,7 +45,7 @@ typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 		typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
 		
 	//bindings for nme when not building for flash or air	
-	#elseif nme
+	#elseif openfl
 		typedef NativeVideo =  cocktail.port.base.NativeMedia;
 	#end
 	
@@ -53,7 +53,7 @@ typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
 //default bindings for all the other platform to set a default 
 //allowig build
-#if (!flash && !nme)
+#if (!flash && !openfl)
 typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.port.base.ResourceBase;
