@@ -179,8 +179,8 @@ class NativeAudio extends NativeMedia
 	{
 		//if built with nme the soune might
 		//have been embedded at compile time
-		#if nme
-		var asset:Sound = nme.Assets.getSound(src);
+		#if openfl
+		var asset:Sound = openfl.Assets.getSound(src);
 		
 		//here the sound file was embedded, use it
 		if (asset != null)

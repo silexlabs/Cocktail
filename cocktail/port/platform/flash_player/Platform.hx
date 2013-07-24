@@ -337,7 +337,7 @@ class Platform extends PlatformBase
 	{
 		//hack for nme, completely transparent Sprite don't
 		//receive mouse events
-		#if nme
+		#if openfl
 		graphics.beginFill(0x000000, 0.01);
 		#else
 		graphics.beginFill(0x000000, 0.0);

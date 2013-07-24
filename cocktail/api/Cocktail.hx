@@ -35,7 +35,7 @@ class Cocktail
 		//load the html document
 		cocktailView.loadURL(url);
 		
-		#if (flash || nme)
+		#if (flash || openfl)
 		//for flash and NME, attach to stage
 		flash.Lib.current.addChild(cocktailView.root);
 		#end
