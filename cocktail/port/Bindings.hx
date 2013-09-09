@@ -53,7 +53,7 @@ typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
 //default bindings for all the other platform to set a default 
 //allowig build
-#if (!flash && !openfl)
+#if ((!flash && !openfl) || macro)
 typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.port.base.ResourceBase;
