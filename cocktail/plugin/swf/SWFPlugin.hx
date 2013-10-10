@@ -41,7 +41,7 @@ import flash.display.ActionScriptVersion;
 /**
  * A plugin used to display flash swf
  * files. Works for the flash platform,
- * air and nme
+ * air and OpenFL
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -191,11 +191,11 @@ class SWFPlugin extends Plugin
 		_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
 		
 		#if openfl
-		//nme don't need loader context
+		//openfl don't need loader context
 		_loader.loadBytes(loadedSWF.response);
 		#else
 		
-		//for target other than nme, needs loader context to allow code import
+		//for target other than openfl, needs loader context to allow code import
 		var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		loaderContext.allowCodeImport = true;
 		
@@ -351,7 +351,7 @@ class SWFPlugin extends Plugin
 	 */
 	override public function dispose():Void
 	{
-		//not supprted by nme
+		//not supprted by openfl
 		#if !openfl
 		_loader.unloadAndStop();
 		#end
@@ -451,7 +451,7 @@ class SWFPlugin extends Plugin
 	{
 		//check if actionscript 1/2 or 3
 		#if openfl
-		//not supported in nme
+		//not supported in openfl
 		_isAVM1swf = false;
 		#else
 		_isAVM1swf = loader.contentLoaderInfo.actionScriptVersion == ActionScriptVersion.ACTIONSCRIPT2;

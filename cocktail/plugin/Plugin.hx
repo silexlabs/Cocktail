@@ -20,7 +20,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * note : this is a first draft of a plugin system, for now
  * only supports one hard-coded SWF plugin, to display
- * swf movie in flash and NME. Eventually it will be possible
+ * swf movie in flash and OpenFL. Eventually it will be possible
  * to embed custom plugin with cocktail instantiated via the
  * mime type parameter of the object tag.
  * This class is very likely to change and shouldn't be used

@@ -70,7 +70,7 @@ class NativeTextInput extends NativeTextInputBase
 		_mask = new Sprite();
 		_textField.mask = _mask;
 		
-		//not supported in nme
+		//not supported in openfl
 		#if flash9
 		_textField.tabEnabled = false;
 		#end
@@ -130,7 +130,7 @@ class NativeTextInput extends NativeTextInputBase
 	 */
 	override public function blur():Void
 	{	
-		//TODO 2 : seems to do nothing in NME
+		//TODO 2 : seems to do nothing in openfl
 		flash.Lib.current.stage.focus = null;
 	}
 	

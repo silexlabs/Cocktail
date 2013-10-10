@@ -85,7 +85,7 @@ class FontBuilder extends FontBuilderBase
 		textField.setTextFormat(textFormat);
 		#if flash
 		fontMetricsVO.spaceWidth = textField.textWidth;
-		//for nme textWidth don't seem to work when only space
+		//for openfl textWidth don't seem to work when only space
 		#else
 		fontMetricsVO.spaceWidth = textField.width;
 		#end
@@ -105,7 +105,7 @@ class FontBuilder extends FontBuilderBase
 		
 		
 		#if openfl
-		//when building with nme, font might have been embedded with 
+		//when building with openfl, font might have been embedded with 
 		//the project, so use embedded font if present
 		var embeddedFont:flash.text.Font = openfl.Assets.getFont(fontFamily);
 		if (embeddedFont != null)

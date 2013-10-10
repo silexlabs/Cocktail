@@ -18,7 +18,7 @@ typedef NativeCheckbox = cocktail.port.base.NativeInputBase;
 typedef NativeInput = cocktail.port.base.NativeInputBase;
 typedef NativeRadio = cocktail.port.base.NativeInputBase;
 
-//bindings common to flash/air and nme
+//bindings common to flash/air and openfl
 #if ((flash || openfl) && !macro)
 typedef GraphicsSurface =  cocktail.port.platform.flash_player.GraphicsSurface;
 typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
@@ -40,11 +40,11 @@ typedef NativeTextArea =  cocktail.port.platform.flash_player.NativeTextArea;
 typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswordInput;
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
-	//bindings for flash (or air), compiled either using nme or without
+	//bindings for flash (or air), compiled either using openfl or without
 	#if flash
 		typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
 		
-	//bindings for nme when not building for flash or air	
+	//bindings for openfl when not building for flash or air	
 	#elseif openfl
 		typedef NativeVideo =  cocktail.port.base.NativeMedia;
 	#end

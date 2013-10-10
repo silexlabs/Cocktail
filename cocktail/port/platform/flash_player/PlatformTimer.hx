@@ -11,7 +11,7 @@ import cocktail.port.base.PlatformTimerBase;
 import flash.events.Event;
 
 /**
- * Timer implementation for flash and nme.
+ * Timer implementation for flash and openfl.
  * Actually use the flash frame rate
  * 
  * @author Yannick DOMINGUEZ

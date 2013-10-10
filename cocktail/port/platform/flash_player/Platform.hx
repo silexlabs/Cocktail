@@ -232,7 +232,7 @@ class Platform extends PlatformBase
 	{
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
 		
-		//not supported by nme
+		//not supported by openfl
 		#if flash
 		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 		#end
@@ -250,7 +250,7 @@ class Platform extends PlatformBase
 	{
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
 		
-		//not supported by nme
+		//not supported by openfl
 		#if flash
 		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 		#end
@@ -335,7 +335,7 @@ class Platform extends PlatformBase
 	 */
 	private function setupTransparentFill(graphics:Graphics):Void
 	{
-		//hack for nme, completely transparent Sprite don't
+		//hack for openfl, completely transparent Sprite don't
 		//receive mouse events
 		#if openfl
 		graphics.beginFill(0x000000, 0.01);

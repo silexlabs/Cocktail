@@ -177,7 +177,7 @@ class NativeAudio extends NativeMedia
 	 */
 	private function initSound(src:String):Void
 	{
-		//if built with nme the soune might
+		//if built with openfl the soune might
 		//have been embedded at compile time
 		#if openfl
 		var asset:Sound = openfl.Assets.getSound(src);

@@ -72,7 +72,7 @@ class NativeHttp extends NativeHttpBase
 	{
 		super.doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		
-		//if built with nme, the text might have been
+		//if built with openfl, the text might have been
 		//embedded at compile-time
 		//TODO : also support bytes
 		#if openfl

@@ -18,7 +18,7 @@ package cocktail.api;
  * This class will create a cocktail application taking the full 
  * available space of the window or browser tab containing it.
  * 
- * It is compatible with flash/air and NME. 
+ * It is compatible with flash/air and OpenFL. 
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -36,7 +36,7 @@ class Cocktail
 		cocktailView.loadURL(url);
 		
 		#if (flash || openfl)
-		//for flash and NME, attach to stage
+		//for flash and openfl, attach to stage
 		flash.Lib.current.addChild(cocktailView.root);
 		#end
 		

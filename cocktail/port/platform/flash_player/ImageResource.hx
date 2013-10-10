@@ -59,7 +59,7 @@ class ImageResource extends ResourceBase
 	 */
 	override private function load(url:String):Void
 	{
-		//if built with nme, the asset might have been embedded
+		//if built with openfl, the asset might have been embedded
 		//at compile-time
 		#if openfl
 		var asset:BitmapData = openfl.Assets.getBitmapData(url);
@@ -156,7 +156,7 @@ class ImageResource extends ResourceBase
 		#if flash
 		intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
 		intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
-		//nme don't support contentLoaderInfo
+		//openfl don't support contentLoaderInfo
 		#elseif openfl
 		intrinsicHeight = Math.round(loader.height);
 		intrinsicWidth = Math.round(loader.width);
