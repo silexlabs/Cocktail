@@ -50,8 +50,8 @@ class MouseListener extends MouseListenerBase
 	 */
 	override public function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
-		//not supported by nme
-		#if flash9
+		//not supported by openfl
+		#if flash
 		
 		switch(cursor)
 		{
@@ -96,8 +96,8 @@ class MouseListener extends MouseListenerBase
 	 */
 	private function setBitmapCursor(nativeBitmapData:NativeBitmapData, hotSpot:PointVO):Void
 	{
-		//don't work for nme
-		#if flash9
+		//don't work for openfl
+		#if (flash && !openfl)
 		
 		//init the hotSpot if null
 		//to the top left of the cursor
