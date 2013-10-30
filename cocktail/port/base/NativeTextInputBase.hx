@@ -27,7 +27,7 @@ class NativeTextInputBase extends NativeInputBase
 	 */
 	private static inline var INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
 	
-	private static inline var INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
+	private static inline var INPUT_TEXT_INTRINSIC_HEIGHT:Int = 30;
 	
 	//getter/seter for style attributes
 	
