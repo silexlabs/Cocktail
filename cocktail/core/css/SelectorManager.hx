@@ -483,6 +483,9 @@ class SelectorManager
 				
 			case PseudoClassSelectorValue.UI_ELEMENT_STATES(value):
 				return matchUIElementStatesSelector(node, value, matchedPseudoClasses);
+			
+			case PseudoClassSelectorValue.NONE :
+				return false;
 		}
 	}
 	
