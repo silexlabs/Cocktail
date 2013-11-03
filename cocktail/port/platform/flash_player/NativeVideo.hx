@@ -278,7 +278,7 @@ class NativeVideo extends NativeMedia
 		
 		_isAttachedToStage = true;
 		
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer.platformLayer);
 		
 		//video might be added below cocktail's bitmap when compositing is disabled
 		if (Config.getInstance().enableCompositing == false && Config.getInstance().videoBelowWhenNoCompositing == true)
