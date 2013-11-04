@@ -8,6 +8,8 @@
 */
 package cocktail.core.css;
 
+import cocktail.core.dom.DOMConstants;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSData;
@@ -819,11 +821,13 @@ class SelectorManager
 		}
 	}
 
-	private function castToHTMLElement( node ) : Null<HTMLElement> {
-		if( Std.is( node, HTMLElement ) ){
-			return cast( node );
-		}else{
-			return null;
+	inline private function castToHTMLElement( node : Node ) : Null<HTMLElement> {
+		switch( node.nodeType ){
+			case DOMConstants.ELEMENT_NODE :
+				return cast( node , HTMLElement );
+			default : 
+				return null;
 		}
+		
 	}
 }
