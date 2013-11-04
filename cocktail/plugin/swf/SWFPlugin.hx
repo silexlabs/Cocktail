@@ -286,7 +286,7 @@ class SWFPlugin extends Plugin
 		if (_swfAddedToStage == false)
 		{
 			//get a reference to the native layer, which is a flash Sprite
-			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
+			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer.platformLayer);
 			
 			//when compositing is not enabled, swf might be added below cocktail's
 			//main bitmap

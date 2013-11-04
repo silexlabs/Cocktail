@@ -1161,6 +1161,14 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_muted(value:Bool):Bool
 	{
+		muted = value;
+
+        //end here if native media not initialised yet
+        if (nativeMedia == null)
+        {
+            return value;
+        }
+
 		//update the volume of the native media
 		//if sound is no longer muted
 		if (value == false)
@@ -1174,7 +1182,6 @@ class HTMLMediaElement extends EmbeddedElement
 			nativeMedia.volume = 0;
 		}
 		
-		muted = value;
 		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
@@ -1182,12 +1189,19 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_volume(value:Float):Float
 	{
+		volume = value;
+
+        //end here if native media not initialised yet
+        if (nativeMedia == null)
+        {
+            return value;
+        }
+
 		if (muted == false)
 		{
 			nativeMedia.volume = value;
 		}
 		
-		volume = value;
 		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
