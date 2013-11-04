@@ -457,7 +457,7 @@ enum AttributeSelectorValue {
  * List the pseuso class selector types
  */
 enum PseudoClassSelectorValue {
-	NONE;
+	UNKNOWN;
 	STRUCTURAL(value:StructuralPseudoClassSelectorValue);
 	LINK(value:LinkPseudoClassValue);
 	TARGET;

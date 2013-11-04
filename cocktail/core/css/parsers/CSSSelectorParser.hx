@@ -362,7 +362,7 @@ class CSSSelectorParser
 		
 		var pseudoClass:String = selector.substr(start, position - start);
 		
-		var typedPseudoClass:PseudoClassSelectorValue = PseudoClassSelectorValue.NONE;
+		var typedPseudoClass:PseudoClassSelectorValue = PseudoClassSelectorValue.UNKNOWN;
 		
 		switch(pseudoClass)
 		{

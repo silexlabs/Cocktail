@@ -196,7 +196,7 @@ class SelectorSerializer
 			case NOT(value):
 				return ":not("+serializeSimpleSelectorSequence(value)+")";
 			
-			case NONE:
+			case UNKNOWN:
 				return "";
 		}
 	}
