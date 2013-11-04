@@ -75,7 +75,7 @@ class SelectorManager
 					//apply to it instead of the current node
 					if (value == CHILD)
 					{
-						node = cast(node.parentNode);
+						node = castToHTMLElement(node.parentNode);
 					}
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
@@ -203,7 +203,7 @@ class SelectorManager
 	 */
 	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		var parentNode:HTMLElement = cast(node.parentNode);
+		var parentNode:HTMLElement = castToHTMLElement(node.parentNode);
 		
 		//check that at least one ancestor matches
 		//the parent selector
@@ -214,7 +214,7 @@ class SelectorManager
 				return true;
 			}
 			
-			parentNode = cast(parentNode.parentNode);
+			parentNode = castToHTMLElement(parentNode.parentNode);
 		}
 		
 		//here no parent matched, so the
@@ -816,6 +816,14 @@ class SelectorManager
 				
 			case ID(value):
 				selectorSpecificity.idSelectorsNumber++;
+		}
+	}
+
+	private function castToHTMLElement( node ) : Null<HTMLElement> {
+		if( Std.is( node, HTMLElement ) ){
+			return cast( node );
+		}else{
+			return null;
 		}
 	}
 }
