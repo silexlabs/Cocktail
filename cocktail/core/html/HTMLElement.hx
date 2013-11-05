@@ -2159,7 +2159,7 @@ class HTMLElement extends Element
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			removeChild(childNodes[i]);	
+			removeChild(childNodes[0]);	
 		}
 
 		//wrap the HTML String in a div element, else
@@ -2184,7 +2184,7 @@ class HTMLElement extends Element
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			appendChild(node.childNodes[i]);
+			appendChild(node.childNodes[0]);
 		}
 		
 		return value;
