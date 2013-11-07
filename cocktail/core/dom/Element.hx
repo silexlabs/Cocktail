@@ -360,28 +360,31 @@ class Element extends Node
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
-			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
-				switch (childNode.nodeType)
-				{
-					case DOMConstants.ELEMENT_NODE:
-						var classList:Array<String> = childNode.classList;
-						if (classList != null)
-						{
-							var foundFlag:Bool = false;
-							var classListLength:Int = classList.length;
-							for (j in 0...classListLength)
-							{
-								if (classList[j] == className && foundFlag == false)
-								{
-									elements.push(childNode);
-									foundFlag = true;
-								}
-							}
-						}
-				}
-				
-				doGetElementsByClassName(childNode, className, elements);
+            {
+                if (node.childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+                {
+                    var childNode:HTMLElement = cast(node.childNodes[i]);
+                    switch (childNode.nodeType)
+                    {
+                        case DOMConstants.ELEMENT_NODE:
+                            var classList:Array<String> = childNode.classList;
+                            if (classList != null)
+                            {
+                                var foundFlag:Bool = false;
+                                var classListLength:Int = classList.length;
+                                for (j in 0...classListLength)
+                                {
+                                    if (classList[j] == className && foundFlag == false)
+                                    {
+                                        elements.push(childNode);
+                                        foundFlag = true;
+                                    }
+                                }
+                            }
+                    }
+                    
+                    doGetElementsByClassName(childNode, className, elements);
+                }
 			}
 		}
 	}
