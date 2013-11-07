@@ -2,10 +2,20 @@
 <html>
 	<head>
 		<title>Cocktail Sample</title>
+		<link type="text/css" href="sober/style.css" rel="stylesheet"></link>
+		<link type="text/css" href="style.css" rel="stylesheet"></link>
 		<script src="Main.js"></script>
 	</head>
 	<body>
-        <video autoplay="true">
+        <h1>Woot player</h1>
+        <div>
+            <input type="button" value="play"></input>
+            <input type="button" value="pause"></input>
+        </div>
+        <div class="track">
+            <div class="time"></div>
+        </div>
+        <video>
             <source src="assets/trailer.mp4" type="video/mp4"></source>
             <source src="assets/trailer.ogv" type="video/ogg"></source>
         </video>
