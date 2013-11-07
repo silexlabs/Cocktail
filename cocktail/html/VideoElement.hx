@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef VideoElement = cocktail.core.html.HTMLElement;
+typedef VideoElement = cocktail.core.html.HTMLVideoElement;
