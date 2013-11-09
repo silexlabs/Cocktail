@@ -9,6 +9,8 @@
 */
 
 import js.Browser;
+import js.html.InputElement;
+import js.html.HtmlElement;
 
 /**
  * Showcases how to display a video in flash
@@ -28,21 +30,30 @@ class Main
     public function new()
     {
         var video:js.html.VideoElement = cast Browser.document.getElementsByTagName("video")[0];
-        var playBtn = Browser.document.querySelector("input[type=button][value=play]");
-        var pauseBtn = Browser.document.querySelector("input[type=button][value=pause]");
-        var time = Browser.document.getElementsByClassName("time")[0];
+        var playBtn:InputElement = cast Browser.document.querySelector("input[type=button][value=play]");
+        var time:HtmlElement = cast Browser.document.getElementsByClassName("time")[0];
+        var track:HtmlElement = cast Browser.document.getElementsByClassName("track")[0];
 
+        //play pause
         playBtn.onclick = function(e) {
-            video.play();
+            if (playBtn.value == "play") {
+                playBtn.value = "pause";
+                video.play();
+            }
+            else {
+                playBtn.value = "play";
+                video.pause();
+            }
         }
 
-        pauseBtn.onclick = function(e) {
-            video.pause();
-        }
+        //update play time needle
+        video.addEventListener("timeupdate", function(e) {
+            time.style.width = Std.string((video.currentTime / video.duration) * 100) + "%";
+        });
 
-        video.ontimeupdate = function(e) {
-            time.style.width = Std.string((video.currentTime / video.duration) * 100) + "px";
+        //jump to time 
+        track.onclick = function(e) {
+            video.currentTime = ((e.clientX - track.offsetLeft) / track.clientWidth) * video.duration;
         }
-
     }
 }

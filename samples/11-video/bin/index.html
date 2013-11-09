@@ -7,17 +7,19 @@
 		<script src="Main.js"></script>
 	</head>
 	<body>
-        <h1>Woot player</h1>
-        <div>
-            <input type="button" value="play"></input>
-            <input type="button" value="pause"></input>
+        <div class="player">
+            <h1>Woot player</h1>
+            <video width="500" height="280">
+                <source src="assets/trailer.mp4" type="video/mp4"></source>
+                <source src="assets/trailer.ogv" type="video/ogg"></source>
+            </video>
+            <div class="track">
+                <div class="time"></div>
+            </div>
+            <div class="buttons">
+                <input type="button" value="play"></input>
+                <input type="button" value="mute"></input>
+            </div>
         </div>
-        <div class="track">
-            <div class="time"></div>
-        </div>
-        <video>
-            <source src="assets/trailer.mp4" type="video/mp4"></source>
-            <source src="assets/trailer.ogv" type="video/ogg"></source>
-        </video>
 	</body>
 </html>
