@@ -1,0 +1,4 @@
+-swf bin/cocktail.swc
+-swf-version 11
+--macro include('cocktail')
+-cp ../../
