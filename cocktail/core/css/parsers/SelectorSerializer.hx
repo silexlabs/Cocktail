@@ -183,6 +183,9 @@ class SelectorSerializer
 				
 			case TARGET:
 				return ":target";
+
+            case FULLSCREEN:
+                return ":fullscreen";
 				
 			case LANG(value):
 				return serializeLangPseudoClassSelector(value);

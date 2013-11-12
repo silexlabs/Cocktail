@@ -411,7 +411,7 @@ class HTMLDocument extends Document
 		cascadeManager = new CascadeManager();
 		
 		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
-		false, false, false, false, false, false, null, null, null);
+		false, false, false, false, false, false, false, null, null, null);
 		
 		_focusManager = new FocusManager();
 		
@@ -783,6 +783,7 @@ class HTMLDocument extends Document
 		var enabled:Bool = false;
 		var disabled:Bool = false;
 		var checked:Bool = false;
+        var fullscreen:Bool = false;
 		
 		if (_hoveredElementRenderer != null)
 		{
@@ -837,6 +838,12 @@ class HTMLDocument extends Document
 				}
 			}
 		}
+
+        //fullscreen state apply to all element while document is displayed fullscreen
+        if (fullscreenElement != null)
+        {
+            fullscreen = true;
+        }
 		
 		//store wether the store has an ID to know if it is
 		//useful to match it against classes selector
@@ -868,6 +875,7 @@ class HTMLDocument extends Document
 		_matchedPseudoClasses.enabled = enabled;
 		_matchedPseudoClasses.disabled = disabled;
 		_matchedPseudoClasses.checked = checked;
+		_matchedPseudoClasses.fullscreen = fullscreen;
 		
 		return _matchedPseudoClasses;
 	}
@@ -1370,6 +1378,9 @@ class HTMLDocument extends Document
 		//fire a fullscreen event
 		var fullscreenEvent:Event = new Event();
 		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
+
+        //refresh cascade as the document's stylesheet might have fullscreen pseudo class
+        cascadeDocument();
 	}
 	
 	/**
@@ -1423,6 +1434,9 @@ class HTMLDocument extends Document
 		//fire fullscreen event
 		var fullscreenEvent:Event = new Event();
 		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
+
+        //refresh cascade as the document's stylesheet might have fullscreen pseudo class
+        cascadeDocument();
 		
 		return value;
 	}
@@ -1431,6 +1445,19 @@ class HTMLDocument extends Document
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+    /**
+     * force a cascade of the whole document if a document element
+     * is currently attached 
+     */
+    private function cascadeDocument()
+    {
+        if (documentElement != null)
+        {
+            documentElement.invalidateStyleDeclaration(true);
+            documentElement.cascade(cascadeManager, false);
+        }
+    }
+
 	/**
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target

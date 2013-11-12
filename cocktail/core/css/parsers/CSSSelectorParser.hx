@@ -407,6 +407,9 @@ class CSSSelectorParser
 				
 			case 'target':
 				typedPseudoClass = PseudoClassSelectorValue.TARGET;
+
+			case 'fullscreen':
+				typedPseudoClass = PseudoClassSelectorValue.FULLSCREEN;
 				
 			case 'nth-child':
 				//TODO
