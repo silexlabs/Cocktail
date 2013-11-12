@@ -178,7 +178,7 @@ class Config extends EventTarget
 		
 		touchMovePreventClickDistance = 10;
 
-		useStageVideoIfAvailable = true;
+		useStageVideoIfAvailable = false;
 		defaultFont = "serif";
 		defaultFontColor = "#000000";
 		
