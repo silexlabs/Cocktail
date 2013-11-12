@@ -15,12 +15,23 @@ h1 {
 
 h1:hover {
     opacity:1;
-
 }
 
 .player {
     width: 500px;
     position:relative;
+}
+
+.player:fullscreen, video:fullscreen {
+    width:100%;
+    height:100%;
+}
+
+.controls:fullscreen {
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
 }
 
 .track, .buttons {
