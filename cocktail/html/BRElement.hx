@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef BRElement = cocktail.core.html.HtmlBRElement;
+typedef BRElement = cocktail.core.html.HTMLBRElement;

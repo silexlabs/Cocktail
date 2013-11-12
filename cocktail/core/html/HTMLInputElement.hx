@@ -747,9 +747,11 @@ class HTMLInputElement extends FormAssociatedElement
 		{
 			case ValueModeValue.VALUE:
 				_value = value;
+                updateInputRendererState();
 				
 			case ValueModeValue.DEFAULT, ValueModeValue.DEFAULT_ON:
 				setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
+                updateInputRendererState();
 				
 			case ValueModeValue.FILENAME:	
 				//TODO : On setting, if the new value is the empty string,

@@ -2,12 +2,24 @@
 <html>
 	<head>
 		<title>Cocktail Sample</title>
+		<link type="text/css" href="sober/style.css" rel="stylesheet"></link>
+		<link type="text/css" href="style.css" rel="stylesheet"></link>
 		<script src="Main.js"></script>
 	</head>
 	<body>
-        <video autoplay="true">
-            <source src="assets/trailer.mp4" type="video/mp4"></source>
-            <source src="assets/trailer.ogv" type="video/ogg"></source>
-        </video>
+        <div class="player">
+            <h1>Woot player</h1>
+            <video width="500" height="280">
+                <source src="assets/trailer.mp4" type="video/mp4"></source>
+                <source src="assets/trailer.ogv" type="video/ogg"></source>
+            </video>
+            <div class="track">
+                <div class="time"></div>
+            </div>
+            <div class="buttons">
+                <input type="button" value="play"></input>
+                <input type="button" value="mute"></input>
+            </div>
+        </div>
 	</body>
 </html>

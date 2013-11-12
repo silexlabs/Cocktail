@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
+import cocktail.core.dom.DOMConstants;
 
 /**
  * A base for elements which are associated with a
@@ -82,6 +83,12 @@ class FormAssociatedElement extends EmbeddedElement
 	{
 		var firstFormAncestor:HTMLFormElement = getFirstFormAncestor();
 		
+        //the input is not a descendant of any form 
+        if (firstFormAncestor == null) 
+        {
+            return;
+        }
+
 		//do nothing, if already associated or if both
 		//are null
 		if (firstFormAncestor == form)
@@ -111,6 +118,12 @@ class FormAssociatedElement extends EmbeddedElement
 	 */
 	private function getFirstFormAncestor():HTMLFormElement
 	{
+        /* if parent is not an element, then it is the document itself */
+        if (parentNode.nodeType != DOMConstants.ELEMENT_NODE)
+        {
+            return null;
+        }
+
 		var parent:HTMLElement = cast(parentNode);
 		while (parent != null)
 		{
@@ -118,6 +131,23 @@ class FormAssociatedElement extends EmbeddedElement
 			{
 				return cast(parent);
 			}
+
+            /* check if  parent is document */
+            if (parent.nodeType != DOMConstants.ELEMENT_NODE)
+            {
+                return null;
+            }
+
+            if (parent.parentNode == null)
+            {
+                return null;
+            }
+
+            /* check if grand-parent is document */
+            if (parent.parentNode.nodeType != DOMConstants.ELEMENT_NODE)
+            {
+                return null;
+            }
 			parent = cast(parent.parentNode);
 		}
 		

@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef BodyElement = cocktail.core.html.HtmlBodyElement;
+typedef BodyElement = cocktail.core.html.HTMLBodyElement;

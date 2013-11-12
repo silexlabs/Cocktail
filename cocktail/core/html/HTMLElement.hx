@@ -429,6 +429,12 @@ class HTMLElement extends Element
 			var child:HTMLElement = cast(newChild);
 			child.appended();
 		}
+        //if the new child is a text node, then this html element element renderer
+        //will need to be updated to create text node renderers as well
+        else if (newChild.nodeType == DOMConstants.TEXT_NODE)
+        {
+            invalidateElementRenderer();
+        }
 		
 		//when a new child is added, refreh the style of this html element
 		//TODO 2 : don't seem necessary, but tried to remove it and add
@@ -452,6 +458,12 @@ class HTMLElement extends Element
 			var child:HTMLElement = cast(oldChild);
 			child.removed();
 		}
+        //if a text node is removed, then this html element's element renderer
+        //will need to be updated to also remove the text node renderer
+        else if (oldChild.nodeType == DOMConstants.TEXT_NODE)
+        {
+            invalidateElementRenderer();
+        }
 		
 		return oldChild;
 	}
@@ -982,27 +994,24 @@ class HTMLElement extends Element
 		{
 			attachToParentElementRenderer();
 			
-			//if recursive, now attach all the children
-			if (recursive == true)
-			{
-				if (nodeType == DOMConstants.ELEMENT_NODE)
-				{
-					var length:Int = childNodes.length;
-					for (i in 0...length)
-					{
-						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
-						{
-							var child:HTMLElement = cast(childNodes[i]);
-							child.attach(true);
-						}
-						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
-						{
-							attachTextNode(childNodes[i]);
-						}
-					}
-				}
-				
-			}
+            if (nodeType == DOMConstants.ELEMENT_NODE)
+            {
+                var length:Int = childNodes.length;
+                for (i in 0...length)
+                {
+                    //if the attachement is recursive, then this node must also starts
+                    //the attachement of its child html nodes
+                    if (recursive == true && childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+                    {
+                        var child:HTMLElement = cast(childNodes[i]);
+                        child.attach(true);
+                    }
+                    else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+                    {
+                        attachTextNode(childNodes[i]);
+                    }
+                }
+            }
 		}
 		
 		_needsElementRendererUpdate = false;
@@ -1023,26 +1032,24 @@ class HTMLElement extends Element
 		//to detach it
 		if (elementRenderer != null)
 		{			
-			//detach all children element renderer
-			if (recursive == true)
-			{
-				if (nodeType == DOMConstants.ELEMENT_NODE)
-				{
-					var length:Int = childNodes.length;
-					for (i in 0...length)
-					{
-						if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
-						{
-							var child:HTMLElement = cast(childNodes[i]);
-							child.detach(true);
-						}
-						else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
-						{
-							detachTextNode(childNodes[i]);
-						}
-					}
-				}
-			}
+            if (nodeType == DOMConstants.ELEMENT_NODE)
+            {
+                var length:Int = childNodes.length;
+                for (i in 0...length)
+                {
+                    //if detachement is recursive than this node must also detach all of
+                    //its child html nodes 
+                    if (recursive == true && childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
+                    {
+                        var child:HTMLElement = cast(childNodes[i]);
+                        child.detach(true);
+                    }
+                    else if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+                    {
+                        detachTextNode(childNodes[i]);
+                    }
+                }
+            }
 			
 			//then detach this ElementRenderer from the parent 
 			//ElementRenderer

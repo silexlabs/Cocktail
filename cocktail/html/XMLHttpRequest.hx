@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef XMLHttpRequest = cocktail.core.http.XMLHTTPREquest;
+typedef XMLHttpRequest = cocktail.core.http.XMLHTTPRequest;
