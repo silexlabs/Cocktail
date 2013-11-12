@@ -30,10 +30,24 @@ h1:hover {
 .track {
     width : 100%;
     background:grey;
+    position:relative;
+}
+
+.time, .buffer {
+    height : 100%;
+    width:0;
+    position:absolute;
+    top:0;
+    left:0;
 }
 
 .time {
-    height : 100%;
+    transition:width 0.2s;
     background:green;
-    width:0;
+    z-index:2;
+}
+
+.buffer {
+    background:rgba(0,0,0,0.5);
+    z-index:1;
 }
