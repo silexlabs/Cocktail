@@ -362,7 +362,7 @@ class CSSSelectorParser
 		
 		var pseudoClass:String = selector.substr(start, position - start);
 		
-		var typedPseudoClass:PseudoClassSelectorValue = null;
+		var typedPseudoClass:PseudoClassSelectorValue = PseudoClassSelectorValue.UNKNOWN;
 		
 		switch(pseudoClass)
 		{
@@ -472,6 +472,9 @@ class CSSSelectorParser
 				
 			case 'after':
 				typedPseudoElement = PseudoElementSelectorValue.AFTER;
+
+			default:
+				typedPseudoElement = PseudoElementSelectorValue.NONE;
 				
 		}
 		

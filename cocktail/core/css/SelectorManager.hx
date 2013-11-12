@@ -8,6 +8,8 @@
 */
 package cocktail.core.css;
 
+import cocktail.core.dom.DOMConstants;
+import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSData;
@@ -75,7 +77,7 @@ class SelectorManager
 					//apply to it instead of the current node
 					if (value == CHILD)
 					{
-						node = cast(node.parentNode);
+						node = castToHTMLElement(node.parentNode);
 					}
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
@@ -203,7 +205,7 @@ class SelectorManager
 	 */
 	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
-		var parentNode:HTMLElement = cast(node.parentNode);
+		var parentNode:HTMLElement = castToHTMLElement(node.parentNode);
 		
 		//check that at least one ancestor matches
 		//the parent selector
@@ -214,7 +216,7 @@ class SelectorManager
 				return true;
 			}
 			
-			parentNode = cast(parentNode.parentNode);
+			parentNode = castToHTMLElement(parentNode.parentNode);
 		}
 		
 		//here no parent matched, so the
@@ -483,6 +485,9 @@ class SelectorManager
 				
 			case PseudoClassSelectorValue.UI_ELEMENT_STATES(value):
 				return matchUIElementStatesSelector(node, value, matchedPseudoClasses);
+			
+			case PseudoClassSelectorValue.UNKNOWN :
+				return false;
 		}
 	}
 	
@@ -814,5 +819,15 @@ class SelectorManager
 			case ID(value):
 				selectorSpecificity.idSelectorsNumber++;
 		}
+	}
+
+	inline private function castToHTMLElement( node : Node ) : Null<HTMLElement> {
+		switch( node.nodeType ){
+			case DOMConstants.ELEMENT_NODE :
+				return cast( node , HTMLElement );
+			default : 
+				return null;
+		}
+		
 	}
 }

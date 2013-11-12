@@ -167,7 +167,7 @@ class HTMLLinkElement extends HTMLElement
 	{
 		//check if if the linke element links to an external CSS
 		//stylesheet and load it if it does
-		if (type == CSSConstants.CSS_MIME_TYPE && href != null && rel == CSSConstants.STYLESHEET_REL)
+		if (href != null && rel == CSSConstants.STYLESHEET_REL)
 		{
 			_hasLoadedResource = true;
 			
