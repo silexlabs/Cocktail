@@ -485,6 +485,9 @@ class SelectorManager
 				
 			case PseudoClassSelectorValue.UI_ELEMENT_STATES(value):
 				return matchUIElementStatesSelector(node, value, matchedPseudoClasses);
+
+            case PseudoClassSelectorValue.FULLSCREEN:
+                return matchedPseudoClasses.fullscreen;
 			
 			case PseudoClassSelectorValue.UNKNOWN :
 				return false;

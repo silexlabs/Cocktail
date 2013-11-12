@@ -73,6 +73,7 @@ class MatchedPseudoClassesVO {
 	public var enabled:Bool;
 	public var disabled:Bool;
 	public var checked:Bool;
+	public var fullscreen:Bool;
 	
 	public var hasId:Bool;
 	public var nodeId:String;
@@ -81,7 +82,7 @@ class MatchedPseudoClassesVO {
 	public var nodeType:String;
 	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
-	disabled:Bool, checked:Bool,
+	disabled:Bool, checked:Bool, fullscreen:Bool,
 	hasId:Bool, hasClasses:Bool, nodeId:String, nodeClassList:Array<String>, nodeType:String) 
 	{
 		this.hover = hover;
@@ -91,6 +92,7 @@ class MatchedPseudoClassesVO {
 		this.enabled = enabled;
 		this.disabled = disabled;
 		this.checked = checked;
+        this.fullscreen = fullscreen;
 		this.hasId = hasId;
 		this.hasClasses = false;
 		this.nodeId = nodeId;
@@ -461,6 +463,7 @@ enum PseudoClassSelectorValue {
 	STRUCTURAL(value:StructuralPseudoClassSelectorValue);
 	LINK(value:LinkPseudoClassValue);
 	TARGET;
+    FULLSCREEN;
 	LANG(value:Array<String>);
 	USER_ACTION(value:UserActionPseudoClassValue);
 	UI_ELEMENT_STATES(value:UIElementStatesValue);
