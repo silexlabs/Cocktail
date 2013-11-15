@@ -1001,6 +1001,7 @@ class CSSStyleParser
 			case 'url':
 				switch(value)
 				{
+
 					case IDENTIFIER(value):
 						return CSSPropertyValue.URL(getURLRelativeToDocument(value, baseURL));
 					case STRING(value):	
@@ -2205,7 +2206,7 @@ class CSSStyleParser
 		}
 		
 		var typedBaseURL:URL = cocktail.core.url.URL.fromString(baseURL);
-		
+
 		//append url to base url
 		return cocktail.core.url.URL.toString(cocktail.core.url.URL.appendURL(typedBaseURL, url));
 	}
