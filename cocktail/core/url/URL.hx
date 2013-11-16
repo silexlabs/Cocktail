@@ -211,7 +211,7 @@ class URL
 			{
 				resultURL.directory += directory;
 			}
-			resultURL.directory += appendedURL.directory.substr(1);
+			
 		}
 		
 		if (appendedURL.file != null)
