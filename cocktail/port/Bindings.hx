@@ -41,9 +41,8 @@ typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswor
 typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 
 	//bindings for flash (or air), compiled either using openfl or without
-	#if flash
+	#if (flash || nme)
 		typedef NativeVideo =  cocktail.port.platform.flash_player.NativeVideo;
-		
 	//bindings for openfl when not building for flash or air	
 	#elseif openfl
 		typedef NativeVideo =  cocktail.port.base.NativeMedia;
