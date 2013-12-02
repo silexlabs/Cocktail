@@ -76,15 +76,18 @@ class NativeHttp extends NativeHttpBase
 		//embedded at compile-time
 		//TODO : also support bytes
 		#if openfl
-		var asset:String = openfl.Assets.getText(url);
-		
-		//if the asset was embbedded, store it
-		if (asset != null)
-		{
-			response = asset;
-			complete = true;
-			responseHeadersLoaded = true;
-			return;
+		if (url.indexOf("http://") == -1 && url.indexOf("https://") == -1) {
+
+			var asset:String = openfl.Assets.getText(url);
+			
+			//if the asset was embbedded, store it
+			if (asset != null)
+			{
+				response = asset;
+				complete = true;
+				responseHeadersLoaded = true;
+				return;
+			}
 		}
 		#end
 		
