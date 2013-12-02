@@ -62,18 +62,21 @@ class ImageResource extends ResourceBase
 		//if built with openfl, the asset might have been embedded
 		//at compile-time
 		#if openfl
-		var asset:BitmapData = openfl.Assets.getBitmapData(url);
-		
-		//here the asset was embedded, no need
-		//to load
-		if (asset != null)
-		{
-			nativeResource = asset;
-			intrinsicHeight = asset.height;
-			intrinsicWidth = asset.width;
-			intrinsicRatio = intrinsicWidth / intrinsicHeight;
-			onLoadComplete();
-			return;
+		if (url.indexOf("http://") == -1 && url.indexOf("https://") == -1) {
+
+			var asset:BitmapData = openfl.Assets.getBitmapData(url);
+			
+			//here the asset was embedded, no need
+			//to load
+			if (asset != null)
+			{
+				nativeResource = asset;
+				intrinsicHeight = asset.height;
+				intrinsicWidth = asset.width;
+				intrinsicRatio = intrinsicWidth / intrinsicHeight;
+				onLoadComplete();
+				return;
+			}
 		}
 		#end
 		

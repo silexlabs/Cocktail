@@ -77,7 +77,7 @@ class ResourceManager
 		//yet stored, create it
 		if (resource == null)
 		{
-			resource = new ImageResource(url);
+			resource = new ImageResource(cleanRelativePathes(url));
 			_resources.set(url, resource);
 		}
 		
@@ -104,7 +104,7 @@ class ResourceManager
 		if (resource == null)
 		{
 			resource = new NativeHttp(_document.timer);
-			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
+			resource.load(cleanRelativePathes(url), HTTPConstants.GET, null, null, DataFormatValue.BINARY);
 			_binaryResources.set(url, resource);
 		}
 		
@@ -117,5 +117,30 @@ class ResourceManager
 	public function removeBinaryResource(url:String):Void
 	{
 		_binaryResources.remove(url);
+	}
+
+	/**
+	 * Pre-process relative resource pathes
+	 */
+	private function cleanRelativePathes(url:String):String {
+
+		var splittedUrl : Array<String> = url.split('/');
+
+		var rebuildUrl : Array<String> = [];
+
+		while(splittedUrl.length > 0) {
+
+			var d : String = splittedUrl.shift();
+
+			if (d == "..") {
+
+				rebuildUrl.pop();
+			
+			} else if (d != ".") {
+
+				rebuildUrl.push(d);
+			}
+		}
+		return rebuildUrl.join("/");
 	}
 }
