@@ -105,14 +105,17 @@ class FontBuilder extends FontBuilderBase
 		
 		
 		#if openfl
-		//when building with openfl, font might have been embedded with 
+		//when building with openfl/nme, font might have been embedded with 
 		//the project, so use embedded font if present
-		var embeddedFont:flash.text.Font = openfl.Assets.getFont(fontFamily);
-		if (embeddedFont != null)
+		#if nme	if (nme.Assets.hasFont(fontFamily)) #end
 		{
-			fontFamily = embeddedFont.fontName;
-			//must explicitely activate embedded fonts
-			textField.embedFonts = true;
+			var embeddedFont:flash.text.Font = openfl.Assets.getFont(fontFamily);
+			if (embeddedFont != null)
+			{
+				fontFamily = embeddedFont.fontName;
+				//must explicitely activate embedded fonts
+				textField.embedFonts = true;
+			}
 		}
 		#end
 		
