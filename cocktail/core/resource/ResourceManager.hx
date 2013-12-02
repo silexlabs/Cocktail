@@ -124,7 +124,7 @@ class ResourceManager
 	 */
 	private function cleanRelativePathes(url:String):String {
 
-		var splittedUrl : Array<String> = url.plir('/');
+		var splittedUrl : Array<String> = url.split('/');
 
 		var rebuildUrl : Array<String> = [];
 
