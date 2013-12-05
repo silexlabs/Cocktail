@@ -1378,6 +1378,7 @@ class HTMLDocument extends Document
 		//fire a fullscreen event
 		var fullscreenEvent:Event = new Event();
 		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
+		dispatchEvent( fullscreenEvent );
 
         //refresh cascade as the document's stylesheet might have fullscreen pseudo class
         cascadeDocument();
@@ -1434,6 +1435,7 @@ class HTMLDocument extends Document
 		//fire fullscreen event
 		var fullscreenEvent:Event = new Event();
 		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
+		dispatchEvent( fullscreenEvent ); 
 
         //refresh cascade as the document's stylesheet might have fullscreen pseudo class
         cascadeDocument();
