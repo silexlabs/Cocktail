@@ -1467,8 +1467,13 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer.stackingContext, x, y);
-
+		var layerRendererTmp = documentElement.elementRenderer.layerRenderer;
+		if (layerRendererTmp.stackingContext == null)
+		{
+			layerRendererTmp.updateStackingContext();
+		}
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(layerRendererTmp.stackingContext, x, y);
+		
 		//might be null, for instance when mouse leaves the
 		//window
 		if (elementRendererAtPoint == null)
