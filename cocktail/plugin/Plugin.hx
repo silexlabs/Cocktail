@@ -10,7 +10,7 @@ package cocktail.plugin;
 
 import cocktail.event.Event;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.html.HTMLElement;
 
 /**

@@ -11,8 +11,8 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
-import cocktail.core.geom.GeomUtils;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.GeomUtils;
+import cocktail.geom.Matrix;
 import cocktail.core.linebox.InlineBox;
 
 import cocktail.event.TransitionEvent;
@@ -20,7 +20,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.transition.Transitioner;
 import cocktail.core.transition.Transition;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.ds.FastNode;
 
 

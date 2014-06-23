@@ -10,7 +10,7 @@ package cocktail.core.hittest;
 
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.stacking.StackingContext;
 
 /**

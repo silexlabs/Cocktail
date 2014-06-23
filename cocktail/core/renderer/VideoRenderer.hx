@@ -10,7 +10,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -22,7 +22,7 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.port.base.NativeMedia;
 
 /**

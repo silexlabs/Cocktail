@@ -9,7 +9,7 @@
 package cocktail.port.base;
 
 import cocktail.port.Bindings;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * Wraps a native platform specific text element

@@ -11,13 +11,13 @@ package cocktail.core.invalidation;
 import cocktail.core.config.Config;
 import cocktail.event.EventConstants;
 import cocktail.event.UIEvent;
-import cocktail.core.geom.GeomUtils;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.GeomUtils;
+import cocktail.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.css.CSSStyleData;
 
 /**

@@ -13,7 +13,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.event.EventConstants;
 import cocktail.event.UIEvent;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.ScrollableView;
@@ -21,11 +21,11 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.ds.FastNode;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.layer.ScrollableView;
 
 

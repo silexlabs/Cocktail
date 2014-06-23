@@ -20,7 +20,7 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Point;
 import flash.Lib;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import flash.Vector;
 import cocktail.css.CSSStyleData;
 

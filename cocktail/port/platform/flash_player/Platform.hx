@@ -20,7 +20,7 @@ import cocktail.core.html.HTMLInputElement;
 import cocktail.core.html.HTMLTextAreaElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.Bindings;
 import flash.display.Bitmap;

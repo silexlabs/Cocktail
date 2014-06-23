@@ -11,7 +11,7 @@ package cocktail.core.css;
 import cocktail.core.config.Config;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;	
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.css.CSSStyleData;
 
 /**

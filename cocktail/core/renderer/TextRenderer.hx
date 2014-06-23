@@ -11,7 +11,7 @@ package cocktail.core.renderer;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.graphics.TextDrawer;
 import cocktail.core.html.HTMLDocument;
@@ -23,7 +23,7 @@ import cocktail.core.parser.PlainTextParser;
 import cocktail.core.parser.ParserData;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontManager;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 

@@ -14,7 +14,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.html.HTMLElement;
 
 import cocktail.core.layout.LayoutData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.css.CSSCascadeData;
 
 /**

@@ -57,7 +57,7 @@ import cocktail.core.window.Window;
 import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.port.Bindings;
 
 

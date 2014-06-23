@@ -12,7 +12,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.font.FontData;
 
 /**

@@ -20,7 +20,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layer.PluginLayerRenderer;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * An ElementRenderer displaying an object (plugin)

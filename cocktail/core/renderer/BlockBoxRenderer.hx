@@ -14,7 +14,7 @@ import cocktail.core.dom.Node;
 import cocktail.event.Event;
 import cocktail.event.UIEvent;
 import cocktail.event.WheelEvent;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
@@ -23,7 +23,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.floats.FloatsManager;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.css.CSSCascadeData;
 

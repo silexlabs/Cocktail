@@ -11,7 +11,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.InitialLayerRenderer;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;

@@ -9,8 +9,8 @@
 package cocktail.core.css;
 
 import cocktail.css.CSSStyleData;
-import cocktail.core.geom.GeomData;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.GeomData;
+import cocktail.geom.Matrix;
 
 /**
   * Represents the used values of an HTMLElement, that is

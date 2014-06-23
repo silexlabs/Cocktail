@@ -9,20 +9,20 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.config.Config;
-import cocktail.core.geom.GeomUtils;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.GeomUtils;
+import cocktail.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.base.GraphicsSurfaceBase;
 import cocktail.port.Bindings;
-import cocktail.css.CSSStyleData;
 import flash.display.Bitmap;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.display.StageQuality;
 import flash.geom.ColorTransform;
+import cocktail.css.CSSStyleData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;

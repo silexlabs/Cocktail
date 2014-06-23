@@ -16,7 +16,7 @@ import cocktail.event.UIEvent;
 import cocktail.event.WheelEvent;
 import cocktail.core.stacking.StackingContext;
 import cocktail.port.Bindings;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * This class exposes an API to access platform

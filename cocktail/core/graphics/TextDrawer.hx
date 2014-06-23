@@ -11,7 +11,7 @@ package cocktail.core.graphics;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.linebox.TextInlineBox;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * This class is in charge of the drawing

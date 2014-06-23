@@ -8,7 +8,7 @@
 */
 package cocktail.core.transition;
 
-import cocktail.core.geom.CubicBezier;
+import cocktail.geom.CubicBezier;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;

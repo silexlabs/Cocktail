@@ -15,7 +15,7 @@ import cocktail.core.http.HTTPConstants;
 import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.port.Bindings;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.http.HTTPData;
 import haxe.Http;
 import haxe.Resource;

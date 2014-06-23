@@ -10,9 +10,9 @@ package cocktail.port.base;
 
 import cocktail.event.Event;
 import cocktail.event.EventConstants;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * This is a base class proxying access to 

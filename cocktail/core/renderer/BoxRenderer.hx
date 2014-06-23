@@ -10,8 +10,8 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.geom.GeomUtils;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.GeomUtils;
+import cocktail.geom.Matrix;
 import cocktail.core.graphics.BorderDrawer;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
@@ -39,7 +39,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.css.CSSCascadeData;
 import haxe.Log;
 

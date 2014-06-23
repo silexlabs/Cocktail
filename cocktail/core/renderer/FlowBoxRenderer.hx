@@ -24,7 +24,7 @@ import cocktail.core.boxmodel.InLineBoxStylesComputer;
 import cocktail.core.boxmodel.PositionedBoxStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSCascadeData;
 

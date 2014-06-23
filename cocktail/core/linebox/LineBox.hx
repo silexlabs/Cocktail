@@ -9,12 +9,12 @@
 package cocktail.core.linebox;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 
 /**

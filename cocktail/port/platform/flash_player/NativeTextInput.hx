@@ -17,7 +17,7 @@ import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * This is the flash port of for the native text input,

@@ -11,14 +11,14 @@ package cocktail.plugin.swf;
 import cocktail.core.config.Config;
 import cocktail.event.Event;
 import cocktail.event.EventConstants;
-import cocktail.core.geom.GeomUtils;
+import cocktail.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 import cocktail.port.Bindings;
 import haxe.Timer;
 

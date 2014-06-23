@@ -9,7 +9,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.config.Config;
-import cocktail.core.geom.Matrix;
+import cocktail.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.base.NativeMedia;
@@ -26,7 +26,7 @@ import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 import flash.events.NetStatusEvent;
-import cocktail.core.geom.GeomData;
+import cocktail.geom.GeomData;
 
 /**
  * This is the flash as3 port of the native video,
