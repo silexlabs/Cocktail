@@ -9,8 +9,8 @@
 package cocktail.plugin.swf;
 
 import cocktail.core.config.Config;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;

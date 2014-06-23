@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef ProgressEvent = cocktail.core.event.ProgressEvent;
+typedef ProgressEvent = cocktail.event.ProgressEvent;

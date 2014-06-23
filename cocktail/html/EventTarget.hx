@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef EventTarget = cocktail.core.event.EventTarget;
+typedef EventTarget = cocktail.event.EventTarget;

@@ -7,9 +7,9 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.UIEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.UIEvent;
 import cocktail.core.renderer.VideoRenderer;
 import cocktail.port.Bindings;
 import cocktail.core.parser.ParserData;

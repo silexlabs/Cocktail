@@ -8,10 +8,10 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.core.event.EventConstants;
+import cocktail.event.EventConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.base.KeyboardListenerBase;
-import cocktail.core.event.KeyboardEvent;
+import cocktail.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
 import cocktail.port.Bindings;

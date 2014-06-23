@@ -7,8 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
 import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.TextAreaRenderer;
 

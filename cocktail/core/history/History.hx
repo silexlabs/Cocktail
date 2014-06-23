@@ -10,8 +10,8 @@ package cocktail.core.history;
 
 import cocktail.core.history.HistoryData;
 import cocktail.core.html.HTMLConstants;
-import cocktail.core.event.PopStateEvent;
-import cocktail.core.event.EventConstants;
+import cocktail.event.PopStateEvent;
+import cocktail.event.EventConstants;
 import cocktail.core.html.HTMLDocument;
 /**
  * Implementation of the history API as stated here http://dev.w3.org/html5/spec/single-page.html#history

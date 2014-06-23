@@ -16,7 +16,7 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.linebox.InlineBox;
 
-import cocktail.core.event.TransitionEvent;
+import cocktail.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.transition.Transitioner;

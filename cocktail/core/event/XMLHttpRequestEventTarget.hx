@@ -8,6 +8,8 @@
 */
 package cocktail.core.event;
 
+import cocktail.event.*;
+
 /**
  * Base for XMLHttpRequest exposing
  * getters and setters for each event

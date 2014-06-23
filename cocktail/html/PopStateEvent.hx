@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef PopStateEvent = cocktail.core.event.PopStateEvent;
+typedef PopStateEvent = cocktail.event.PopStateEvent;

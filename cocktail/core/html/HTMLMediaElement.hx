@@ -9,8 +9,8 @@
 package cocktail.core.html;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
 import cocktail.port.base.NativeMedia;
 import cocktail.core.html.HTMLData;
 import cocktail.core.parser.ParserData;

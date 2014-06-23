@@ -8,10 +8,10 @@
 */
 package cocktail.port.base;
 
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
-import cocktail.core.event.ProgressEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
+import cocktail.event.ProgressEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPData;
 import cocktail.core.timer.Timer;

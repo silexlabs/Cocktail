@@ -8,11 +8,11 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.TouchEvent;
-import cocktail.core.event.TouchList;
+import cocktail.event.EventConstants;
+import cocktail.event.TouchEvent;
+import cocktail.event.TouchList;
 import cocktail.port.base.TouchListenerBase;
-import cocktail.core.event.Touch;
+import cocktail.event.Touch;
 import flash.Lib;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;

@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef TansitionEvent = cocktail.core.event.TransitionEvent;
+typedef TansitionEvent = cocktail.event.TransitionEvent;

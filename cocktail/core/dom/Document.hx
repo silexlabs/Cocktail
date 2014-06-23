@@ -8,15 +8,15 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.event.CustomEvent;
-import cocktail.core.event.Event;
-import cocktail.core.event.FocusEvent;
-import cocktail.core.event.KeyboardEvent;
-import cocktail.core.event.MouseEvent;
-import cocktail.core.event.TransitionEvent;
-import cocktail.core.event.UIEvent;
-import cocktail.core.event.WheelEvent;
-import cocktail.core.event.PopStateEvent;
+import cocktail.event.CustomEvent;
+import cocktail.event.Event;
+import cocktail.event.FocusEvent;
+import cocktail.event.KeyboardEvent;
+import cocktail.event.MouseEvent;
+import cocktail.event.TransitionEvent;
+import cocktail.event.UIEvent;
+import cocktail.event.WheelEvent;
+import cocktail.event.PopStateEvent;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 

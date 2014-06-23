@@ -9,9 +9,9 @@
 package cocktail.port.base;
 
 import cocktail.core.config.Config;
-import cocktail.core.event.Event;
-import cocktail.core.event.MouseEvent;
-import cocktail.core.event.WheelEvent;
+import cocktail.event.Event;
+import cocktail.event.MouseEvent;
+import cocktail.event.WheelEvent;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 import cocktail.port.Bindings;

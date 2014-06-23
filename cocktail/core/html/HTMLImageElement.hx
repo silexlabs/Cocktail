@@ -10,14 +10,14 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
-import cocktail.core.event.UIEvent;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
+import cocktail.event.UIEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.url.URL;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
-import cocktail.core.event.Event;
+import cocktail.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;

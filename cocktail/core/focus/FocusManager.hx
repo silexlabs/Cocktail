@@ -10,9 +10,9 @@ package cocktail.core.focus;
 
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.FocusEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.FocusEvent;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.html.HTMLElement;
 

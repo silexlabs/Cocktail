@@ -8,9 +8,9 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.MouseEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.MouseEvent;
 import cocktail.core.renderer.CheckboxRenderer;
 import cocktail.core.renderer.InputButtonRenderer;
 import cocktail.core.renderer.InputRenderer;

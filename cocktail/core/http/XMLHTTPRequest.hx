@@ -10,10 +10,10 @@ package cocktail.core.http;
 
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMException;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
-import cocktail.core.event.ProgressEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
+import cocktail.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;

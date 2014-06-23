@@ -8,11 +8,11 @@
 */
 package cocktail.core.multitouch;
 
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
-import cocktail.core.event.Touch;
-import cocktail.core.event.TouchEvent;
-import cocktail.core.event.TouchList;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
+import cocktail.event.Touch;
+import cocktail.event.TouchEvent;
+import cocktail.event.TouchList;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.ElementRenderer;
 

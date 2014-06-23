@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef UIEvent = cocktail.core.event.UIEvent;
+typedef UIEvent = cocktail.event.UIEvent;

@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef EventListener = cocktail.core.event.EventListener;
+typedef EventListener = cocktail.event.EventListener;

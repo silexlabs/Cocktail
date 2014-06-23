@@ -8,8 +8,8 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.event.Event;
-import cocktail.core.event.MouseEvent;
+import cocktail.event.Event;
+import cocktail.event.MouseEvent;
 import haxe.Log;
 
 /**

@@ -9,9 +9,9 @@
 package cocktail.core.graphics;
 
 import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.UIEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;

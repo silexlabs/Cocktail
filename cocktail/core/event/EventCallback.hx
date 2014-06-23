@@ -8,6 +8,8 @@
 */
 package cocktail.core.event;
 
+import cocktail.event.*;
+
 /**
  * Exposes attributes to set/get callbacks for all the DOM
  * events in one location. 

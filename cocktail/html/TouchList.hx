@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef TouchList = cocktail.core.event.TouchList;
+typedef TouchList = cocktail.event.TouchList;

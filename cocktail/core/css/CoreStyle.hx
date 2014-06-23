@@ -10,8 +10,8 @@ package cocktail.core.css;
 
 import cocktail.core.config.Config;
 import cocktail.core.css.CSSData;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.TransitionEvent;
+import cocktail.event.EventConstants;
+import cocktail.event.TransitionEvent;
 import cocktail.core.font.FontData;
 import cocktail.core.font.FontManager;
 import cocktail.core.geom.Matrix;

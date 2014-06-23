@@ -10,10 +10,10 @@ package cocktail.core.renderer;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.FocusEvent;
-import cocktail.core.event.KeyboardEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.FocusEvent;
+import cocktail.event.KeyboardEvent;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSValueConverter;

@@ -8,8 +8,8 @@
 */
 package cocktail.port.base;
 
-import cocktail.core.event.TouchEvent;
-import cocktail.core.event.Touch;
+import cocktail.event.TouchEvent;
+import cocktail.event.Touch;
 import cocktail.port.Bindings;
 
 /**

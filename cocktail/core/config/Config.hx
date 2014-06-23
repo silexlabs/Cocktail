@@ -7,9 +7,9 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.config;
-import cocktail.core.event.CustomEvent;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
+import cocktail.event.CustomEvent;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
 
 /**
  * This class exposes global configuration parameters

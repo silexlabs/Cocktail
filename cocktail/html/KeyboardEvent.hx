@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef KeyboardEvent = cocktail.core.event.KeyboardEvent;
+typedef KeyboardEvent = cocktail.event.KeyboardEvent;

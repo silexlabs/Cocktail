@@ -9,7 +9,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.event.EventCallback;
-import cocktail.core.event.EventTarget;
+import cocktail.event.EventTarget;
 import haxe.Log;
 
 /**

@@ -9,8 +9,8 @@
 package cocktail.core.invalidation;
 
 import cocktail.core.config.Config;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.UIEvent;
+import cocktail.event.EventConstants;
+import cocktail.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;

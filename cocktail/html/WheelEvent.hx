@@ -8,4 +8,4 @@
 */
 package cocktail.html;
 
-typedef WheelEvent = cocktail.core.event.WheelEvent;
+typedef WheelEvent = cocktail.event.WheelEvent;

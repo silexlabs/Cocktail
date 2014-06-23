@@ -8,9 +8,9 @@
 */
 package cocktail.port.base;
 
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.EventTarget;
-import cocktail.core.event.UIEvent;
+import cocktail.event.EventConstants;
+import cocktail.event.EventTarget;
+import cocktail.event.UIEvent;
 
 /**
  * Represent a loaded external resource, such as 

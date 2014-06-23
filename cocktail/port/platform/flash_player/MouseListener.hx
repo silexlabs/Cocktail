@@ -8,10 +8,10 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.MouseEvent;
-import cocktail.core.event.WheelEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.MouseEvent;
+import cocktail.event.WheelEvent;
 import cocktail.port.base.MouseListenerBase;
 import cocktail.port.Bindings;
 import cocktail.core.layout.LayoutData;

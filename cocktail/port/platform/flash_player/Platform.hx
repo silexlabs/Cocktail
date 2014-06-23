@@ -9,10 +9,10 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.config.Config;
-import cocktail.core.event.CustomEvent;
-import cocktail.core.event.Event;
-import cocktail.core.event.EventConstants;
-import cocktail.core.event.UIEvent;
+import cocktail.event.CustomEvent;
+import cocktail.event.Event;
+import cocktail.event.EventConstants;
+import cocktail.event.UIEvent;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
