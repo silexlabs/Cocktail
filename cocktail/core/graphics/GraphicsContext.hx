@@ -12,7 +12,7 @@ import cocktail.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.ds.FastNode;
+import cocktail.ds.FastNode;
 import cocktail.port.Bindings;
 import cocktail.geom.GeomData;
 import cocktail.core.layout.LayoutData;

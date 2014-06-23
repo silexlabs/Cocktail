@@ -24,7 +24,6 @@ import cocktail.core.layout.LayoutData;
 import cocktail.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
-import cocktail.core.ds.FastNode;
 import cocktail.geom.GeomData;
 import cocktail.core.layer.ScrollableView;
 
