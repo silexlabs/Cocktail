@@ -8,6 +8,7 @@
 */
 package cocktail.core.css;
 
+import cocktail.selector.SelectorMatcher;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.css.CoreStyle;
@@ -28,10 +29,10 @@ class StyleManager
 	private var _styleSheets:Array<CSSStyleSheet>;
 	
 	/**
-	 * a reference to a selector manager, which can
+	 * a reference to a selector matcher, which can
 	 * determine wether a node matches a selector
 	 */
-	private var _selectorManager:SelectorManager;
+	private var _selectorMatcher:SelectorMatcher;
 	
 	/**
 	 * when properties are applied to a style declaration,
@@ -79,7 +80,7 @@ class StyleManager
 	/**
 	 * class constructor. Init class attribute
 	 */
-	public function new(selectorManager:SelectorManager) 
+	public function new(selectorMatcher:SelectorMatcher) 
 	{
 		_styleSheets = new Array<CSSStyleSheet>();
 		
@@ -91,7 +92,7 @@ class StyleManager
 		_authorNormalDeclarations = new Array<PropertyVO>();
 		_authorImportantDeclarations = new Array<PropertyVO>();
 		
-		_selectorManager = selectorManager;
+		_selectorMatcher = selectorMatcher;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -259,7 +260,7 @@ class StyleManager
 											//else need to perform a full match
 											else
 											{
-												match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+												match = _selectorMatcher.matchSelector(cast(node), cast(selectors[k]), cast(matchedPseudoClasses)) == true;
 												break;
 											}
 										}
@@ -282,8 +283,7 @@ class StyleManager
 										//else need to perform a full match
 										else
 										{
-											match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
-										}
+											match = _selectorMatcher.matchSelector(cast(node), cast(selectors[k]), cast(matchedPseudoClasses)) == true; }
 									}
 								}
 							}
@@ -301,14 +301,14 @@ class StyleManager
 									//else a full match is needed
 									else
 									{
-										match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+										match = _selectorMatcher.matchSelector(cast(node), cast(selectors[k]), cast(matchedPseudoClasses)) == true;
 									}
 								}
 							}
 							//in other cases, full match
 							else
 							{
-								match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+								match = _selectorMatcher.matchSelector(cast(node), cast(selectors[k]), cast(matchedPseudoClasses)) == true;
 							}
 							
 							if (match == true)
@@ -484,7 +484,7 @@ class StyleManager
 			var property:PropertyVO = matchingProperties[i];
 			
 			//get the property specifity, defined as an integer
-			var propertySpecificity:Int = _selectorManager.getSelectorSpecifity(property.selector);
+			var propertySpecificity:Int = _selectorMatcher.getSelectorSpecifity(cast property.selector);
 		
 			//if this property as the highesrt specificity so far, it
 			//becomes the new highest specificity

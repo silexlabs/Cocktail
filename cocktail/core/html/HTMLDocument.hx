@@ -8,7 +8,7 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.css.SelectorManager;
+import cocktail.selector.SelectorMatcher;
 import cocktail.core.dom.NodeList;
 import cocktail.core.transition.TransitionManager;
 import cocktail.core.config.Config;
@@ -296,10 +296,10 @@ class HTMLDocument extends Document
 	private var _styleManager:StyleManager;
 	
 	/**
-	 * A ref to the selector manager which can determine
+	 * A ref to the selector matcher which can determine
 	 * wether a node matches a given selector
 	 */
-	private var _selectorManager:SelectorManager;
+	private var _selectorMatcher:SelectorMatcher;
 	
 	/**
 	 * an instance of the class managing layout.
@@ -465,8 +465,8 @@ class HTMLDocument extends Document
 	 */
 	private function initStyleManager():Void
 	{
-		_selectorManager = new SelectorManager();
-		_styleManager = new StyleManager(_selectorManager);
+		_selectorMatcher= new SelectorMatcher();
+		_styleManager = new StyleManager(_selectorMatcher);
 		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
 		
 	}
@@ -757,7 +757,7 @@ class HTMLDocument extends Document
 		var length:Int = selectors.length;
 		for (i in 0...length)
 		{
-			if (_selectorManager.matchSelector(node, selectors[i], matchedPseudoClass) == true)
+			if (_selectorMatcher.matchSelector(cast node, cast selectors[i], cast matchedPseudoClass) == true)
 			{
 				return true;
 			}
