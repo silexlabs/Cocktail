@@ -9,7 +9,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.port.base.ResourceBase;
-import cocktail.core.url.URL;
+import cocktail.url.URL;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;

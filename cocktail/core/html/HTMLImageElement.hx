@@ -14,7 +14,7 @@ import cocktail.event.EventConstants;
 import cocktail.event.EventTarget;
 import cocktail.event.UIEvent;
 import cocktail.core.resource.ResourceManager;
-import cocktail.core.url.URL;
+import cocktail.url.URL;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
 import cocktail.event.Event;

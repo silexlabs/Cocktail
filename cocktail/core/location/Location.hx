@@ -8,7 +8,7 @@
 */
 package cocktail.core.location;
 import cocktail.core.html.HTMLDocument;
-import cocktail.core.url.URL;
+import cocktail.url.URL;
 
 /**
  * Location objects provide a representation of their document's address,

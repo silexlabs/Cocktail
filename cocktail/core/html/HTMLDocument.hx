@@ -52,7 +52,7 @@ import cocktail.core.parser.ParserData;
 import cocktail.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
-import cocktail.core.url.URL;
+import cocktail.url.URL;
 import cocktail.core.window.Window;
 import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
@@ -1309,18 +1309,18 @@ class HTMLDocument extends Document
 		}
 		
 		//if the provided url is absolute, return as-is
-		var typedURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(url);
-		if (cocktail.core.url.URL.isRelative(typedURL) == false)
+		var typedURL:cocktail.url.URL = cocktail.url.URL.fromString(url);
+		if (cocktail.url.URL.isRelative(typedURL) == false)
 		{
 			return url;
 		}
 		
-		var documentURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(location.href);
+		var documentURL:cocktail.url.URL = cocktail.url.URL.fromString(location.href);
 		
 		//concatenate document url and provided url
-		var retURL:cocktail.core.url.URL = cocktail.core.url.URL.appendURL(documentURL, typedURL);
+		var retURL:cocktail.url.URL = cocktail.url.URL.appendURL(documentURL, typedURL);
 		
-		return cocktail.core.url.URL.toString(retURL);
+		return cocktail.url.URL.toString(retURL);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
