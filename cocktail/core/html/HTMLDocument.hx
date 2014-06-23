@@ -51,7 +51,7 @@ import cocktail.event.Touch;
 import cocktail.core.parser.ParserData;
 import cocktail.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
-import cocktail.core.timer.Timer;
+import cocktail.timer.Timer;
 import cocktail.url.URL;
 import cocktail.core.window.Window;
 import cocktail.core.graphics.GraphicsContext;

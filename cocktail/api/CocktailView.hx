@@ -12,7 +12,7 @@ import cocktail.event.EventConstants;
 import cocktail.event.KeyboardEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
-import cocktail.core.timer.Timer;
+import cocktail.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.port.Bindings;
 import cocktail.geom.GeomData;

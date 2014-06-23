@@ -31,7 +31,7 @@ import cocktail.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
-import cocktail.core.timer.Timer;
+import cocktail.timer.Timer;
 
 import haxe.xml.Parser;
 import cocktail.event.Event;

@@ -14,7 +14,7 @@ import cocktail.event.EventTarget;
 import cocktail.event.ProgressEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPData;
-import cocktail.core.timer.Timer;
+import cocktail.timer.Timer;
 
 /**
  * This class is a base abstract class used

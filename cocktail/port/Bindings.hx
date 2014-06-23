@@ -29,7 +29,6 @@ typedef NativeButton =  cocktail.port.platform.flash_player.NativeButton;
 typedef NativeTextElement =  flash.display.DisplayObject;
 typedef NativeLayer =  cocktail.port.platform.flash_player.NativeLayer;
 typedef PlatformLayer = flash.display.DisplayObjectContainer;
-typedef PlatformTimer =  cocktail.port.platform.flash_player.PlatformTimer;
 typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
 typedef NativeAudio =  cocktail.port.platform.flash_player.NativeAudio;
 typedef NativeHttp =  cocktail.port.platform.flash_player.NativeHttp;
@@ -53,7 +52,6 @@ typedef FontBuilder = cocktail.port.platform.flash_player.FontBuilder;
 //default bindings for all the other platform to set a default 
 //allowig build
 #if ((!flash && !openfl) || macro)
-typedef PlatformTimer =  cocktail.port.base.PlatformTimerBase;
 typedef GraphicsSurface = cocktail.port.base.GraphicsSurfaceBase;
 typedef ImageResource = cocktail.port.base.ResourceBase;
 typedef KeyboardListener = cocktail.port.base.KeyboardListenerBase;

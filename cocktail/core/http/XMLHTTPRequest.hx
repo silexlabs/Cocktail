@@ -16,7 +16,7 @@ import cocktail.event.EventTarget;
 import cocktail.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
-import cocktail.core.timer.Timer;
+import cocktail.timer.Timer;
 import cocktail.port.Bindings;
 import cocktail.core.http.HTTPData;
 import haxe.Http;
