@@ -12,7 +12,6 @@ import cocktail.core.ds.FastNode;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.css.CSSData;
 
 /**
  * Had to add this when updating to Haxe3 as recursive

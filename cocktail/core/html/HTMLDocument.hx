@@ -13,10 +13,11 @@ import cocktail.core.dom.NodeList;
 import cocktail.core.transition.TransitionManager;
 import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
-import cocktail.core.css.CSSRule;
-import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.css.CSSStyleRule;
-import cocktail.core.css.CSSStyleSheet;
+import cocktail.css.CSSStyleDeclaration;
+import cocktail.css.CSSStyleData;
+import cocktail.css.CSSSelectorData;
+import cocktail.css.CSSStyleSheet;
+import cocktail.core.css.CSSCascadeData;
 import cocktail.core.css.DefaultCSSStyleSheet;
 import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
@@ -57,7 +58,6 @@ import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
 import cocktail.port.Bindings;
 
 

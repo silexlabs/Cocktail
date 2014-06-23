@@ -20,8 +20,8 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.base.ResourceBase;
 import cocktail.port.Bindings;
-import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * An ElementRenderer displaying a bitmap picture

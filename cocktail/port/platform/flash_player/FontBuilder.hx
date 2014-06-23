@@ -15,11 +15,11 @@ import cocktail.port.Bindings;
 
 import flash.text.TextField;
 import flash.text.TextFormat;
-import haxe.Log;
 import cocktail.core.font.FontData;
 import flash.text.TextFieldAutoSize;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
+import cocktail.core.css.CSSCascadeData;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class measure font metrics and draw native flash text using 

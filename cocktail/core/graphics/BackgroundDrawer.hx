@@ -8,7 +8,6 @@
 */
 package cocktail.core.graphics;
 
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.event.Event;
 import cocktail.event.EventConstants;
 import cocktail.event.UIEvent;
@@ -25,9 +24,8 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.core.css.CSSData;
 import cocktail.core.parser.ParserData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class manages the instantation and drawing of the

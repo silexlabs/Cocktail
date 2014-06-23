@@ -9,9 +9,8 @@
 package cocktail.core.graphics;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSConstants;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class is in charge of

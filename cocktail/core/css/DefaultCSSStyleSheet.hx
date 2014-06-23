@@ -8,7 +8,9 @@
 */
 package cocktail.core.css;
 
-import cocktail.core.css.CSSData;
+import cocktail.css.*;
+import cocktail.css.CSSStyleData;
+import cocktail.css.CSSOMData;
 
 /**
  * A default CSS stylesheet corresponding to the user agent (cocktail)

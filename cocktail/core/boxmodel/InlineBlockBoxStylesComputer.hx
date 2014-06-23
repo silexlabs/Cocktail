@@ -8,9 +8,8 @@
 */
 package cocktail.core.boxmodel;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
 
 /**
  * This is the box computer for inlineBlock non-embedded

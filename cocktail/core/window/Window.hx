@@ -18,7 +18,6 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.Bindings;
-import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.history.History;
 

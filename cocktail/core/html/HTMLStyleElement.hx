@@ -8,10 +8,10 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.css.CSSStyleSheet;
-import cocktail.core.css.StyleSheet;
+import cocktail.core.css.CSSCascadeData;
+import cocktail.css.*;
+import cocktail.css.CSSOMData;
 import cocktail.core.dom.DOMConstants;
-import cocktail.core.css.CSSData;
 import cocktail.core.dom.Node;
 
 /**
@@ -145,7 +145,7 @@ class HTMLStyleElement extends HTMLElement
 			if (css != "")
 			{
 				//create a style sheet from the content of all the childs node value
-				sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR, this);
+				sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR, cast this);
 				var htmlDocument:HTMLDocument = cast(ownerDocument);
 				htmlDocument.addStyleSheet(sheet);
 			}

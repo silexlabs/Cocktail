@@ -8,13 +8,10 @@
 */
 package cocktail.core.boxmodel;
 
-import cocktail.core.css.CSSStyleDeclaration;
-
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
-import haxe.Log;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * This is the box computer for non-replaced

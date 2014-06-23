@@ -8,14 +8,12 @@
 */
 package cocktail.core.transition;
 
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.geom.CubicBezier;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSConstants;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.parser.ParserData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * Represents a property transition form a start
@@ -93,7 +91,7 @@ class Transition
 	public var transitionDuration(default, null):Float;
 	
 	/**
-	 * The target CSSStyleDeclaration of the transition onto which
+	 * The target CoreStyle of the transition onto which
 	 * update and complete method are called
 	 */
 	public var target(default, null):CoreStyle;

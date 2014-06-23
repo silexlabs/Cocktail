@@ -14,7 +14,7 @@ import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class computes all the background styles.

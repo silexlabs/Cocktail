@@ -7,16 +7,16 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.core.css.CSSConstants;
-import cocktail.core.css.CSSStyleSheet;
+import cocktail.css.*;
+import cocktail.css.CSSOMData;
 import cocktail.core.dom.DOMConstants;
 import cocktail.event.Event;
+import cocktail.core.css.CSSCascadeData;
 import cocktail.event.EventConstants;
 import cocktail.event.UIEvent;
 import cocktail.core.http.HTTPConstants;
 import cocktail.core.http.XMLHTTPRequest;
 import cocktail.core.resource.ResourceManager;
-import cocktail.core.css.CSSData;
 import cocktail.port.Bindings;
 import cocktail.core.http.HTTPData;
 

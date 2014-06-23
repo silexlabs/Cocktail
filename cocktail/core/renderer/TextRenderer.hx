@@ -25,7 +25,6 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 
 /**

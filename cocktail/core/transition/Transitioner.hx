@@ -9,13 +9,13 @@
 package cocktail.core.transition;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSConstants;
-import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.css.CSSConstants;
 import cocktail.event.TransitionEvent;
 
 import cocktail.core.transition.TransitionData;
-import cocktail.core.css.CSSData;
 import cocktail.core.parser.ParserData;
+import cocktail.css.CSSStyleData;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * 

@@ -9,13 +9,11 @@
 package cocktail.core.linebox;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
 
 /**
  * A subclass of Inline box, a space is similar to a TextInlineBox but lighter as 

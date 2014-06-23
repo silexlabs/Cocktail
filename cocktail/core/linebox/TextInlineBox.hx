@@ -14,7 +14,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.Bindings;
-import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 

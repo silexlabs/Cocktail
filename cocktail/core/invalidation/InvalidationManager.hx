@@ -18,7 +18,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class is in charge of keeping

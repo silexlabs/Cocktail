@@ -8,7 +8,6 @@
 */
 package cocktail.core.html;
 import cocktail.core.css.CascadeManager;
-import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMException;
 import cocktail.core.renderer.InitialBlockRenderer;

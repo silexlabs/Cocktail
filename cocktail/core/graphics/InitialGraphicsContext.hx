@@ -15,7 +15,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.Bindings;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
 
 /**
  * Represents the graphics context at the 

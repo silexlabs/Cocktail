@@ -9,11 +9,13 @@
 package cocktail.core.html;
 
 import cocktail.core.css.CascadeManager;
-import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.css.InitialStyleDeclaration;
-import cocktail.core.css.parsers.CSSSelectorParser;
+import cocktail.css.CSSStyleDeclaration;
+import cocktail.css.InitialStyleDeclaration;
+import cocktail.css.parsers.CSSSelectorParser;
+import cocktail.css.CSSSelectorData;
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Document;
+import cocktail.core.css.CSSCascadeData;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.DOMException;
 import cocktail.core.dom.Element;
@@ -29,7 +31,6 @@ import cocktail.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
-import cocktail.core.css.CSSConstants;
 import cocktail.core.timer.Timer;
 
 import haxe.xml.Parser;
@@ -44,7 +45,6 @@ import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
 import cocktail.core.parser.ParserData;
 import cocktail.core.font.FontData;
 

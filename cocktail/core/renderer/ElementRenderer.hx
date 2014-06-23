@@ -8,7 +8,6 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
@@ -26,13 +25,11 @@ import cocktail.core.ds.FastNode;
 
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSConstants;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.parser.ParserData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.css.CSSData;
 
 
 /**

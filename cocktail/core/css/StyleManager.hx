@@ -12,7 +12,9 @@ import cocktail.selector.SelectorMatcher;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.css.CSSData;
+import cocktail.css.*;
+import cocktail.css.CSSOMData;
+import cocktail.css.CSSSelectorData;
 
 /**
  * This class holds a reference to each style sheet

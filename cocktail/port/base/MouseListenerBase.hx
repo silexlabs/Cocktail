@@ -12,9 +12,9 @@ import cocktail.core.config.Config;
 import cocktail.event.Event;
 import cocktail.event.MouseEvent;
 import cocktail.event.WheelEvent;
-import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 import cocktail.port.Bindings;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class listens to native mouse event

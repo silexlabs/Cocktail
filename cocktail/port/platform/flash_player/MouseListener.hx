@@ -21,9 +21,8 @@ import flash.display.DisplayObjectContainer;
 import flash.geom.Point;
 import flash.Lib;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
 import flash.Vector;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.

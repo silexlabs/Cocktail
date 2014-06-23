@@ -26,8 +26,6 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.ds.FastNode;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
-import haxe.Log;
 import cocktail.core.layer.ScrollableView;
 
 

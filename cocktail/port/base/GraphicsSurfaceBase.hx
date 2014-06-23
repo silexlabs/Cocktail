@@ -17,7 +17,7 @@ import cocktail.port.Bindings;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * This is the base class for classes which 

@@ -12,7 +12,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
+import cocktail.css.CSSStyleData;
 
 /**
  * The is the box style computer for inline non-embedded

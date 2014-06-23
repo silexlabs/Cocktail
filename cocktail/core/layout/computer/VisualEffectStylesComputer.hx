@@ -11,11 +11,11 @@ package cocktail.core.layout.computer;
 import cocktail.core.geom.Matrix;
 
 import cocktail.core.css.CoreStyle;
+import cocktail.css.CSSStyleData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
 
 /**
  * This is a static class in charge of

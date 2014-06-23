@@ -8,14 +8,13 @@
 */
 package cocktail.core.boxmodel;
 
-import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.html.EmbeddedElement;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * This is the box computer implementation for an

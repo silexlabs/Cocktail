@@ -10,8 +10,7 @@ package cocktail.core.boxmodel;
 
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.core.css.CSSData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
 
 /**
  * This is the box computer for inline embedded HTMLElement,

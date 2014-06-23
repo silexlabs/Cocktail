@@ -21,7 +21,6 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.css.CSSData;
 
 /**
  * Base class for embedded element

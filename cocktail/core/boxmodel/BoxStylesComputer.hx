@@ -13,8 +13,8 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * This is the base class for all classes computing a HTMLElement's box model. 

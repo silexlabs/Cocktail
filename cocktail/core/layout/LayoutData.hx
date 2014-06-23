@@ -12,13 +12,13 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.css.CoreStyle;
+import cocktail.css.CSSStyleData;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.parser.ParserData;
-import cocktail.core.css.CSSData;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures

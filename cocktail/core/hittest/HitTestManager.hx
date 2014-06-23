@@ -11,10 +11,7 @@ package cocktail.core.hittest;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
 import cocktail.core.stacking.StackingContext;
-import haxe.Log;
-import haxe.Log;
 
 /**
  * Manages hit testing of the document.

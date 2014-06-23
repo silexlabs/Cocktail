@@ -25,8 +25,8 @@ import cocktail.core.boxmodel.PositionedBoxStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSCascadeData;
 
 /**
  * This is a base class for ElementRenderer which are

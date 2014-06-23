@@ -12,8 +12,7 @@ import cocktail.core.config.Config;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;	
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
-import haxe.Log;
+import cocktail.css.CSSStyleData;
 
 /**
  * This class exposes helper static methods

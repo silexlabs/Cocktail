@@ -9,8 +9,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.css.CascadeManager;
-import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.css.InitialStyleDeclaration;
 import cocktail.core.dom.Node;
 import cocktail.event.Event;
 import cocktail.event.UIEvent;
@@ -24,9 +23,9 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.floats.FloatsManager;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.css.CSSCascadeData;
 
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;

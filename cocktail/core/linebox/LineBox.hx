@@ -15,7 +15,6 @@ import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 
 /**

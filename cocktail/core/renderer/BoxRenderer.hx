@@ -8,7 +8,6 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.css.CSSConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.GeomUtils;
@@ -40,8 +39,8 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSCascadeData;
 import haxe.Log;
 
 /**
