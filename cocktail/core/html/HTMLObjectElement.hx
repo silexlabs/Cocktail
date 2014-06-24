@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.core.dom.Attr;
 import cocktail.event.Event;
 import cocktail.event.EventConstants;
 import cocktail.event.UIEvent;

@@ -8,7 +8,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.css.CoreStyle;

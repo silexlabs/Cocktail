@@ -9,7 +9,6 @@
 package cocktail.core.html;
 import cocktail.css.*;
 import cocktail.css.CSSOMData;
-import cocktail.core.dom.DOMConstants;
 import cocktail.event.Event;
 import cocktail.core.css.CSSCascadeData;
 import cocktail.event.EventConstants;

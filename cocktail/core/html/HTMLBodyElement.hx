@@ -9,7 +9,6 @@
 package cocktail.core.html;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.dom.Node;
 import cocktail.core.renderer.BodyBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;

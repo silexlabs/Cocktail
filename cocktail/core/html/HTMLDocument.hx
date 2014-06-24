@@ -22,8 +22,6 @@ import cocktail.core.css.DefaultCSSStyleSheet;
 import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
-import cocktail.core.dom.Element;
-import cocktail.core.dom.Node;
 import cocktail.event.Event;
 import cocktail.event.EventConstants;
 import cocktail.event.KeyboardEvent;

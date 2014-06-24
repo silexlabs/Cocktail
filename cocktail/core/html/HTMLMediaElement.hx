@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
-import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.event.Event;
 import cocktail.event.EventConstants;

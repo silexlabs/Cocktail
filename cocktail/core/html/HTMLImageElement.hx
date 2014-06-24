@@ -8,8 +8,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.dom.Attr;
-import cocktail.core.dom.Node;
 import cocktail.event.EventConstants;
 import cocktail.event.EventTarget;
 import cocktail.event.UIEvent;
