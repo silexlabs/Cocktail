@@ -105,7 +105,7 @@ class Event
 	/**
 	 * Wheter this event has already been dispatched
 	 */
-	public var dispatched:Bool;
+	public var dispatched:Bool = false;
 	
 	/**
 	 * class constructor

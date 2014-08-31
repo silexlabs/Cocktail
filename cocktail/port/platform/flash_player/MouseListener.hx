@@ -195,7 +195,7 @@ class MouseListener extends MouseListenerBase
 		var mouseEvent:MouseEvent = new MouseEvent();
 		
 		var localPoint:Point = new Point(typedEvent.localX, typedEvent.localY);
-		localPoint = _platform.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
+		localPoint = _platform.convertToHitTestingSpriteSpace(localPoint, event.get_target(), _platform.hitTestingSprite);
 		
 		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
 		//the viewport of the document
