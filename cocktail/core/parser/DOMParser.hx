@@ -112,6 +112,8 @@ class DOMParser
 						{
 							continue;
 						}
+
+					default:
 				}
 			
 				//desrialize the child, thus deserializing
@@ -129,6 +131,9 @@ class DOMParser
 			}
 			
 			return htmlElement;
+
+		default:
+
 		}
 		
 		return null;
