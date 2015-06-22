@@ -264,7 +264,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		}
 		else
 		{
-			nativeBitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, true);
+			nativeBitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, false);
 		}
 	}
 	
