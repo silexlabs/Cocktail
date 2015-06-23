@@ -49,7 +49,7 @@ class Event
 	 * Used to indicate which phase of event flow
 	 * is currently being accomplished.
 	 */
-	public var eventPhase:Int;
+	public var eventPhase:Int = 0;
 	
 	/**
 	 * The name of the event
