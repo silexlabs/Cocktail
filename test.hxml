@@ -1,0 +1,6 @@
+## Neko
+-main Main
+-lib buddy
+-lib utest
+-cp test
+-neko build/neko_test.n

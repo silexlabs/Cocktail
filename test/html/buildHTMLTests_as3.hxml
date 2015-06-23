@@ -1,5 +1,0 @@
--cp ../../
--main HTMLTests
--lib utest
--swf HTMLTestAs3.swf
--swf-version 10.2

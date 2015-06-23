@@ -1,0 +1,7 @@
+language: haxe
+sudo: false
+hxml:
+  - test.hxml
+
+script:
+  - make
