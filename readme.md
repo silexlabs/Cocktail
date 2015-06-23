@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/silexlabs/Cocktail.svg?branch=add-travis-test)](https://travis-ci.org/silexlabs/Cocktail)
+
 Cocktail, an HTML/CSS rendering engine for the [Haxe](http://haxe.org/) language 
 =============
 
