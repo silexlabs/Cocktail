@@ -1,5 +1,0 @@
--cp ../../
--main FocusTests
--lib utest
--swf9 focusTestAs3.swf
--swf-version 10.2
