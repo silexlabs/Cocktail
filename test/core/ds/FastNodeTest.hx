@@ -22,13 +22,6 @@ class FastNodeTest extends BuddySuite {
                     childNode.parentNode.should.be(null);
                     parentNode.firstChild.should.be(null);
                 });
-                it('should throw if not a child', function () {
-                    var parentNode = new TestNode();
-                    var anotherNode = new TestNode();
-
-                    parentNode.removeChild.bind(anotherNode)
-                    .should.throwValue('not a child node');
-                });
             });
 
             describe('#appendChild', function () {
@@ -60,15 +53,6 @@ class FastNodeTest extends BuddySuite {
                     firstChildNode.parentNode.should.be(parentNode);
                     firstChildNode.nextSibling.should.be(null);
                     firstChildNode.previousSibling.should.be(childNode);
-                });
-
-                it('should throw if ref node is not a child', function () {
-                    var parentNode = new TestNode();
-                    var childNode = new TestNode();
-                    var anotherNode = new TestNode();
-
-                    parentNode.insertBefore.bind(childNode, anotherNode)
-                    .should.throwValue('not a child node');
                 });
             });
         });

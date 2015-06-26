@@ -126,10 +126,6 @@ class FastNode<NodeClass:IFastNode<NodeClass>> implements IFastNode<NodeClass>
 	
 	public function insertBefore(newChild:NodeClass, refChild:NodeClass):Void
 	{
-		if (refChild.parentNode != cast(this))
-		{
-			throw 'not a child node';
-		}
 
 		if (firstChild == null || refChild == null)
 		{
