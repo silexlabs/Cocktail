@@ -1,9 +1,9 @@
-package cocktail;
+package cocktail.core.boxmodel2;
 
 
-class BoxStylesComputer {
+class BoxModel {
 
-  public function measure(node:StyleNode, containingBlock:ContainingBlock):UsedStyleNode {
+  public static function measure(node:StyleNode, containingBlock:ContainingBlock):UsedStyleNode {
     return {
       paddings: measurePaddings(node.paddings, containingBlock),
       borders: measureBorders(node.borders),
@@ -30,73 +30,73 @@ class BoxStylesComputer {
       //computed dimensions of this HTMLElement to compute its own height.
   }
 
-  private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
-  {
-    //compute the margins and the constrained width and height
-    style.usedValues.width = constrainWidth(style, measureWidthAndHorizontalMargins(style, containingBlockData));
-    style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
-  }
+  //private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
+  //{
+    ////compute the margins and the constrained width and height
+    //style.usedValues.width = constrainWidth(style, measureWidthAndHorizontalMargins(style, containingBlockData));
+    //style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
+  //}
 
   /**
    * Constrain computed width if it is above/below max/min width
    */
-  private function constrainWidth(style:CoreStyle, usedWidth:Float):Float
-  {
-    var usedValues:UsedValuesVO = style.usedValues;
+  //private function constrainWidth(style:CoreStyle, usedWidth:Float):Float
+  //{
+    //var usedValues:UsedValuesVO = style.usedValues;
 
-    //check that the computedWidth is not 
-    //superior to max width. The max width
-    //can be defined as "none" if there are 
-    //no width limit on this HTMLElement
-    if (style.hasMaxWidth == true)
-    {
-      if (usedWidth > usedValues.maxWidth)
-      {
-        usedWidth = usedValues.maxWidth;
-      }
-    }
+    ////check that the computedWidth is not 
+    ////superior to max width. The max width
+    ////can be defined as "none" if there are 
+    ////no width limit on this HTMLElement
+    //if (style.hasMaxWidth == true)
+    //{
+      //if (usedWidth > usedValues.maxWidth)
+      //{
+        //usedWidth = usedValues.maxWidth;
+      //}
+    //}
     
-    //check that width is superior to min width
-    if (usedWidth < usedValues.minWidth)
-    {
-      usedWidth = usedValues.minWidth;
-    }
+    ////check that width is superior to min width
+    //if (usedWidth < usedValues.minWidth)
+    //{
+      //usedWidth = usedValues.minWidth;
+    //}
     
-    return usedWidth;
-  }
+    //return usedWidth;
+  //}
   
   /**
    * Constrain computed height if it is above/below max/min height
    */
-  private function constrainHeight(style:CoreStyle, usedHeight:Float):Float
-  {
-    var usedValues:UsedValuesVO = style.usedValues;
+  //private function constrainHeight(style:CoreStyle, usedHeight:Float):Float
+  //{
+    //var usedValues:UsedValuesVO = style.usedValues;
   
-    //check that height is within authorised range
-    if (style.hasMaxHeight == true)
-    {
-      if (usedHeight > usedValues.maxHeight)
-      {
-        usedHeight = usedValues.maxHeight;
-      }
-    }
+    ////check that height is within authorised range
+    //if (style.hasMaxHeight == true)
+    //{
+      //if (usedHeight > usedValues.maxHeight)
+      //{
+        //usedHeight = usedValues.maxHeight;
+      //}
+    //}
     
-    //check that height is superior to min height
-    if (usedHeight < usedValues.minHeight)
-    {
-      usedHeight = usedValues.minHeight;
-    }
+    ////check that height is superior to min height
+    //if (usedHeight < usedValues.minHeight)
+    //{
+      //usedHeight = usedValues.minHeight;
+    //}
     
-    return usedHeight;
-  }
+    //return usedHeight;
+  //}
 
-  private function measureOutline(outline:Outline):Int {
+  private static function measureOutline(outline:Outline):Int {
     return switch(outline) {
       case AbsoluteLength(value): value;
     }
   }
 
-  private function measureBorders(borders:Borders):BordersUsedValues {
+  private static function measureBorders(borders:Borders):BordersUsedValues {
     return {
       left : getComputedBorderWidth(borders.left),
       right: getComputedBorderWidth(borders.right),
@@ -105,13 +105,13 @@ class BoxStylesComputer {
     }
   }
 
-  private function getComputedBorderWidth(border:Border):Int {
+  private static function getComputedBorderWidth(border:Border):Int {
     return switch (border) {
       case AbsoluteLength(value): value;
     }
   }
 
-  private function measurePaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
+  private static function measurePaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
     return {
       left: getComputedPadding(paddings.left, containingBlock.width),
       right: getComputedPadding(paddings.right, containingBlock.width),
@@ -120,14 +120,15 @@ class BoxStylesComputer {
     }
   }
 
-  private function getComputedPadding(padding:Padding, containerWidth:Int):Int {
+  @:allow(core.boxmodel.BoxModelTest)
+  private static function getComputedPadding(padding:Padding, containerWidth:Int):Int {
     return switch (padding) {
       case AbsoluteLength(value): value;
       case Percent(value): Math.round(containerWidth * (value * 0.01));
     }
   }
 
-  private function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
+  private static function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
     return {
       maxHeight: getComputedConstrainedDimension(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto, false),
       minHeight: getComputedConstrainedDimension(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto, true),
@@ -136,7 +137,7 @@ class BoxStylesComputer {
     }
   }
 
-  private function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, isContainingDimensionAuto:Bool, isMinConstraint:Bool):Int {
+  private static function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, isContainingDimensionAuto:Bool, isMinConstraint:Bool):Int {
     return switch (constraint) {
       case AbsoluteLength(value): value;
 
@@ -178,7 +179,7 @@ typedef UsedStyleNode = {
   var paddings:PaddingsUsedValues;
   var borders:BordersUsedValues;
   var outline:Int;
-  var dimensionsConstraints:DimensionsConstraints;
+  var dimensionsConstraints:DimensionsConstraintsUsedValues;
 }
 
 typedef DimensionsConstraints = {
