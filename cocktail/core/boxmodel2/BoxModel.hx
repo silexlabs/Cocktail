@@ -41,6 +41,122 @@ class BoxModel {
   //}
 
   /**
+   * Measure the width and the horizontal margins
+   * of the HTMLElement
+   */
+  //private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
+  //{
+    //if (style.hasAutoWidth == true)
+    //{
+      //return measureAutoWidth(style, containingBlockData);
+    //}
+    //else
+    //{ 
+      //return measureWidth(style, containingBlockData);
+    //}
+  //}
+
+  //private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
+  //{
+    ////get the content width (width without margins and paddings)
+    ////width must be constrained now, so that margin will be computed with the
+    ////actually used width value
+    //var computedWidth:Float = constrainWidth(style, getComputedWidth(style, containingBlockData));
+    
+    ////left margin
+    //style.usedValues.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData);
+    ////right margin
+    //style.usedValues.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData);
+    
+    //return computedWidth;
+  //}
+
+  private static function getComputedDimension(dimension:Dimension, containerDimension:Int):Int {
+    return switch (dimension) {
+      case AbsoluteLength(value): value;
+      case Percent(percent): percent.compute(containerDimension);
+      case Auto: 0;
+    }
+  }
+
+  private static function getComputedMarginLeft(
+      margins:Margins,
+      usedPaddings:PaddingsUsedValues,
+      usedBorders:BordersUsedValues,
+      width:Int,
+      hasAutoWidth:Bool,
+      containingBlock:ContainingBlock):Float {
+    return getComputedMargin(
+        margins.left,
+        margins.right,
+        containingBlock.width,
+        width,
+        hasAutoWidth,
+        usedPaddings.left + usedPaddings.right + usedBorders.left + usedBorders.right,
+        true
+        );
+  }
+
+  private static function getComputedMargin(
+      margin:Margin,
+      oppositeMargin:Margin,
+      containerDimension:Int,
+      dimension:Int,
+      dimensionIsAuto:Bool,
+      paddingsAndBordersDimension:Int,
+      isHorizontalMargin:Bool):Int {
+    return switch (margin) {
+
+      case AbsoluteLength(value): value;
+
+      case Percent(percent):
+        if (dimensionIsAuto) 0;
+        else percent.compute(containerDimension);
+
+      case Auto:
+        getComputedAutoMargin(
+            margin,
+            oppositeMargin,
+            containerDimension,
+            dimension,
+            dimensionIsAuto,
+            paddingsAndBordersDimension,
+            isHorizontalMargin
+            );
+    }
+  }
+
+  private static function getComputedAutoMargin(
+      margin:Margin,
+      oppositeMargin:Margin,
+      containerDimension:Int,
+      computedDimension:Int,
+      isDimensionAuto:Bool,
+      paddingsAndBordersDimension:Int,
+      isHorizontalMargin:Bool):Int {
+    return if (isHorizontalMargin == false || isDimensionAuto == true) {
+      0;
+    }
+    else {
+      return switch (oppositeMargin) {
+        case Auto:
+          Math.round((containerDimension - computedDimension - paddingsAndBordersDimension) / 2);
+        
+        case _:
+          var oppositeMarginDimension = getComputedMargin(
+              oppositeMargin,
+              margin,
+              containerDimension,
+              computedDimension,
+              isDimensionAuto,
+              paddingsAndBordersDimension,
+              isHorizontalMargin);
+          containerDimension - computedDimension - paddingsAndBordersDimension - oppositeMarginDimension; 
+      }
+    }
+  }
+
+  /**
    * Constrain computed width if it is above/below max/min width
    */
   //private function constrainWidth(style:CoreStyle, usedWidth:Float):Float
@@ -127,7 +243,7 @@ class BoxModel {
   private static function getComputedPadding(padding:Padding, containerWidth:Int):Int {
     return switch (padding) {
       case AbsoluteLength(value): value;
-      case Percent(value): Math.round(containerWidth * (value * 0.01));
+      case Percent(percent): percent.compute(containerWidth);
     }
   }
 
@@ -145,16 +261,23 @@ class BoxModel {
     return switch (constraint) {
       case AbsoluteLength(value): Some(value);
 
-      case Percent(value):
-        if (containingDimensionIsAuto == true) {
-          None;
-        }
-        else {
-          Some(Math.round(containerDimension * (value * 0.01)));
-        }
+      case Percent(percent):
+        if (containingDimensionIsAuto) None;
+        else Some(percent.compute(containerDimension));
 
       case Unconstrained: None;
     }
+  }
+}
+
+abstract Percentage(Int) from Int {
+
+  inline function new (p) {
+    this = p;
+  }
+
+  public inline function compute(reference:Int) {
+    return Math.round(reference * (this * 0.01));
   }
 }
 
@@ -188,7 +311,7 @@ typedef DimensionsConstraintsUsedValues = {
 
 enum DimensionConstraint {
   AbsoluteLength(value:Int);
-  Percent(value:Int);
+  Percent(value:Percentage);
   Unconstrained;
 }
 
@@ -198,6 +321,25 @@ enum Border {
 
 enum Outline {
   AbsoluteLength(value:Int);
+}
+
+enum Dimension {
+  AbsoluteLength(value:Int);
+  Percent(value:Percentage);
+  Auto;
+}
+
+enum Margin {
+  AbsoluteLength(value:Int);
+  Percent(value:Percentage);
+  Auto;
+}
+
+typedef Margins = {
+  var left:Margin;
+  var right:Margin;
+  var top:Margin;
+  var bottom:Margin;
 }
 
 typedef Borders = {
@@ -216,7 +358,7 @@ typedef BordersUsedValues = {
 
 enum Padding {
   AbsoluteLength(value:Int);
-  Percent(value:Int);
+  Percent(value:Percentage);
 }
 
 typedef Paddings = {
