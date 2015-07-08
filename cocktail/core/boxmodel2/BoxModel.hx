@@ -4,8 +4,6 @@ import haxe.ds.Option;
 
 class BoxModel {
 
-
-
   public static function measure(node:StyleNode, containingBlock:ContainingBlock):UsedStyleNode {
     return {
       paddings: measurePaddings(node.paddings, containingBlock),
@@ -56,22 +54,49 @@ class BoxModel {
     //}
   //}
 
-  //private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
-  //{
-    ////get the content width (width without margins and paddings)
-    ////width must be constrained now, so that margin will be computed with the
-    ////actually used width value
-    //var computedWidth:Float = constrainWidth(style, getComputedWidth(style, containingBlockData));
+  private function measureWidth(
+      width:Dimension,
+      maxWidth: Int,
+      minWidth: Int,
+      containingBlock:ContainingBlock):Int {
+    return constrainWidth(getComputedWidth(width, containingBlock), maxWidth, minWidth);
+
+    //get the content width (width without margins and paddings)
+    //width must be constrained now, so that margin will be computed with the
+    //actually used width value
+    //var computedWidth = constrainWidth(style, getComputedWidth(style, containingBlock));
     
-    ////left margin
+    //left margin
     //style.usedValues.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData);
-    ////right margin
+    //right margin
     //style.usedValues.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData);
     
     //return computedWidth;
+  }
+
+  //private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
+  //{
+    //if (style.hasAutoWidth == true)
+    //{
+      //return measureAutoWidth(style, containingBlockData);
+    //}
+    //else
+    //{ 
+      //return measureWidth(style, containingBlockData);
+    //}
   //}
 
-  private static function getComputedDimension(dimension:Dimension, containerDimension:Int):Int {
+  static function constrainWidth(width:Int, maxWidth:Int, minWidth:Int):Int
+    return
+      if (width > maxWidth) maxWidth;
+      else if (width < minWidth) minWidth;
+      else width;
+
+  static function getComputedWidth(width:Dimension, containingBlock:ContainingBlock):Int {
+    return getComputedDimension(width, containingBlock.width);
+  }
+
+  static function getComputedDimension(dimension:Dimension, containerDimension:Int):Int {
     return switch (dimension) {
       case AbsoluteLength(value): value;
       case Percent(percent): percent.compute(containerDimension);
@@ -79,13 +104,13 @@ class BoxModel {
     }
   }
 
-  private static function getComputedMarginLeft(
+  static function getComputedMarginLeft(
       margins:Margins,
       usedPaddings:PaddingsUsedValues,
       usedBorders:BordersUsedValues,
       width:Int,
       hasAutoWidth:Bool,
-      containingBlock:ContainingBlock):Float {
+      containingBlock:ContainingBlock):Int {
     return getComputedMargin(
         margins.left,
         margins.right,
@@ -97,7 +122,7 @@ class BoxModel {
         );
   }
 
-  private static function getComputedMargin(
+  static function getComputedMargin(
       margin:Margin,
       oppositeMargin:Margin,
       containerDimension:Int,
@@ -126,34 +151,31 @@ class BoxModel {
     }
   }
 
-  private static function getComputedAutoMargin(
+  static function getComputedAutoMargin(
       margin:Margin,
       oppositeMargin:Margin,
       containerDimension:Int,
       computedDimension:Int,
-      isDimensionAuto:Bool,
+      dimensionIsAuto:Bool,
       paddingsAndBordersDimension:Int,
-      isHorizontalMargin:Bool):Int {
-    return if (isHorizontalMargin == false || isDimensionAuto == true) {
-      0;
-    }
-    else {
-      return switch (oppositeMargin) {
+      marginIsHorizontal:Bool):Int {
+    return
+      if (!marginIsHorizontal || dimensionIsAuto) 0;
+      else return switch (oppositeMargin) {
         case Auto:
           Math.round((containerDimension - computedDimension - paddingsAndBordersDimension) / 2);
-        
+
         case _:
           var oppositeMarginDimension = getComputedMargin(
               oppositeMargin,
               margin,
               containerDimension,
               computedDimension,
-              isDimensionAuto,
+              dimensionIsAuto,
               paddingsAndBordersDimension,
-              isHorizontalMargin);
+              marginIsHorizontal);
           containerDimension - computedDimension - paddingsAndBordersDimension - oppositeMarginDimension; 
       }
-    }
   }
 
   /**
@@ -209,13 +231,13 @@ class BoxModel {
     //return usedHeight;
   //}
 
-  private static function measureOutline(outline:Outline):Int {
+  static function measureOutline(outline:Outline):Int {
     return switch(outline) {
       case AbsoluteLength(value): value;
     }
   }
 
-  private static function measureBorders(borders:Borders):BordersUsedValues {
+  static function measureBorders(borders:Borders):BordersUsedValues {
     return {
       left : getComputedBorderWidth(borders.left),
       right: getComputedBorderWidth(borders.right),
@@ -224,13 +246,13 @@ class BoxModel {
     }
   }
 
-  private static function getComputedBorderWidth(border:Border):Int {
+  static function getComputedBorderWidth(border:Border):Int {
     return switch (border) {
       case AbsoluteLength(value): value;
     }
   }
 
-  private static function measurePaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
+  static function measurePaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
     return {
       left: getComputedPadding(paddings.left, containingBlock.width),
       right: getComputedPadding(paddings.right, containingBlock.width),
@@ -240,14 +262,14 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
-  private static function getComputedPadding(padding:Padding, containerWidth:Int):Int {
+  static function getComputedPadding(padding:Padding, containerWidth:Int):Int {
     return switch (padding) {
       case AbsoluteLength(value): value;
       case Percent(percent): percent.compute(containerWidth);
     }
   }
 
-  private static function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
+  static function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
     return {
       maxHeight: getComputedConstrainedDimension(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto),
       minHeight: getComputedConstrainedDimension(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto),
@@ -257,7 +279,7 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
-  private static function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, containingDimensionIsAuto:Bool):Option<Int> {
+  static function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, containingDimensionIsAuto:Bool):Option<Int> {
     return switch (constraint) {
       case AbsoluteLength(value): Some(value);
 
@@ -272,13 +294,11 @@ class BoxModel {
 
 abstract Percentage(Int) from Int {
 
-  inline function new (p) {
-    this = p;
-  }
+  inline function new (i) this = i;
 
-  public inline function compute(reference:Int) {
+  public inline function compute(reference:Int)
     return Math.round(reference * (this * 0.01));
-  }
+
 }
 
 typedef StyleNode = {
@@ -327,6 +347,11 @@ enum Dimension {
   AbsoluteLength(value:Int);
   Percent(value:Percentage);
   Auto;
+}
+
+typedef Dimensions = {
+  var width:Dimension;
+  var height:Dimension;
 }
 
 enum Margin {
