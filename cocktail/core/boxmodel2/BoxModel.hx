@@ -1,7 +1,10 @@
 package cocktail.core.boxmodel2;
 
+import haxe.ds.Option;
 
 class BoxModel {
+
+
 
   public static function measure(node:StyleNode, containingBlock:ContainingBlock):UsedStyleNode {
     return {
@@ -130,40 +133,27 @@ class BoxModel {
 
   private static function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
     return {
-      maxHeight: getComputedConstrainedDimension(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto, false),
-      minHeight: getComputedConstrainedDimension(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto, true),
-      maxWidth: getComputedConstrainedDimension(constraints.maxWidth, containingBlock.width, containingBlock.isWidthAuto, false),
-      minWidth: getComputedConstrainedDimension(constraints.minWidth, containingBlock.width, containingBlock.isWidthAuto, true)
+      maxHeight: getComputedConstrainedDimension(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto),
+      minHeight: getComputedConstrainedDimension(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto),
+      maxWidth: getComputedConstrainedDimension(constraints.maxWidth, containingBlock.width, containingBlock.isWidthAuto),
+      minWidth: getComputedConstrainedDimension(constraints.minWidth, containingBlock.width, containingBlock.isWidthAuto)
     }
   }
 
-  private static function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, isContainingDimensionAuto:Bool, isMinConstraint:Bool):Int {
+  @:allow(core.boxmodel.BoxModelTest)
+  private static function getComputedConstrainedDimension(constraint:DimensionConstraint, containerDimension:Int, containingDimensionIsAuto:Bool):Option<Int> {
     return switch (constraint) {
-      case AbsoluteLength(value): value;
+      case AbsoluteLength(value): Some(value);
 
       case Percent(value):
-        //if the containing HTMLElement dimension is not defined,
-        //min value default to 0, for max value,
-        //default to an "infinite" value (no constraints)
-        if (isContainingDimensionAuto == true) {
-          if (isMinConstraint == true) {
-            0;
-          }
-          else {
-            1000000;
-          }
+        if (containingDimensionIsAuto == true) {
+          None;
         }
         else {
-          Math.round(containerDimension * (value * 0.01));
+          Some(Math.round(containerDimension * (value * 0.01)));
         }
 
-      case None:
-        if (isMinConstraint == true) {
-          0;
-        }
-        else {
-          1000000;
-        }
+      case Unconstrained: None;
     }
   }
 }
@@ -190,16 +180,16 @@ typedef DimensionsConstraints = {
 }
 
 typedef DimensionsConstraintsUsedValues = {
-  var minHeight:Int;
-  var maxHeight:Int;
-  var minWidth:Int;
-  var maxWidth:Int;
+  var minHeight:Option<Int>;
+  var maxHeight:Option<Int>;
+  var minWidth:Option<Int>;
+  var maxWidth:Option<Int>;
 }
 
 enum DimensionConstraint {
   AbsoluteLength(value:Int);
   Percent(value:Int);
-  None;
+  Unconstrained;
 }
 
 enum Border {
