@@ -6,6 +6,7 @@
 
 	<source path="src" />
 	<assets path="res">
+		<text path="index.html" />
 		<text path="default.html" id="html" />
 		<text path="default.css" />
 	</assets>
