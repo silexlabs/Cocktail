@@ -9,6 +9,12 @@ class BoxModel {
       paddings: measurePaddings(node.paddings, containingBlock),
       borders: measureBorders(node.borders),
       outline: measureOutline(node.outline),
+      margins: {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+      },
       dimensionsConstraints: measureDimensionsConstraints(node.dimensionsConstraints, containingBlock)
     }
 
@@ -38,26 +44,11 @@ class BoxModel {
     //style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
   //}
 
-  /**
-   * Measure the width and the horizontal margins
-   * of the HTMLElement
-   */
-  //private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
-  //{
-    //if (style.hasAutoWidth == true)
-    //{
-      //return measureAutoWidth(style, containingBlockData);
-    //}
-    //else
-    //{ 
-      //return measureWidth(style, containingBlockData);
-    //}
-  //}
 
-  private function measureWidth(
+  static function measureWidth(
       width:Dimension,
-      maxWidth: Int,
-      minWidth: Int,
+      maxWidth: Option<Int>,
+      minWidth: Option<Int>,
       containingBlock:ContainingBlock):Int {
     return constrainWidth(getComputedWidth(width, containingBlock), maxWidth, minWidth);
 
@@ -74,23 +65,89 @@ class BoxModel {
     //return computedWidth;
   }
 
-  //private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
-  //{
-    //if (style.hasAutoWidth == true)
-    //{
-      //return measureAutoWidth(style, containingBlockData);
-    //}
-    //else
-    //{ 
-      //return measureWidth(style, containingBlockData);
-    //}
-  //}
+  /**
+   * Compute the size of the width when 'auto' and return it as pixels. It is equal to
+   * the remaining width of the containing HTMLElement once the margins, paddings and borders width have been
+   * removed
+   */
+  static function getComputedAutoWidth(
+      paddings:PaddingsUsedValues,
+      borders:BordersUsedValues,
+      marginLeft:Int,
+      marginRight:Int,
+      containingBlock:ContainingBlock):Int
+    return containingBlock.width - paddings.left - paddings.right - borders.left - borders.right - marginLeft - marginRight;
 
-  static function constrainWidth(width:Int, maxWidth:Int, minWidth:Int):Int
-    return
-      if (width > maxWidth) maxWidth;
-      else if (width < minWidth) minWidth;
-      else width;
+  static function measureAutoWidth(
+      node:StyleNode,
+      usedPaddings:PaddingsUsedValues,
+      usedBorders:BordersUsedValues,
+      containingBlock:ContainingBlock
+      ):Int {
+
+    var marginLeft = getComputedMarginLeft(
+        node.margins,
+        usedPaddings,
+        usedBorders,
+        0,
+        true,
+        containingBlock
+        );
+
+    var marginRight = getComputedMarginRight(
+        node.margins,
+        usedPaddings,
+        usedBorders,
+        0,
+        true,
+        containingBlock
+        );
+
+    //the width is computed now that the sizes of the margins are computed
+    return getComputedAutoWidth(usedPaddings, usedBorders, marginLeft, marginRight, containingBlock);
+    
+    //apply min-width and max-width constrain to the computed width
+    //var constrainedWidth:Float = constrainWidth(style, computedWidth);
+    
+    ////if the width was indeed constrain
+    //if (constrainedWidth != computedWidth)
+    //{
+      ////and if both the left and right margin are auto, then they takes each half of the remaining space in the
+      ////containing block so the element will be centered in its containing block
+      //if (style.hasAutoMarginLeft && style.hasAutoMarginRight)
+      //{
+        //var marginWidth:Float = (containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - style.usedValues.borderLeftWidth - style.usedValues.borderRightWidth - constrainedWidth) / 2;
+        
+        //style.usedValues.marginLeft = marginWidth;
+        //style.usedValues.marginRight = marginWidth;
+      //}
+    //}
+    
+    //return computedWidth;
+  }
+
+  static function measureWidthAndHorizontalMargins(
+      node:StyleNode,
+      usedPaddings:PaddingsUsedValues,
+      usedBorders:BordersUsedValues,
+      usedConstraints:DimensionsConstraintsUsedValues, 
+      containingBlock:ContainingBlock):Int
+    return switch (node.dimensions.width) {
+      case Auto: measureAutoWidth(node, usedPaddings, usedBorders, containingBlock);
+      case _: measureWidth(node.dimensions.width, usedConstraints.maxWidth, usedConstraints.minWidth, containingBlock);
+    }
+
+  static function constrainWidth(width:Int, maxWidth:Option<Int>, minWidth:Option<Int>):Int {
+    var maxedWidth = switch(maxWidth) {
+      case Some(max): if (width > max) max else width;
+      case None: width;
+    }
+
+    return switch(minWidth) {
+      case Some(min): if (width < min) min else maxedWidth;
+      case None: maxedWidth;
+    }
+  }
 
   static function getComputedWidth(width:Dimension, containingBlock:ContainingBlock):Int {
     return getComputedDimension(width, containingBlock.width);
@@ -114,6 +171,24 @@ class BoxModel {
     return getComputedMargin(
         margins.left,
         margins.right,
+        containingBlock.width,
+        width,
+        hasAutoWidth,
+        usedPaddings.left + usedPaddings.right + usedBorders.left + usedBorders.right,
+        true
+        );
+  }
+
+  static function getComputedMarginRight(
+      margins:Margins,
+      usedPaddings:PaddingsUsedValues,
+      usedBorders:BordersUsedValues,
+      width:Int,
+      hasAutoWidth:Bool,
+      containingBlock:ContainingBlock):Int {
+    return getComputedMargin(
+        margins.right,
+        margins.left,
         containingBlock.width,
         width,
         hasAutoWidth,
@@ -304,6 +379,8 @@ abstract Percentage(Int) from Int {
 typedef StyleNode = {
   var paddings:Paddings;
   var borders:Borders;
+  var margins:Margins;
+  var dimensions:Dimensions;
   var outline:Outline;
   var dimensionsConstraints:DimensionsConstraints;
 }
@@ -311,6 +388,7 @@ typedef StyleNode = {
 typedef UsedStyleNode = {
   var paddings:PaddingsUsedValues;
   var borders:BordersUsedValues;
+  var margins:MarginsUsedValues;
   var outline:Int;
   var dimensionsConstraints:DimensionsConstraintsUsedValues;
 }
@@ -372,6 +450,13 @@ typedef Borders = {
   var right:Border;
   var top:Border;
   var bottom:Border;
+}
+
+typedef MarginsUsedValues = {
+  var left:Int;
+  var right:Int;
+  var top:Int;
+  var bottom:Int;
 }
 
 typedef BordersUsedValues = {
