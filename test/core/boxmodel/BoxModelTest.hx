@@ -50,6 +50,18 @@ class BoxModelTest extends BuddySuite {
                     });
                 });
             });
+
+            describe('constrainWidth', function () {
+              it('constraints a width to its max width', function () {
+                BoxModel.constrainWidth(200, Some(100), None)
+                .should.be(100);
+              });
+
+              it('constraints a width to its min width', function () {
+                BoxModel.constrainWidth(100, None, Some(200))
+                .should.be(200);
+              });
+            });
         });
     }
 }

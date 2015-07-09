@@ -137,6 +137,7 @@ class BoxModel {
       case _: measureWidth(node.dimensions.width, usedConstraints.maxWidth, usedConstraints.minWidth, containingBlock);
     }
 
+  @:allow(core.boxmodel.BoxModelTest)
   static function constrainWidth(width:Int, maxWidth:Option<Int>, minWidth:Option<Int>):Int {
     var maxedWidth = switch(maxWidth) {
       case Some(max): if (width > max) max else width;
