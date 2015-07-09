@@ -62,6 +62,37 @@ class BoxModelTest extends BuddySuite {
                 .should.be(200);
               });
             });
+
+            describe('getComputedMargin', function () {
+              describe('Percent', function () {
+                it('has no margin if width is auto', function () {
+                  BoxModel.getComputedMargin(Percent(50), Auto, 100, 50, true, 50, true)
+                  .should.be(0);
+                });
+              });
+            });
+
+            describe('getComputedAutoMargin', function () {
+              it('has no margin if it is a vertical margin', function () {
+                BoxModel.getComputedAutoMargin(Auto, 100, 100, false, 0, false)
+                .should.be(0);
+              });
+
+              it('has no margin if the width is auto', function () {
+                BoxModel.getComputedAutoMargin(Auto, 100, 100, true, 0, true)
+                .should.be(0);
+              });
+
+              it('takes half the remaining container space if the opposite margin is auto', function () {
+                BoxModel.getComputedAutoMargin(Auto, 200, 100, false, 50, true)
+                .should.be(25);
+              });
+
+              it('takes the remaining container space after the opposite margin value is known', function () {
+                BoxModel.getComputedAutoMargin(AbsoluteLength(20), 200, 100, false, 50, true)
+                .should.be(30);
+              });
+            });
         });
     }
 }

@@ -198,6 +198,7 @@ class BoxModel {
         );
   }
 
+  @:allow(core.boxmodel.BoxModelTest)
   static function getComputedMargin(
       margin:Margin,
       oppositeMargin:Margin,
@@ -205,7 +206,7 @@ class BoxModel {
       dimension:Int,
       dimensionIsAuto:Bool,
       paddingsAndBordersDimension:Int,
-      isHorizontalMargin:Bool):Int {
+      marginIsHorizontal:Bool):Int {
     return switch (margin) {
 
       case AbsoluteLength(value): value;
@@ -216,72 +217,42 @@ class BoxModel {
 
       case Auto:
         getComputedAutoMargin(
-            margin,
             oppositeMargin,
             containerDimension,
             dimension,
             dimensionIsAuto,
             paddingsAndBordersDimension,
-            isHorizontalMargin
+            marginIsHorizontal
             );
     }
   }
 
+  @:allow(core.boxmodel.BoxModelTest)
   static function getComputedAutoMargin(
-      margin:Margin,
       oppositeMargin:Margin,
       containerDimension:Int,
-      computedDimension:Int,
+      dimension:Int,
       dimensionIsAuto:Bool,
       paddingsAndBordersDimension:Int,
-      marginIsHorizontal:Bool):Int {
+      marginIsHorizontal:Bool):Int
     return
       if (!marginIsHorizontal || dimensionIsAuto) 0;
       else return switch (oppositeMargin) {
         case Auto:
-          Math.round((containerDimension - computedDimension - paddingsAndBordersDimension) / 2);
+          Math.round((containerDimension - dimension - paddingsAndBordersDimension) / 2);
 
         case _:
           var oppositeMarginDimension = getComputedMargin(
               oppositeMargin,
-              margin,
+              Auto,
               containerDimension,
-              computedDimension,
+              dimension,
               dimensionIsAuto,
               paddingsAndBordersDimension,
               marginIsHorizontal);
-          containerDimension - computedDimension - paddingsAndBordersDimension - oppositeMarginDimension; 
+          containerDimension - dimension - paddingsAndBordersDimension - oppositeMarginDimension;
       }
-  }
 
-  /**
-   * Constrain computed width if it is above/below max/min width
-   */
-  //private function constrainWidth(style:CoreStyle, usedWidth:Float):Float
-  //{
-    //var usedValues:UsedValuesVO = style.usedValues;
-
-    ////check that the computedWidth is not 
-    ////superior to max width. The max width
-    ////can be defined as "none" if there are 
-    ////no width limit on this HTMLElement
-    //if (style.hasMaxWidth == true)
-    //{
-      //if (usedWidth > usedValues.maxWidth)
-      //{
-        //usedWidth = usedValues.maxWidth;
-      //}
-    //}
-    
-    ////check that width is superior to min width
-    //if (usedWidth < usedValues.minWidth)
-    //{
-      //usedWidth = usedValues.minWidth;
-    //}
-    
-    //return usedWidth;
-  //}
-  
   /**
    * Constrain computed height if it is above/below max/min height
    */
