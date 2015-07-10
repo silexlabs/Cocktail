@@ -5,17 +5,27 @@ import haxe.ds.Option;
 class BoxModel {
 
   public static function measure(node:StyleNode, containingBlock:ContainingBlock):UsedStyleNode {
+
+    var paddings = getPaddings(node.paddings, containingBlock);
+    var borders = getBorders(node.borders);
+    var constraints = getConstraints(node.dimensionsConstraints, containingBlock);
+    var width = getWidth(node, paddings, borders, constraints, containingBlock);
+
     return {
-      paddings: measurePaddings(node.paddings, containingBlock),
-      borders: measureBorders(node.borders),
-      outline: measureOutline(node.outline),
+      paddings: paddings,
+      borders: borders,
+      outline: getOutline(node.outline),
+      dimensions: {
+        width: width,
+        height: 0
+      },
       margins: {
         left: 10,
         right: 10,
         top: 10,
         bottom: 10
       },
-      dimensionsConstraints: measureDimensionsConstraints(node.dimensionsConstraints, containingBlock)
+      dimensionsConstraints: constraints
     }
 
       //measure width, height and margins at the same time, as margins can influence or be
@@ -44,13 +54,19 @@ class BoxModel {
     //style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
   //}
 
+  static function measureHeight(
+      height:Dimension,
+      maxHeight: Option<Int>,
+      minHeight: Option<Int>,
+      containingBlock:ContainingBlock):Int
+    return constrainDimension(getComputedHeight(height, containingBlock), maxHeight, minHeight);
 
   static function measureWidth(
       width:Dimension,
       maxWidth: Option<Int>,
       minWidth: Option<Int>,
       containingBlock:ContainingBlock):Int {
-    return constrainWidth(getComputedWidth(width, containingBlock), maxWidth, minWidth);
+    return constrainDimension(getComputedWidth(width, containingBlock), maxWidth, minWidth);
 
     //get the content width (width without margins and paddings)
     //width must be constrained now, so that margin will be computed with the
@@ -64,6 +80,9 @@ class BoxModel {
     
     //return computedWidth;
   }
+
+  static function getComputedAutoHeight():Int
+    return 0;
 
   /**
    * Compute the size of the width when 'auto' and return it as pixels. It is equal to
@@ -126,28 +145,32 @@ class BoxModel {
     //return computedWidth;
   }
 
-  static function measureWidthAndHorizontalMargins(
+  static function getWidth(
       node:StyleNode,
       usedPaddings:PaddingsUsedValues,
       usedBorders:BordersUsedValues,
-      usedConstraints:DimensionsConstraintsUsedValues, 
+      usedConstraints:DimensionsConstraintsUsedValues,
       containingBlock:ContainingBlock):Int
     return switch (node.dimensions.width) {
       case Auto: measureAutoWidth(node, usedPaddings, usedBorders, containingBlock);
-      case _: measureWidth(node.dimensions.width, usedConstraints.maxWidth, usedConstraints.minWidth, containingBlock);
+      case _: constrainDimension(getComputedWidth(node.dimensions.width, containingBlock), usedConstraints.maxWidth, usedConstraints.minWidth);
     }
 
   @:allow(core.boxmodel.BoxModelTest)
-  static function constrainWidth(width:Int, maxWidth:Option<Int>, minWidth:Option<Int>):Int {
-    var maxedWidth = switch(maxWidth) {
-      case Some(max): if (width > max) max else width;
-      case None: width;
+  static function constrainDimension(dimension:Int, max:Option<Int>, min:Option<Int>):Int {
+    var maxedDimension = switch(max) {
+      case Some(max): if (dimension > max) max else dimension;
+      case None: dimension;
     }
 
-    return switch(minWidth) {
-      case Some(min): if (width < min) min else maxedWidth;
-      case None: maxedWidth;
+    return switch(min) {
+      case Some(min): if (dimension < min) min else maxedDimension;
+      case None: maxedDimension;
     }
+  }
+
+  static function getComputedHeight(height:Dimension, containingBlock:ContainingBlock):Int {
+    return getComputedDimension(height, containingBlock.height);
   }
 
   static function getComputedWidth(width:Dimension, containingBlock:ContainingBlock):Int {
@@ -253,38 +276,13 @@ class BoxModel {
           containerDimension - dimension - paddingsAndBordersDimension - oppositeMarginDimension;
       }
 
-  /**
-   * Constrain computed height if it is above/below max/min height
-   */
-  //private function constrainHeight(style:CoreStyle, usedHeight:Float):Float
-  //{
-    //var usedValues:UsedValuesVO = style.usedValues;
-  
-    ////check that height is within authorised range
-    //if (style.hasMaxHeight == true)
-    //{
-      //if (usedHeight > usedValues.maxHeight)
-      //{
-        //usedHeight = usedValues.maxHeight;
-      //}
-    //}
-    
-    ////check that height is superior to min height
-    //if (usedHeight < usedValues.minHeight)
-    //{
-      //usedHeight = usedValues.minHeight;
-    //}
-    
-    //return usedHeight;
-  //}
-
-  static function measureOutline(outline:Outline):Int {
+  static function getOutline(outline:Outline):Int {
     return switch(outline) {
       case AbsoluteLength(value): value;
     }
   }
 
-  static function measureBorders(borders:Borders):BordersUsedValues {
+  static function getBorders(borders:Borders):BordersUsedValues {
     return {
       left : getComputedBorderWidth(borders.left),
       right: getComputedBorderWidth(borders.right),
@@ -299,7 +297,7 @@ class BoxModel {
     }
   }
 
-  static function measurePaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
+  static function getPaddings(paddings:Paddings, containingBlock:ContainingBlock):PaddingsUsedValues {
     return {
       left: getComputedPadding(paddings.left, containingBlock.width),
       right: getComputedPadding(paddings.right, containingBlock.width),
@@ -316,7 +314,7 @@ class BoxModel {
     }
   }
 
-  static function measureDimensionsConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
+  static function getConstraints(constraints:DimensionsConstraints, containingBlock:ContainingBlock):DimensionsConstraintsUsedValues {
     return {
       maxHeight: getComputedConstrainedDimension(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto),
       minHeight: getComputedConstrainedDimension(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto),
@@ -361,6 +359,7 @@ typedef UsedStyleNode = {
   var paddings:PaddingsUsedValues;
   var borders:BordersUsedValues;
   var margins:MarginsUsedValues;
+  var dimensions:DimensionsUsedValues;
   var outline:Int;
   var dimensionsConstraints:DimensionsConstraintsUsedValues;
 }
@@ -402,6 +401,11 @@ enum Dimension {
 typedef Dimensions = {
   var width:Dimension;
   var height:Dimension;
+}
+
+typedef DimensionsUsedValues = {
+   var width:Int;
+   var height:Int;
 }
 
 enum Margin {

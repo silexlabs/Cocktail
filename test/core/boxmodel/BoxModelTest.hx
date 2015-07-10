@@ -51,14 +51,14 @@ class BoxModelTest extends BuddySuite {
                 });
             });
 
-            describe('constrainWidth', function () {
-              it('constraints a width to its max width', function () {
-                BoxModel.constrainWidth(200, Some(100), None)
+            describe('constrainDimension', function () {
+              it('constraints a dimension to its max', function () {
+                BoxModel.constrainDimension(200, Some(100), None)
                 .should.be(100);
               });
 
-              it('constraints a width to its min width', function () {
-                BoxModel.constrainWidth(100, None, Some(200))
+              it('constraints a dimension to its min', function () {
+                BoxModel.constrainDimension(100, None, Some(200))
                 .should.be(200);
               });
             });
