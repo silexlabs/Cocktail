@@ -93,6 +93,18 @@ class BoxModelTest extends BuddySuite {
                 .should.be(30);
               });
             });
+
+            describe('getComputedAutoWidth', function () {
+              it('takes the remaining container space left by the box model', function () {
+                BoxModel.getComputedAutoWidth({
+                  left: 10, right: 10, top: 0, bottom: 0
+                }, {
+                  left: 10, right: 10, top: 0, bottom: 0
+                }, 10, 10, {
+                  width: 100, height: 0, isHeightAuto: false, isWidthAuto: false
+                }).should.be(40);
+              });
+            });
         });
     }
 }

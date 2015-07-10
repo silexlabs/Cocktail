@@ -10,6 +10,10 @@ class BoxModel {
     var borders = getBorders(node.borders);
     var constraints = getConstraints(node.dimensionsConstraints, containingBlock);
     var width = getWidth(node, paddings, borders, constraints, containingBlock);
+    var height = constrainDimension(
+        getComputedDimension(node.dimensions.height, containingBlock.height),
+        constraints.maxHeight, constraints.minHeight
+        );
 
     return {
       paddings: paddings,
@@ -54,20 +58,6 @@ class BoxModel {
     //style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
   //}
 
-  static function measureHeight(
-      height:Dimension,
-      maxHeight: Option<Int>,
-      minHeight: Option<Int>,
-      containingBlock:ContainingBlock):Int
-    return constrainDimension(getComputedHeight(height, containingBlock), maxHeight, minHeight);
-
-  static function measureWidth(
-      width:Dimension,
-      maxWidth: Option<Int>,
-      minWidth: Option<Int>,
-      containingBlock:ContainingBlock):Int {
-    return constrainDimension(getComputedWidth(width, containingBlock), maxWidth, minWidth);
-
     //get the content width (width without margins and paddings)
     //width must be constrained now, so that margin will be computed with the
     //actually used width value
@@ -79,16 +69,8 @@ class BoxModel {
     //style.usedValues.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData);
     
     //return computedWidth;
-  }
 
-  static function getComputedAutoHeight():Int
-    return 0;
-
-  /**
-   * Compute the size of the width when 'auto' and return it as pixels. It is equal to
-   * the remaining width of the containing HTMLElement once the margins, paddings and borders width have been
-   * removed
-   */
+  @:allow(core.boxmodel.BoxModelTest)
   static function getComputedAutoWidth(
       paddings:PaddingsUsedValues,
       borders:BordersUsedValues,
@@ -97,7 +79,7 @@ class BoxModel {
       containingBlock:ContainingBlock):Int
     return containingBlock.width - paddings.left - paddings.right - borders.left - borders.right - marginLeft - marginRight;
 
-  static function measureAutoWidth(
+  static function getAutoWidth(
       node:StyleNode,
       usedPaddings:PaddingsUsedValues,
       usedBorders:BordersUsedValues,
@@ -122,7 +104,6 @@ class BoxModel {
         containingBlock
         );
 
-    //the width is computed now that the sizes of the margins are computed
     return getComputedAutoWidth(usedPaddings, usedBorders, marginLeft, marginRight, containingBlock);
     
     //apply min-width and max-width constrain to the computed width
@@ -152,7 +133,7 @@ class BoxModel {
       usedConstraints:DimensionsConstraintsUsedValues,
       containingBlock:ContainingBlock):Int
     return switch (node.dimensions.width) {
-      case Auto: measureAutoWidth(node, usedPaddings, usedBorders, containingBlock);
+      case Auto: getAutoWidth(node, usedPaddings, usedBorders, containingBlock);
       case _: constrainDimension(getComputedWidth(node.dimensions.width, containingBlock), usedConstraints.maxWidth, usedConstraints.minWidth);
     }
 
@@ -167,10 +148,6 @@ class BoxModel {
       case Some(min): if (dimension < min) min else maxedDimension;
       case None: maxedDimension;
     }
-  }
-
-  static function getComputedHeight(height:Dimension, containingBlock:ContainingBlock):Int {
-    return getComputedDimension(height, containingBlock.height);
   }
 
   static function getComputedWidth(width:Dimension, containingBlock:ContainingBlock):Int {
@@ -219,6 +196,25 @@ class BoxModel {
         usedPaddings.left + usedPaddings.right + usedBorders.left + usedBorders.right,
         true
         );
+  }
+
+  static function getMargins(
+      margins:Margins, 
+      paddings:PaddingsUsedValues,
+      borders:BordersUsedValues,
+      dimensions:DimensionsUsedValues,
+      containingBlock:ContainingBlock):MarginsUsedValues {
+    return {
+      left: getComputedMargin(
+          margins.left,
+          margins.right,
+          containingBlock.width,
+          width,
+          widthIsAuto,
+          usedPaddings.left + usedPaddings.right + usedBorders.left + usedBorders.right,
+          true
+          )
+    }
   }
 
   @:allow(core.boxmodel.BoxModelTest)
