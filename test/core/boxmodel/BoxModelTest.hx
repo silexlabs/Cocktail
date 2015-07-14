@@ -91,6 +91,23 @@ class BoxModelTest extends BuddySuite {
               });
             });
 
+            describe('getWidth', function () {
+                it('is 0 for auto floated boxes', function () {
+                    BoxModel.getWidth(Auto, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        minWidth: None, minHeight: None, maxWidth: None, maxHeight: None
+                    }, {
+                        width: 10, height: 10, isHeightAuto: true, isWidthAuto: true
+                    }, true)
+                    .should.be(0);
+                });
+            });
+
             describe('getAutoWidth', function () {
               it('takes the remaining container space left by the box model', function () {
                 BoxModel.getAutoWidth({

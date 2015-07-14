@@ -21,7 +21,12 @@ class BoxModel {
         containingBlock
         );
 
-    var width = getWidth(styles.dimensions.width, autoMargins, paddings, borders, constraints, containingBlock);
+    var isFloated = switch(styles.float) {
+      case Left, Right: true;
+      case Unfloated: false;
+    }
+
+    var width = getWidth(styles.dimensions.width, autoMargins, paddings, borders, constraints, containingBlock, isFloated);
     var positions = getPositions(styles.positions, containingBlock);
     var height = constrainDimension(
         getDimension(styles.dimensions.height, containingBlock.height),
@@ -80,15 +85,19 @@ class BoxModel {
       containingBlock:ContainingBlock):Int
     return containingBlock.width - paddings.left - paddings.right - borders.left - borders.right - marginLeft - marginRight;
 
+  @:allow(core.boxmodel.BoxModelTest)
   static function getWidth(
       width:Dimension,
       margins:UsedMargins,
       paddings:UsedPaddings,
       borders:UsedBorders,
       constraints:UsedConstraints,
-      containingBlock:ContainingBlock):Int
+      containingBlock:ContainingBlock,
+      isFloated:Bool):Int
     return switch (width) {
-      case Auto: getAutoWidth(paddings, borders, margins.left, margins.right, containingBlock);
+      case Auto:
+        if (isFloated) 0;
+        else getAutoWidth(paddings, borders, margins.left, margins.right, containingBlock);
       case _: constrainDimension(getDimension(width, containingBlock.width), constraints.maxWidth, constraints.minWidth);
     }
 
@@ -372,6 +381,7 @@ abstract Percentage(Int) from Int {
 
 typedef Styles = {
   var display:Display;
+  var float:CSSFloat;
   var paddings:Paddings;
   var borders:Borders;
   var margins:Margins;
@@ -384,6 +394,12 @@ typedef Styles = {
 enum Display {
    Block;
    InlineBlock;
+}
+
+enum CSSFloat {
+  Left;
+  Right;
+  Unfloated;
 }
 
 typedef UsedStyles = {
