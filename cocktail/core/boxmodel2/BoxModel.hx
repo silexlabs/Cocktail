@@ -9,7 +9,19 @@ class BoxModel {
     var paddings = getPaddings(styles.paddings, containingBlock);
     var borders = getBorders(styles.borders);
     var constraints = getConstraints(styles.constraints, containingBlock);
-    var width = getWidth(styles, paddings, borders, constraints, containingBlock);
+
+    var autoMargins = getMargins(
+        styles.display,
+        styles.margins,
+        paddings,
+        borders,
+        {width: 0, height: 0},
+        true,
+        true,
+        containingBlock
+        );
+
+    var width = getWidth(styles.dimensions.width, autoMargins, paddings, borders, constraints, containingBlock);
     var positions = getPositions(styles.positions, containingBlock);
     var height = constrainDimension(
         getDimension(styles.dimensions.height, containingBlock.height),
@@ -60,7 +72,7 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
-  static function getComputedAutoWidth(
+  static function getAutoWidth(
       paddings:UsedPaddings,
       borders:UsedBorders,
       marginLeft:Int,
@@ -68,36 +80,16 @@ class BoxModel {
       containingBlock:ContainingBlock):Int
     return containingBlock.width - paddings.left - paddings.right - borders.left - borders.right - marginLeft - marginRight;
 
-  static function getAutoWidth(
-      node:Styles,
-      usedPaddings:UsedPaddings,
-      usedBorders:UsedBorders,
-      containingBlock:ContainingBlock
-      ):Int {
-
-    var margins = getMargins(
-        node.display,
-        node.margins,
-        usedPaddings,
-        usedBorders,
-        {width: 0, height: 0},
-        true,
-        true,
-        containingBlock
-        );
-
-    return getComputedAutoWidth(usedPaddings, usedBorders, margins.left, margins.right, containingBlock);
-  }
-
   static function getWidth(
-      styles:Styles,
-      usedPaddings:UsedPaddings,
-      usedBorders:UsedBorders,
-      usedConstraints:UsedConstraints,
+      width:Dimension,
+      margins:UsedMargins,
+      paddings:UsedPaddings,
+      borders:UsedBorders,
+      constraints:UsedConstraints,
       containingBlock:ContainingBlock):Int
-    return switch (styles.dimensions.width) {
-      case Auto: getAutoWidth(styles, usedPaddings, usedBorders, containingBlock);
-      case _: constrainDimension(getDimension(styles.dimensions.width, containingBlock.width), usedConstraints.maxWidth, usedConstraints.minWidth);
+    return switch (width) {
+      case Auto: getAutoWidth(paddings, borders, margins.left, margins.right, containingBlock);
+      case _: constrainDimension(getDimension(width, containingBlock.width), constraints.maxWidth, constraints.minWidth);
     }
 
   @:allow(core.boxmodel.BoxModelTest)
