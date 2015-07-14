@@ -63,10 +63,10 @@ class BoxModelTest extends BuddySuite {
               });
             });
 
-            describe('getMargin', function () {
+            describe('getBlockMargin', function () {
               describe('Percent', function () {
                 it('has no margin if width is auto', function () {
-                  BoxModel.getMargin(Percent(50), Auto, 100, 50, true, 50, true)
+                  BoxModel.getBlockMargin(Percent(50), Auto, 100, 50, true, 50, true)
                   .should.be(0);
                 });
               });
@@ -81,6 +81,13 @@ class BoxModelTest extends BuddySuite {
               it('takes the remaining container space after the opposite margin value is known', function () {
                 BoxModel.getAutoHorizontalMargin(AbsoluteLength(20), 200, 100, 50)
                 .should.be(30);
+              });
+            });
+
+            describe('getInlineBlockMargin', function () {
+              it('has no margin if auto', function () {
+                BoxModel.getInlineBlockMargin(Auto, 100, true)
+                .should.be(0);
               });
             });
 

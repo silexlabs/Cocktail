@@ -22,6 +22,7 @@ class BoxModel {
     }
 
     var margins = getMargins(
+        styles.display,
         styles.margins,
         paddings,
         borders,
@@ -75,6 +76,7 @@ class BoxModel {
       ):Int {
 
     var margins = getMargins(
+        node.display,
         node.margins,
         usedPaddings,
         usedBorders,
@@ -120,6 +122,70 @@ class BoxModel {
   }
 
   static function getMargins(
+      display:Display,
+      margins:Margins,
+      paddings:UsedPaddings,
+      borders:UsedBorders,
+      dimensions:UsedDimensions,
+      widthIsAuto:Bool,
+      heightIsAuto:Bool,
+      containingBlock:ContainingBlock
+      ):UsedMargins {
+    return switch (display) {
+      case Block: getBlockMargins(
+                      margins,
+                      paddings,
+                      borders,
+                      dimensions,
+                      widthIsAuto,
+                      heightIsAuto,
+                      containingBlock
+                      );
+
+      case InlineBlock: getInlineBlockMargins(
+                             margins,
+                             widthIsAuto,
+                             heightIsAuto,
+                             containingBlock
+                            );
+    }
+  }
+
+  static function getInlineBlockMargins(
+      margins:Margins,
+      widthIsAuto:Bool,
+      heightIsAuto:Bool,
+      containingBlock:ContainingBlock
+      ):UsedMargins {
+
+    return {
+      left: getInlineBlockMargin(
+          margins.left,
+          containingBlock.width,
+          widthIsAuto
+          ),
+
+      right: getInlineBlockMargin(
+          margins.right,
+          containingBlock.width,
+          widthIsAuto
+          ),
+
+      top: getInlineBlockMargin(
+          margins.top,
+          containingBlock.height,
+          heightIsAuto
+          ),
+
+      bottom: getInlineBlockMargin(
+          margins.bottom,
+          containingBlock.height,
+          heightIsAuto
+          )
+    }
+  }
+
+  static function getBlockMargins(
       margins:Margins,
       paddings:UsedPaddings,
       borders:UsedBorders,
@@ -131,7 +197,7 @@ class BoxModel {
 
     var usedWidth = paddings.left + paddings.right + borders.left + borders.right;
     return {
-      left: getMargin(
+      left: getBlockMargin(
           margins.left,
           margins.right,
           containingBlock.width,
@@ -141,7 +207,7 @@ class BoxModel {
           true
           ),
 
-      right: getMargin(
+      right: getBlockMargin(
           margins.right,
           margins.left,
           containingBlock.width,
@@ -151,7 +217,7 @@ class BoxModel {
           true
           ),
 
-      top: getMargin(
+      top: getBlockMargin(
           margins.top,
           margins.bottom,
           containingBlock.height,
@@ -161,7 +227,7 @@ class BoxModel {
           false
           ),
 
-      bottom: getMargin(
+      bottom: getBlockMargin(
           margins.bottom,
           margins.top,
           containingBlock.height,
@@ -174,7 +240,7 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
-  static function getMargin(
+  static function getBlockMargin(
       margin:Margin,
       oppositeMargin:Margin,
       containerDimension:Int,
@@ -202,6 +268,23 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
+  static function getInlineBlockMargin(
+      margin:Margin,
+      containerDimension:Int,
+      dimensionIsAuto:Bool) {
+    return switch (margin) {
+
+      case AbsoluteLength(value): value;
+
+      case Percent(percent):
+        if (dimensionIsAuto) 0;
+        else percent.compute(containerDimension);
+
+      case Auto: 0;
+    }
+  }
+
+  @:allow(core.boxmodel.BoxModelTest)
   static function getAutoHorizontalMargin(
       oppositeMargin:Margin,
       containerDimension:Int,
@@ -213,7 +296,7 @@ class BoxModel {
         Math.round((containerDimension - dimension - paddingsAndBordersDimension) / 2);
 
       case _:
-        var oppositeMarginDimension = getMargin(
+        var oppositeMarginDimension = getBlockMargin(
             oppositeMargin,
             Auto,
             containerDimension,
@@ -296,6 +379,7 @@ abstract Percentage(Int) from Int {
 }
 
 typedef Styles = {
+  var display:Display;
   var paddings:Paddings;
   var borders:Borders;
   var margins:Margins;
@@ -303,6 +387,11 @@ typedef Styles = {
   var outline:Outline;
   var constraints:Constraints;
   var positions:Positions;
+}
+
+enum Display {
+   Block;
+   InlineBlock;
 }
 
 typedef UsedStyles = {
