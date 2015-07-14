@@ -84,11 +84,22 @@ class BoxModelTest extends BuddySuite {
               });
             });
 
-            describe('getInlineBlockMargin', function () {
+            describe('getInlineMargin', function () {
               it('has no margin if auto', function () {
-                BoxModel.getInlineBlockMargin(Auto, 100, true)
+                BoxModel.getInlineMargin(Auto, 100, true)
                 .should.be(0);
               });
+            });
+
+            describe('getHeight', function () {
+                it('is 0 for inline boxes', function () {
+                    BoxModel.getHeight(Auto, {
+                        minHeight: None, minWidth: None, maxHeight: None, maxWidth: None
+                    }, {
+                        height: 10, width: 10, isHeightAuto: true, isWidthAuto: true
+                    }, true)
+                    .should.be(0);
+                });
             });
 
             describe('getWidth', function () {
@@ -103,7 +114,22 @@ class BoxModelTest extends BuddySuite {
                         minWidth: None, minHeight: None, maxWidth: None, maxHeight: None
                     }, {
                         width: 10, height: 10, isHeightAuto: true, isWidthAuto: true
-                    }, true)
+                    }, true, false)
+                    .should.be(0);
+                });
+
+                it('is 0 for inline boxes', function () {
+                    BoxModel.getWidth(Auto, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        left: 10, right: 10, top: 10, bottom: 10
+                    }, {
+                        minWidth: None, minHeight: None, maxWidth: None, maxHeight: None
+                    }, {
+                        width: 10, height: 10, isHeightAuto: true, isWidthAuto: true
+                    }, false, true)
                     .should.be(0);
                 });
             });

@@ -26,12 +26,24 @@ class BoxModel {
       case Unfloated: false;
     }
 
-    var width = getWidth(styles.dimensions.width, autoMargins, paddings, borders, constraints, containingBlock, isFloated);
+    var isInline = switch(styles.display) {
+      case Inline, InlineBlock: !isFloated;
+      case Block: false;
+    }
+
+    var width = getWidth(
+        styles.dimensions.width,
+        autoMargins,
+        paddings,
+        borders,
+        constraints,
+        containingBlock,
+        isFloated,
+        isInline);
+
     var positions = getPositions(styles.positions, containingBlock);
-    var height = constrainDimension(
-        getDimension(styles.dimensions.height, containingBlock.height),
-        constraints.maxHeight, constraints.minHeight
-        );
+
+    var height = getHeight(styles.dimensions.height, constraints, containingBlock, isInline);
 
     var dimensions = {
       width: width,
@@ -77,6 +89,21 @@ class BoxModel {
   }
 
   @:allow(core.boxmodel.BoxModelTest)
+  static function getHeight(
+      height:Dimension,
+      constraints:UsedConstraints,
+      containingBlock:ContainingBlock,
+      isInline:Bool
+      ):Int {
+    return
+      if (isInline) 0;
+      else constrainDimension(
+        getDimension(height, containingBlock.height),
+        constraints.maxHeight, constraints.minHeight
+        );
+  }
+
+  @:allow(core.boxmodel.BoxModelTest)
   static function getAutoWidth(
       paddings:UsedPaddings,
       borders:UsedBorders,
@@ -93,10 +120,11 @@ class BoxModel {
       borders:UsedBorders,
       constraints:UsedConstraints,
       containingBlock:ContainingBlock,
-      isFloated:Bool):Int
+      isFloated:Bool,
+      isInline:Bool):Int
     return switch (width) {
       case Auto:
-        if (isFloated) 0;
+        if (isFloated || isInline) 0;
         else getAutoWidth(paddings, borders, margins.left, margins.right, containingBlock);
       case _: constrainDimension(getDimension(width, containingBlock.width), constraints.maxWidth, constraints.minWidth);
     }
@@ -143,7 +171,7 @@ class BoxModel {
                       containingBlock
                       );
 
-      case InlineBlock: getInlineBlockMargins(
+      case Inline, InlineBlock: getInlineMargins(
                              margins,
                              widthIsAuto,
                              heightIsAuto,
@@ -152,37 +180,52 @@ class BoxModel {
     }
   }
 
-  static function getInlineBlockMargins(
+  static function getInlineMargins(
       margins:Margins,
       widthIsAuto:Bool,
       heightIsAuto:Bool,
-      containingBlock:ContainingBlock
-      ):UsedMargins {
-
+      containingBlock:ContainingBlock):UsedMargins {
     return {
-      left: getInlineBlockMargin(
+      left: getInlineMargin(
           margins.left,
           containingBlock.width,
           widthIsAuto
           ),
 
-      right: getInlineBlockMargin(
+      right: getInlineMargin(
           margins.right,
           containingBlock.width,
           widthIsAuto
           ),
 
-      top: getInlineBlockMargin(
+      top: getInlineMargin(
           margins.top,
           containingBlock.height,
           heightIsAuto
           ),
-
-      bottom: getInlineBlockMargin(
-          margins.bottom,
+      
+      bottom: getInlineMargin(
+          margins.top,
           containingBlock.height,
           heightIsAuto
-          )
+          ),
+    }
+  }
+
+  @:allow(core.boxmodel.BoxModelTest)
+  static function getInlineMargin(
+      margin:Margin,
+      containerDimension:Int,
+      dimensionIsAuto:Bool) {
+    return switch (margin) {
+
+      case AbsoluteLength(value): value;
+
+      case Percent(percent):
+        if (dimensionIsAuto) 0;
+        else percent.compute(containerDimension);
+
+      case Auto: 0;
     }
   }
 
@@ -265,23 +308,6 @@ class BoxModel {
               dimension,
               paddingsAndBordersDimension
               );
-    }
-  }
-
-  @:allow(core.boxmodel.BoxModelTest)
-  static function getInlineBlockMargin(
-      margin:Margin,
-      containerDimension:Int,
-      dimensionIsAuto:Bool) {
-    return switch (margin) {
-
-      case AbsoluteLength(value): value;
-
-      case Percent(percent):
-        if (dimensionIsAuto) 0;
-        else percent.compute(containerDimension);
-
-      case Auto: 0;
     }
   }
 
@@ -394,6 +420,7 @@ typedef Styles = {
 enum Display {
    Block;
    InlineBlock;
+   Inline;
 }
 
 enum CSSFloat {
