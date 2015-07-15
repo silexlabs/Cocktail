@@ -402,6 +402,25 @@ class BoxModel {
         else percent.compute(containerDimension);
     }
   }
+
+  @:allow(core.boxmodel.BoxModelTest)
+  static function fixConstraintViolation(
+      width:Int,
+      height:Int,
+      constraints:UsedConstraints
+      ):UsedDimensions {
+
+    return switch [constraints.maxWidth, constraints.minWidth] {
+      case [Some(max), min] if  (width > max): {
+        width: max,
+        height: Math.round(Math.max((max * (height / width)), min))
+      }
+      case _: {
+        width: width,
+        height: height
+      };
+    }
+  }
 }
 
 abstract Percentage(Int) from Int {

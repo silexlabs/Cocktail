@@ -145,6 +145,19 @@ class BoxModelTest extends BuddySuite {
                 }).should.be(40);
               });
             });
+
+            describe('fixConstraintViolation', function () {
+              it('fixes w > max-width', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                  100, 50, {
+                  minWidth: 0, maxWidth: Some(50), maxHeight: None, minHeight: 0
+                });
+                Assert.same(ret, {
+                  width: 50,
+                  height: 25
+                });
+              });
+            });
         });
     }
 }
