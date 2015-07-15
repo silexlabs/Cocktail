@@ -24,28 +24,28 @@ class BoxModelTest extends BuddySuite {
                 });
             });
 
-            describe('getConstraint', function () {
+            describe('getMaxConstraint', function () {
                 it('computes absolute length constraint', function () {
-                    var ret = BoxModel.getConstraint(AbsoluteLength(50), 100, false);
+                    var ret = BoxModel.getMaxConstraint(AbsoluteLength(50), 100, false);
                     Assert.same(Some(50), ret);
                 });
 
                 describe('percent constraint', function () {
                     it('computes percent constraint', function () {
-                        var ret = BoxModel.getConstraint(Percent(20), 100, false);
+                        var ret = BoxModel.getMaxConstraint(Percent(20), 100, false);
                         Assert.same(ret, Some(20));
                     });
 
                     it('uses empty value if container is auto', function () {
-                        var ret:Option<Int> = BoxModel.getConstraint(Percent(50), 100, true);
+                        var ret:Option<Int> = BoxModel.getMaxConstraint(Percent(50), 100, true);
                         Assert.same(None, ret);
 
-                        var ret2:Option<Int> = BoxModel.getConstraint(Percent(50), 100, true);
+                        var ret2:Option<Int> = BoxModel.getMaxConstraint(Percent(50), 100, true);
                         Assert.same(None, ret2);
                     });
 
                     it('uses empty value if there are no constraints', function () {
-                        var ret = BoxModel.getConstraint(Unconstrained, 100, true);
+                        var ret = BoxModel.getMaxConstraint(Unconstrained, 100, true);
                         Assert.same(ret, None);
                     });
                 });
@@ -53,12 +53,12 @@ class BoxModelTest extends BuddySuite {
 
             describe('constrainDimension', function () {
               it('constraints a dimension to its max', function () {
-                BoxModel.constrainDimension(200, Some(100), None)
+                BoxModel.constrainDimension(200, Some(100), 0)
                 .should.be(100);
               });
 
               it('constraints a dimension to its min', function () {
-                BoxModel.constrainDimension(100, None, Some(200))
+                BoxModel.constrainDimension(100, None, 200)
                 .should.be(200);
               });
             });
@@ -94,7 +94,7 @@ class BoxModelTest extends BuddySuite {
             describe('getHeight', function () {
                 it('is 0 for inline boxes', function () {
                     BoxModel.getHeight(Auto, {
-                        minHeight: None, minWidth: None, maxHeight: None, maxWidth: None
+                        minHeight: 0, minWidth: 0, maxHeight: None, maxWidth: None
                     }, {
                         height: 10, width: 10, isHeightAuto: true, isWidthAuto: true
                     }, true)
@@ -111,7 +111,7 @@ class BoxModelTest extends BuddySuite {
                     }, {
                         left: 10, right: 10, top: 10, bottom: 10
                     }, {
-                        minWidth: None, minHeight: None, maxWidth: None, maxHeight: None
+                        minWidth: 0, minHeight: 0, maxWidth: None, maxHeight: None
                     }, {
                         width: 10, height: 10, isHeightAuto: true, isWidthAuto: true
                     }, true, false)
@@ -126,7 +126,7 @@ class BoxModelTest extends BuddySuite {
                     }, {
                         left: 10, right: 10, top: 10, bottom: 10
                     }, {
-                        minWidth: None, minHeight: None, maxWidth: None, maxHeight: None
+                        minWidth: 0, minHeight: 0, maxWidth: None, maxHeight: None
                     }, {
                         width: 10, height: 10, isHeightAuto: true, isWidthAuto: true
                     }, false, true)

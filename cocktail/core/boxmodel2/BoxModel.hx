@@ -130,16 +130,14 @@ class BoxModel {
     }
 
   @:allow(core.boxmodel.BoxModelTest)
-  static function constrainDimension(dimension:Int, max:Option<Int>, min:Option<Int>):Int {
+  static function constrainDimension(dimension:Int, max:Option<Int>, min:Int):Int {
     var maxedDimension = switch(max) {
       case Some(max): if (dimension > max) max else dimension;
       case None: dimension;
     }
 
-    return switch(min) {
-      case Some(min): if (dimension < min) min else maxedDimension;
-      case None: maxedDimension;
-    }
+    return if (maxedDimension > min) maxedDimension
+           else min;
   }
 
   static function getDimension(dimension:Dimension, containerDimension:Int):Int {
@@ -375,15 +373,15 @@ class BoxModel {
 
   static function getConstraints(constraints:Constraints, containingBlock:ContainingBlock):UsedConstraints {
     return {
-      maxHeight: getConstraint(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto),
-      minHeight: getConstraint(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto),
-      maxWidth: getConstraint(constraints.maxWidth, containingBlock.width, containingBlock.isWidthAuto),
-      minWidth: getConstraint(constraints.minWidth, containingBlock.width, containingBlock.isWidthAuto)
+      maxHeight: getMaxConstraint(constraints.maxHeight, containingBlock.height, containingBlock.isHeightAuto),
+      minHeight: getMinConstraint(constraints.minHeight, containingBlock.height, containingBlock.isHeightAuto),
+      maxWidth: getMaxConstraint(constraints.maxWidth, containingBlock.width, containingBlock.isWidthAuto),
+      minWidth: getMinConstraint(constraints.minWidth, containingBlock.width, containingBlock.isWidthAuto)
     }
   }
 
   @:allow(core.boxmodel.BoxModelTest)
-  static function getConstraint(constraint:Constraint, containerDimension:Int, containingDimensionIsAuto:Bool):Option<Int> {
+  static function getMaxConstraint(constraint:MaxConstraint, containerDimension:Int, containingDimensionIsAuto:Bool):Option<Int> {
     return switch (constraint) {
       case AbsoluteLength(value): Some(value);
 
@@ -392,6 +390,16 @@ class BoxModel {
         else Some(percent.compute(containerDimension));
 
       case Unconstrained: None;
+    }
+  }
+
+  static function getMinConstraint(constraint:MinConstraint, containerDimension:Int, containingDimensionIsAuto:Bool):Int {
+    return switch (constraint) {
+      case AbsoluteLength(value): value;
+
+      case Percent(percent):
+        if (containingDimensionIsAuto) 0;
+        else percent.compute(containerDimension);
     }
   }
 }
@@ -440,23 +448,28 @@ typedef UsedStyles = {
 }
 
 typedef Constraints = {
-  var minHeight:Constraint;
-  var maxHeight:Constraint;
-  var minWidth:Constraint;
-  var maxWidth:Constraint;
+  var minHeight:MinConstraint;
+  var maxHeight:MaxConstraint;
+  var minWidth:MinConstraint;
+  var maxWidth:MaxConstraint;
 }
 
 typedef UsedConstraints = {
-  var minHeight:Option<Int>;
+  var minHeight:Int;
   var maxHeight:Option<Int>;
-  var minWidth:Option<Int>;
+  var minWidth:Int;
   var maxWidth:Option<Int>;
 }
 
-enum Constraint {
+enum MaxConstraint {
   AbsoluteLength(value:Int);
   Percent(value:Percentage);
   Unconstrained;
+}
+
+enum MinConstraint {
+  AbsoluteLength(value:Int);
+  Percent(value:Percentage);
 }
 
 enum Border {
