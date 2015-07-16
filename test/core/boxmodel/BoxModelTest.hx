@@ -147,6 +147,16 @@ class BoxModelTest extends BuddySuite {
             });
 
             describe('fixConstraintViolation', function () {
+              it('doesnt need fixing', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                  100, 50, {
+                  minWidth: 0, maxWidth: None, maxHeight: None, minHeight: 0
+                });
+                Assert.same(ret, {
+                  width: 100,
+                  height: 50
+                });
+              });
               it('fixes w > max-width', function () {
                 var ret = BoxModel.fixConstraintViolation(
                   100, 50, {
@@ -157,13 +167,89 @@ class BoxModelTest extends BuddySuite {
                   height: 25
                 });
 
-                var ret = BoxModel.fixConstraintViolation(
+                var ret2 = BoxModel.fixConstraintViolation(
                   100, 50, {
                   minWidth: 0, maxWidth: Some(50), maxHeight: None, minHeight: 30
                 });
-                Assert.same(ret, {
+                Assert.same(ret2, {
                   width: 50,
                   height: 30
+                });
+              });
+              it('fixes w < min-width', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                  100, 50, {
+                  minWidth: 150, maxWidth: None, maxHeight: None, minHeight: 0
+                });
+                Assert.same(ret, {
+                  width: 150,
+                  height: 75
+                });
+
+                var ret2 = BoxModel.fixConstraintViolation(
+                  100, 50, {
+                  minWidth: 150, maxWidth: None, maxHeight: Some(70), minHeight: 0
+                });
+                Assert.same(ret2, {
+                  width: 150,
+                  height: 70
+                });
+              });
+              it('fixes h > max-height', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 0, maxWidth: None, maxHeight: Some(50), minHeight: 0
+                    });
+                Assert.same(ret, {
+                  width: 50,
+                  height: 50
+                });
+
+                var ret2 = BoxModel.fixConstraintViolation(
+                    100, 100 , {
+                      minWidth: 60, maxWidth: None, maxHeight: Some(50), minHeight: 0
+                    });
+                Assert.same(ret2, {
+                  width: 60,
+                  height: 50
+                });
+              });
+              it('fixes h < min-height', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 0, maxWidth: None, maxHeight: None, minHeight: 120
+                    });
+                Assert.same(ret, {
+                  width: 120,
+                  height: 120
+                });
+                var ret2 = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 0, maxWidth: Some(50), maxHeight: None, minHeight: 120
+                    });
+                Assert.same(ret2, {
+                  width: 50,
+                  height: 120
+                });
+              });
+              it('fixes w > max-width and h > max-height, where max-width/w ≤ max-height/h', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 0, maxWidth: Some(50), maxHeight: Some(50), minHeight: 0
+                    });
+                Assert.same(ret, {
+                  width: 50,
+                  height: 50
+                });
+              });
+              it('fixes w > max-width and h > max-height, where max-width/w > max-height/h', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 0, maxWidth: Some(70), maxHeight: Some(60), minHeight: 0
+                    });
+                Assert.same(ret, {
+                  width: 60,
+                  height: 60
                 });
               });
             });
