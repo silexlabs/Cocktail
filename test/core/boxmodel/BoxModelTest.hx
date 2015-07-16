@@ -156,6 +156,15 @@ class BoxModelTest extends BuddySuite {
                   width: 50,
                   height: 25
                 });
+
+                var ret = BoxModel.fixConstraintViolation(
+                  100, 50, {
+                  minWidth: 0, maxWidth: Some(50), maxHeight: None, minHeight: 30
+                });
+                Assert.same(ret, {
+                  width: 50,
+                  height: 30
+                });
               });
             });
         });

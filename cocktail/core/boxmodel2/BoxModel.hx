@@ -410,10 +410,14 @@ class BoxModel {
       constraints:UsedConstraints
       ):UsedDimensions {
 
-    return switch [constraints.maxWidth, constraints.minWidth] {
-      case [Some(max), min] if  (width > max): {
-        width: max,
-        height: Math.round(Math.max((max * (height / width)), min))
+    return switch [
+      constraints.maxWidth, 
+      constraints.minWidth, 
+      constraints.minHeight
+    ] {
+      case [Some(maxWidth), minWidth, minHeight] if  (width > maxWidth): {
+        width: maxWidth,
+        height: Math.round(Math.max((maxWidth * (height / width)), minHeight))
       }
       case _: {
         width: width,
