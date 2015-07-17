@@ -416,11 +416,21 @@ class BoxModel {
       constraints.maxHeight,
       constraints.minHeight
     ] {
-      case [Some(maxWidth), _, Some(maxHeight), minHeight] if (maxWidth / width <= maxHeight / height): {
+      case [Some(maxWidth), _, Some(maxHeight), minHeight]
+        if (
+          width > maxWidth &&
+          height > maxHeight &&
+          maxWidth / width <= maxHeight / height
+          ): {
         width: maxWidth,
         height: Math.round(Math.max(minHeight, maxWidth * (height / width)))
       }
-      case [Some(maxWidth), minWidth, Some(maxHeight), _] if (maxWidth / width > maxHeight / height): {
+      case [Some(maxWidth), minWidth, Some(maxHeight), _] 
+        if (
+          width > maxWidth &&
+          height > maxHeight &&
+          maxWidth / width > maxHeight / height
+          ): {
         width: Math.round(Math.max(minWidth, maxHeight * (width / height))),
         height: maxHeight,
       }
