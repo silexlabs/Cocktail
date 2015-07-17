@@ -252,6 +252,64 @@ class BoxModelTest extends BuddySuite {
                   height: 60
                 });
               });
+              it('fixes w < min-width and h < min-height, where min-width/w <= min-height/h', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 100, {
+                      minWidth: 120, maxWidth: Some(70), maxHeight: None, minHeight: 120
+                    });
+                Assert.same(ret, {
+                  width: 70,
+                  height: 120
+                });
+
+                var ret2 = BoxModel.fixConstraintViolation(
+                    100, 50, {
+                      minWidth: 120, maxWidth: None, maxHeight: None, minHeight: 120
+                    });
+                Assert.same(ret2, {
+                  width: 240,
+                  height: 120
+                });
+              });
+              it('fixes w < min-width and h < min-height, where min-width/w > min-height/h', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 110, {
+                      minWidth: 120, maxWidth: None, maxHeight: Some(60), minHeight: 120
+                    });
+                Assert.same(ret, {
+                  width: 120,
+                  height: 60
+                });
+
+                var ret2 = BoxModel.fixConstraintViolation(
+                    50, 100, {
+                      minWidth: 120, maxWidth: None, maxHeight: None, minHeight: 120
+                    });
+                Assert.same(ret2, {
+                  width: 120,
+                  height: 240
+                });
+              });
+              it('fixes w < min-width and h > max-height', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 110, {
+                      minWidth: 120, maxWidth: None, maxHeight: Some(60), minHeight: 0
+                    });
+                Assert.same(ret, {
+                  width: 120,
+                  height: 60
+                });
+              });
+              it('fixes w > max-width and h < min-height', function () {
+                var ret = BoxModel.fixConstraintViolation(
+                    100, 110, {
+                      minWidth: 0, maxWidth: Some(50), maxHeight: None, minHeight: 200
+                    });
+                Assert.same(ret, {
+                  width: 50,
+                  height: 200
+                });
+              });
             });
         });
     }
