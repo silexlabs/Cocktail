@@ -1,6 +1,6 @@
 * {
 	margin:0;
-	font-family:sans-serif;
+	font-family:serif;
 	text-decoration:none;
 	color:#333;
 }
@@ -36,7 +36,7 @@ p {
 }
 
 .project-link {
-	font:32px sans-serif;
+	font:32px serif;
 	display:block;
 	margin-top:30px;
 	text-align:center;
