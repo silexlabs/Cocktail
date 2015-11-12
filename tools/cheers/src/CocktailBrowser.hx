@@ -22,7 +22,11 @@ class CocktailBrowser
 	{
 		//init cocktail view with minimal html
 		cv = new CocktailView();
+#if cpp
+		cv.loadHTML(openfl.Assets.getText('html'));
+#else
 		cv.loadHTML("<!doctype html><html><head></head><body></body></html>");
+#end
 
 		flash.Lib.current.addChild(cv.root);
 		new CocktailBrowser();
