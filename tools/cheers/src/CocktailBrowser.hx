@@ -10,6 +10,7 @@ import cocktail.api.CocktailView;
  * 
  * @author Yannick DOMINGUEZ
  */
+@:expose('cocktailBrowser')
 class CocktailBrowser 
 {
 	/**
