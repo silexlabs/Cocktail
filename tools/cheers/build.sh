@@ -1,4 +1,4 @@
-haxe build_cheers.hxml -D build_for_flash
+haxe build_cheers.hxml
 openfl build html5 -debug
 cp -r ./bin/html5/bin/res ./bin
 cp ./bin/html5/bin/CocktailDemo.js ./bin
