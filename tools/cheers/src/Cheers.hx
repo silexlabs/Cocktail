@@ -31,7 +31,9 @@ class Cheers
 	static function main()
 	{
 		self = new Cheers();
-        js.Browser.window.onload = self.init;
+#if !build_for_flash
+		js.Browser.window.onload = self.init;
+#end
 	}
 	
 	/**
@@ -45,7 +47,7 @@ class Cheers
 	var htmlCodeMirror:Dynamic;
 	
 	/**
-	 * cs editor
+	 * css editor
 	 */
 	var cssCodeMirror:Dynamic;
 	
@@ -69,6 +71,7 @@ class Cheers
 	 */
 	static function cocktailBrowserReady()
 	{
+		self.init();
 	}
 	
 	/**
@@ -123,13 +126,19 @@ class Cheers
 	 */
 	function update() 
 	{
+#if build_for_flash
+		var object:Dynamic = Browser.document.getElementById("cocktail");
+		var updateDoc = object.updateDocument;
+		var getContent = object.getContent;
+#else 
 		var updateDoc = untyped __js__ ("cocktailBrowser.updateDocument");
+		var getContent = untyped __js__ ("cocktailBrowser.getContent");
+#end
 		updateDoc(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Browser.window.location.href);
 		
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content
 		var iframe:Dynamic = Browser.document.getElementById("browser");
-		var getContent = untyped __js__ ("cocktailBrowser.getContent");
 		iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(getContent());
 	}
 }
