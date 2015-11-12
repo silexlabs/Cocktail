@@ -84,7 +84,7 @@ class CocktailBrowser
 	/**
 	 * return the serialised content of the document
 	 */
-	function getContent()
+	static function getContent()
 	{
 		try {
 			return cv.document.documentElement.innerHTML;
