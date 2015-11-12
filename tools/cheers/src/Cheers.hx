@@ -123,13 +123,13 @@ class Cheers
 	 */
 	function update() 
 	{
-        //var object:Dynamic = Browser.document.getElementById("cocktail");	
-        var updateDoc = untyped __js__ ("CocktailBrowser.updateDocument");
-        updateDoc(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Browser.window.location.href);
+		var updateDoc = untyped __js__ ("cocktailBrowser.updateDocument");
+		updateDoc(htmlCodeMirror.getValue(), cssCodeMirror.getValue(), Browser.window.location.href);
 		
 		//strangely, the easiest way I found to mix html and css content for iframe is
 		//using cocktail content
-		//var iframe:Dynamic = Browser.document.getElementById("browser");
-		//iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(object.getContent());
+		var iframe:Dynamic = Browser.document.getElementById("browser");
+		var getContent = untyped __js__ ("cocktailBrowser.getContent");
+		iframe.src = "data:text/html;charset=utf-8," + StringTools.urlEncode(getContent());
 	}
 }
