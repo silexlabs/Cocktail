@@ -69,7 +69,7 @@ class FontBuilder extends FontBuilderBase
 		textField.text = "X";
 		
 		var textFormat:TextFormat = new TextFormat();
-		textFormat.size = fontSize;
+		textFormat.size = cast fontSize;
 		textFormat.font = fontFamily;
 		textField.setTextFormat(textFormat);
 		
@@ -198,7 +198,7 @@ class FontBuilder extends FontBuilderBase
 		textFormat.font = fontFamily;
 		
 		textFormat.letterSpacing = usedValues.letterSpacing;
-		textFormat.size = style.getAbsoluteLength(style.fontSize);
+		textFormat.size = cast style.getAbsoluteLength(style.fontSize);
 		
 		var bold:Bool = false;
 		

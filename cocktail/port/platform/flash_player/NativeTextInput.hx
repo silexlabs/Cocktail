@@ -189,7 +189,7 @@ class NativeTextInput extends NativeTextInputBase
 	
 	override private function set_fontSize(value:Float):Float
 	{
-		_textFormat.size = value;
+		_textFormat.size = cast value;
 		updateTextFormat();
 		
 		return value;
