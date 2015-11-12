@@ -89,6 +89,10 @@ class DOMParser
 		//node type for comment node	
 		case Xml.Comment:
 			return ownerDocument.createComment(xml.nodeValue);
+
+		// doctypes are ignored
+		case Xml.DocType:
+			return null;
 		
 		//node type for element node
 		case Xml.Element:
@@ -119,7 +123,12 @@ class DOMParser
 				//desrialize the child, thus deserializing
 				//the whole DOM tree recursively
 				var childNode:Node = doSetInnerHTML(child, ownerDocument);
-				htmlElement.appendChild(childNode);
+
+				//could be null for a doctype
+				if (childNode != null)
+				{
+					htmlElement.appendChild(childNode);
+				}
 			} 
 			
 			//set all the attributes of the xml node on the 
