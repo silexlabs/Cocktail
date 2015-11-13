@@ -1,3 +1,4 @@
+package src;
 /*
  * Cocktail, HTML rendering engine
  * http://haxe.org/com/libs/cocktail
@@ -6,9 +7,9 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.html.HtmlElement;
+import cocktail.html.HtmlElement;
 import haxe.Timer;
-import js.Browser;
+import cocktail.Browser;
 
 /**
  * Add divs to the document and 
@@ -20,9 +21,7 @@ class Main
 	static function main()
 	{
 		//init cocktail with the content of the index.html file
-		#if !js
-		cocktail.api.Cocktail.boot();
-		#end
+		cocktail.api.Cocktail.boot("res/index.html");
 		
 		Browser.window.onload = function(e) new Main();
 	}
@@ -38,14 +37,14 @@ class Main
 	
 	public function new()
 	{
-		#if nme
-		var fps = new nme.display.FPS();
+		#if openfl
+		var fps = new openfl.display.FPS();
 		fps.y = 50;
 		fps.x = 170;
-		nme.Lib.current.addChild(fps);
+		openfl.Lib.current.addChild(fps);
 		#end
 		
-		//helps on mobile to know wether app uses nme or air
+		//helps on mobile to know wether app uses openfl or air
 		var target = Browser.document.getElementById("target");
 		#if air
 		target.innerHTML = "AIR";

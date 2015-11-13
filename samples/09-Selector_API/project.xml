@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="SelectorAPI" package="com.samples.cocktail" version="1.0.0" company="SilexLabs" />
+	<app main="src.Main" path="bin" file="SelectorAPI" />
+
+	<source path="src" />
+	<assets path="res"></assets>
+
+	<haxelib name="openfl" />
+	<haxelib name="cocktail" />
+
+</project>

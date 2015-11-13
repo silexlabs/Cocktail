@@ -1,3 +1,4 @@
+package src;
 
 /*
  * Cocktail, HTML rendering engine
@@ -8,9 +9,10 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 
-import js.Browser;
-import js.html.InputElement;
-import js.html.HtmlElement;
+import cocktail.Browser;
+import cocktail.html.InputElement;
+import cocktail.html.HtmlElement;
+import cocktail.html.VideoElement;
 
 /**
  * Showcases how to display a video in flash
@@ -19,17 +21,15 @@ class Main
 {
 	static function main()
 	{
-		#if !js
 		//init cocktail, and starts the load of the "index.html" file
-		cocktail.api.Cocktail.boot();
-		#end
+		cocktail.api.Cocktail.boot("res/index.html");
 
 		Browser.window.onload = function(e) new Main();
 	}
 
     public function new()
     {
-        var video:js.html.VideoElement = cast Browser.document.getElementsByTagName("video")[0];
+        var video:VideoElement = cast Browser.document.getElementsByTagName("video")[0];
 
         var playBtn:InputElement = cast Browser.document.querySelector("input[type=button][value=play]");
 
@@ -89,13 +89,7 @@ class Main
         fullscreenBtn.onclick = function(e) {
             if (fullscreenBtn.value == "full") {
                 fullscreenBtn.value = "small";
-#if js
-                    //for Haxe JS API need this extra param, didn't find any
-                    //doc about it
-                    player.requestFullScreen(0);
-#else
                     player.requestFullScreen();
-#end
             }
             else {
                 fullscreenBtn.value = "full";
