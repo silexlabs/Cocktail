@@ -1,3 +1,4 @@
+package src;
 /*
  * Cocktail, HTML rendering engine
  * http://haxe.org/com/libs/cocktail
@@ -6,9 +7,9 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Browser;
-import js.html.HtmlElement;
-import js.html.Image;
+import cocktail.Browser;
+import cocktail.html.HtmlElement;
+import cocktail.html.Image;
 
 /**
  * an example of using the DOM api to build an html document
@@ -17,10 +18,8 @@ class Main
 {
 	static function main()
 	{
-		#if !js
 		//init cocktail with the content of the index.html file
-		cocktail.api.Cocktail.boot();
-		#end
+		cocktail.api.Cocktail.boot("res/index.html");
 		
 		Browser.window.onload = function(e) new Main();
 	}
@@ -53,7 +52,7 @@ class Main
 					
 		var img:Image = cast(Browser.document.createElement("img"));
 		img.id = "pic";
-		img.src = "assets/cocktail.png";
+		img.src = "img/cocktail.png";
 		paragraph.appendChild(img);
 		
 		var site = Browser.document.createElement("div");
@@ -75,7 +74,7 @@ class Main
 	{
 		var pic:HtmlElement = cast(Browser.document.getElementById("pic"));
 		pic.onclick = function(e) {
-			Browser.document.body.style.backgroundImage = "url(assets/bg.png)";
+			Browser.document.body.style.backgroundImage = "url(res/img/bg.png)";
 		}
 		
 	}
