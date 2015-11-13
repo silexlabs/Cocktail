@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="HelloWorld" package="com.samples.cocktail" version="1.0.0" company="SilexLabs" />
+	<app main="src.Main" path="bin" file="HelloWorld" />
+
+	<source path="src" />
+	<assets path="res">
+		<text path="index.html" />
+	</assets>
+
+	<haxelib name="openfl" />
+	<haxelib name="cocktail" />
+
+</project>
