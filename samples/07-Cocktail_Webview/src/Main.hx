@@ -1,3 +1,4 @@
+package src;
 /*
  * Cocktail, HTML rendering engine
  * http://haxe.org/com/libs/cocktail
@@ -120,7 +121,8 @@ class Main extends Sprite
 	 */
 	function onFlashClick(e)
 	{
-		cv.root.visible = !cv.root.visible;
+        var isVisible:Bool = Reflect.getProperty(cv.root, 'visible');
+		Reflect.setProperty(cv.root, 'visible', !isVisible);
 	}
 	
 	/**
@@ -144,7 +146,7 @@ class Main extends Sprite
 		registerResizable( updateViewportPosition )();
 		
 		//use an external html for the document
-		cv.loadURL("index.html");
+		cv.loadURL("res/index.html");
 		
 		//wait for document ready
 		cv.window.onload = function(e) { 
