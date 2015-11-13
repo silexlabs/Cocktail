@@ -260,11 +260,11 @@ class GraphicsSurface extends GraphicsSurfaceBase
 			_flashMatrix.tx = Math.floor(destPoint.x);
 			_flashMatrix.ty = Math.floor(destPoint.y);
 			
-			nativeBitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, null, false);
+			nativeBitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, null, true);
 		}
 		else
 		{
-			nativeBitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, false);
+			nativeBitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, true);
 		}
 	}
 	
@@ -342,7 +342,7 @@ class GraphicsSurface extends GraphicsSurfaceBase
 		roundFlashRect();
 		roundFlashPoint();
 		
-		nativeBitmapData.copyPixels(nativeBitmapData, _flashRectangle, _flashPoint, null, null, false);
+		nativeBitmapData.copyPixels(nativeBitmapData, _flashRectangle, _flashPoint, null, null, true);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

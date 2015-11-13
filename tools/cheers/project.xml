@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="CocktailDemo" package="com.sample.cocktailDemo" version="1.0.0" company="SilexLabs" />
+	<app main="src.CocktailBrowser" path="bin" file="CocktailDemo" />
+
+	<source path="src" />
+	<assets path="res">
+		<text path="index.html" />
+		<text path="default.html" id="html" unless="cpp" />
+		<text path="default_with_css.html" rename="default.html" id="html" if="cpp" />
+		<text path="default.css" />
+	</assets>
+
+	<assets path="res/img" rename="img" />
+	<assets path="res/img/bg.png" rename="res/img/bg.png" />
+
+	<haxelib name="openfl" />
+	<haxelib name="cocktail" />
+
+</project>

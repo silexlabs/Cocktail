@@ -1,5 +1,7 @@
 package src;
+#if flash
 import flash.external.ExternalInterface;
+#end
 import cocktail.api.CocktailView;
 
 /**
@@ -8,6 +10,7 @@ import cocktail.api.CocktailView;
  * 
  * @author Yannick DOMINGUEZ
  */
+@:expose('cocktailBrowser')
 class CocktailBrowser 
 {
 	/**
@@ -19,7 +22,11 @@ class CocktailBrowser
 	{
 		//init cocktail view with minimal html
 		cv = new CocktailView();
+#if cpp
+		cv.loadHTML(openfl.Assets.getText('html'));
+#else
 		cv.loadHTML("<!doctype html><html><head></head><body></body></html>");
+#end
 
 		flash.Lib.current.addChild(cv.root);
 		new CocktailBrowser();
@@ -30,6 +37,7 @@ class CocktailBrowser
 	 */
 	public function new() 
 	{
+#if flash
 		if (ExternalInterface.available)
 		{
 			ExternalInterface.addCallback("updateDocument", updateDocument);
@@ -41,13 +49,14 @@ class CocktailBrowser
 		else {
 			
 		}
+#end
 	}
 	
 	/**
 	 * update the document's html with the html and
 	 * css provided by the user
 	 */
-	function updateDocument(html, css, baseUrl)
+	public static function updateDocument(html, css, baseUrl)
 	{
 		//save html before change
 		var currentHTML = getContent();
@@ -78,7 +87,7 @@ class CocktailBrowser
 	/**
 	 * return the serialised content of the document
 	 */
-	function getContent()
+	static function getContent()
 	{
 		try {
 			return cv.document.documentElement.innerHTML;

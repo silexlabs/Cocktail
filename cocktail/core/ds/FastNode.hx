@@ -33,15 +33,15 @@ interface IFastNode<NodeClass> {
  */
 class FastNode<NodeClass:IFastNode<NodeClass>> implements IFastNode<NodeClass>
 {
-	public var parentNode:NodeClass;
+	public var parentNode:NodeClass = null;
 
-	public var firstChild:NodeClass;
+	public var firstChild:NodeClass = null;
 	
-	public var lastChild:NodeClass;
+	public var lastChild:NodeClass = null;
 	
-	public var nextSibling:NodeClass;
+	public var nextSibling:NodeClass = null;
 	
-	public var previousSibling:NodeClass;
+	public var previousSibling:NodeClass = null;
 	
 	public function new() 
 	{
