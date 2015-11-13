@@ -21,7 +21,7 @@ Interactive demo
 -------------
 
 If you want to try cocktail in your browser :
-http://demos.silexlabs.org/trycocktail/
+http://projects.silexlabs.org/Cocktail/
 
 Requirements
 -------------
