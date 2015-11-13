@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Video" package="com.samples.cocktail" version="1.0.0" company="SilexLabs" />
+	<app main="src.Main" path="bin" file="Video" />
+
+	<source path="src" />
+	<assets path="res"></assets>
+    <assets path="res/sober" rename="sober"></assets>
+
+	<haxelib name="openfl" />
+	<haxelib name="cocktail" />
+
+</project>
