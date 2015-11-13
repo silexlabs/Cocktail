@@ -659,14 +659,14 @@ class HTMLMediaElement extends EmbeddedElement
 					var sourceChild:HTMLSourceElement = cast(childNodes[i]);
 					if (sourceChild.type != null)
 					{
-						if (canPlayType(sourceChild.type) == CAN_PLAY_TYPE_PROBABLY)
+						if (canPlayType(Reflect.getProperty(sourceChild, 'type')) == CAN_PLAY_TYPE_PROBABLY)
 						{
 							currentSrc = sourceChild.src;
 							fetchResource(currentSrc);
 							return;
 						}
 					}
-					else if (sourceChild.src != null)
+					else if (Reflect.getProperty(sourceChild, 'src') != null)
 					{
 						if (canPlayType(sourceChild.src) == CAN_PLAY_TYPE_PROBABLY)
 						{
