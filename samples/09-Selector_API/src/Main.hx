@@ -1,4 +1,4 @@
-
+package src;
 /*
  * Cocktail, HTML rendering engine
  * http://haxe.org/com/libs/cocktail
@@ -7,8 +7,8 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import js.Browser;
-import js.html.HtmlElement;
+import cocktail.Browser;
+import cocktail.html.HtmlElement;
 
 /**
  * Showcase the Selector API (a standard API, sismilar to jQuery selectors)
@@ -18,10 +18,8 @@ class Main
 {
 	static function main()
 	{
-		#if !js
 		//init cocktail, and starts the load of the "index.html" file
-		cocktail.api.Cocktail.boot();
-		#end
+		cocktail.api.Cocktail.boot("res/index.html");
 		
 		Browser.window.onload = function(e) new Main();
 	}
