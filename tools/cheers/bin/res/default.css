@@ -1,0 +1,43 @@
+* {
+	margin:0;
+	font-family:serif;
+	text-decoration:none;
+	color:#333;
+}
+
+:link, :visited {
+	color:#3a87ad;
+}
+
+:link:hover, :visited:hover {
+	background:#3a87ad;
+	color:white;
+}
+
+.logo {
+	display:block; 
+	text-align:center;
+	margin:2em;
+	background:url("img/bg.png");
+}
+
+.subtitle {
+	color:orange;
+}
+
+header {
+	display:block;
+	border-bottom:solid grey thin;
+	padding-bottom:10px;
+}
+
+p {
+	margin-top:1em;
+}
+
+.project-link {
+	font:32px serif;
+	display:block;
+	margin-top:30px;
+	text-align:center;
+}
