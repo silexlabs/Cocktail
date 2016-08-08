@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.StyledDOMElementTests
+-lib utest
+-swf9 ../../bin/domElement/styledDOMElementTestAs3.swf

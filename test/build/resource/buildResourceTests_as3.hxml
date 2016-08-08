@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main resource.ResourceTests
+-lib utest
+-swf9 ../../bin/resource/resourceTestAs3.swf 

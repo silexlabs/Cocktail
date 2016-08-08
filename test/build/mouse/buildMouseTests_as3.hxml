@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main mouse.MouseTests
+-swf9 ../../bin/mouse/mouseTestAs3.swf
+-lib utest
